@@ -74,7 +74,13 @@ export default function Component() {
             <div className="mb-2 block">
               <Label htmlFor="password2">Your password</Label>
             </div>
-            <TextInput id="password2" type="password" required shadow />
+            <TextInput
+              placeholder="............"
+              id="password2"
+              type="password"
+              required
+              shadow
+            />
           </div>
         </div>
 
@@ -85,7 +91,13 @@ export default function Component() {
             <div className="mb-2 block">
               <Label htmlFor="repeat-password">Repeat password</Label>
             </div>
-            <TextInput id="repeat-password" type="password" required shadow />
+            <TextInput
+              placeholder="............"
+              id="repeat-password"
+              type="password"
+              required
+              shadow
+            />
           </div>
         </div>
 
@@ -168,11 +180,11 @@ export default function Component() {
         </Button>
 
         {/* Link to Login */}
-        <p className="text-center text-sm text-gray-400">
+        <p className="text-center text-xs text-gray-400">
           Already have an account?{" "}
           <Link
             className="font-medium"
-            href="/login"
+            href="/signin"
             style={{ color: "royalblue" }}
           >
             Log in
