@@ -6,7 +6,7 @@ import Image from "next/image";
 
 export default function Home() {
   const handleClick = () => {
-    window.location.href = "/signin";
+    window.location.href = "/signup";
   };
 
   return (

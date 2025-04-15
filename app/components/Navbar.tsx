@@ -68,6 +68,10 @@ export function MyNavbar() {
         style={{
           backgroundColor: "#000",
           color: "#fff",
+          cursor: "pointer",
+        }}
+        onClick={() => {
+          window.location.href = "/signup";
         }}
       >
         Get Started
