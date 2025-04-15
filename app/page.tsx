@@ -6,7 +6,7 @@ import Image from "next/image";
 
 export default function Home() {
   const handleClick = () => {
-    console.log("Button clicked");
+    window.location.href = "/signin";
   };
 
   return (
@@ -27,6 +27,7 @@ export default function Home() {
             color: "#000000",
             marginTop: "20px",
             width: "fit-content",
+            cursor: "pointer",
           }}
           onClick={handleClick}
         >
