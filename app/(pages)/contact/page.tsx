@@ -1,7 +1,8 @@
 "use client";
 
 import { Button, Label, Textarea, TextInput } from "flowbite-react";
-import { MdContactMail } from "react-icons/md"; // Icon import
+import { MdContactMail } from "react-icons/md";
+import Link from "next/link";
 
 export default function Component() {
   return (
@@ -58,14 +59,14 @@ export default function Component() {
             </Button>
           </div>
           <p className="mb-2 text-center text-sm text-gray-500 dark:text-gray-400">
-            <a href="mailto:info@company.com" className="hover:underline">
+            <Link href="mailto:info@company.com" className="hover:underline">
               North East University Bangladesh
-            </a>
+            </Link>
           </p>
           <p className="text-center text-sm text-gray-500 dark:text-gray-400">
-            <a href="tel:2124567890" className="hover:underline">
+            <Link href="tel:2124567890" className="hover:underline">
               212-456-7890
-            </a>
+            </Link>
           </p>
         </form>
       </div>

@@ -37,11 +37,11 @@ export function MyNavbar() {
 
   return (
     <Navbar color="black" fluid style={{ backgroundColor: "#92e3a9" }}>
-      <NavbarBrand as={Link} href="https://flowbite-react.com">
+      <NavbarBrand as={Link} href="/">
         <Image
           src="/favicon.ico"
           className="mr-3 h-6 w-full sm:h-9"
-          alt="Flowbite React Logo"
+          alt="CourseSphere Logo"
           width={100}
           height={0}
         />
@@ -64,18 +64,17 @@ export function MyNavbar() {
           </NavbarLink>
         ))}
       </NavbarCollapse>
-      <Button
-        style={{
-          backgroundColor: "#000",
-          color: "#fff",
-          cursor: "pointer",
-        }}
-        onClick={() => {
-          window.location.href = "/signup";
-        }}
-      >
-        Get Started
-      </Button>
+      <Link href="/signup">
+        <Button
+          style={{
+            backgroundColor: "#000000",
+            color: "#ffffff",
+            cursor: "pointer",
+          }}
+        >
+          Get Started
+        </Button>
+      </Link>
     </Navbar>
   );
 }

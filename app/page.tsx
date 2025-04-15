@@ -3,12 +3,9 @@
 import hero from "@/public/assets/hero.svg";
 import { Button } from "flowbite-react";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
-  const handleClick = () => {
-    window.location.href = "/signup";
-  };
-
   return (
     <div className="flex min-h-screen flex-col items-center justify-between gap-10 p-24 md:flex-row">
       <div className="flex w-full flex-col">
@@ -21,18 +18,19 @@ export default function Home() {
           consequatur. Voluptatibus, at tempore distinctio amet consequuntur
           repudiandae natus id sunt quas, unde magni?
         </p>
-        <Button
-          style={{
-            backgroundColor: "#92e3a9",
-            color: "#000000",
-            marginTop: "20px",
-            width: "fit-content",
-            cursor: "pointer",
-          }}
-          onClick={handleClick}
-        >
-          Lets Get Started
-        </Button>
+        <Link href="/signup">
+          <Button
+            style={{
+              backgroundColor: "#92e3a9",
+              color: "#000000",
+              marginTop: "20px",
+              width: "fit-content",
+              cursor: "pointer",
+            }}
+          >
+            Let`s Get Started
+          </Button>
+        </Link>
       </div>
 
       <div className="w-full">
