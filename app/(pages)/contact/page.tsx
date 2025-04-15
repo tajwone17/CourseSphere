@@ -1,59 +1,74 @@
 "use client";
 
 import { Button, Label, Textarea, TextInput } from "flowbite-react";
+import { MdContactMail } from "react-icons/md"; // Icon import
 
 export default function Component() {
   return (
-    <>
-      <form action="#">
-        <div className="mt-3 mb-6">
-          <Label htmlFor="email" className="mb-2 block">
-            Your email
-          </Label>
-          <TextInput
-            id="email"
-            name="email"
-            placeholder="name@company.com"
-            type="email"
-          />
+    <div className="flex h-screen items-center justify-center">
+      <div className="flex w-full max-w-4xl flex-col items-center rounded-lg border-2 border-white p-8">
+        <div className="mb-6 flex items-center gap-2">
+          <MdContactMail size={30} color="#92e3a9" />
+          <h1 className="text-3xl font-extrabold">Contact</h1>
         </div>
-        <div className="mb-6">
-          <Label htmlFor="subject" className="mb-2 block">
-            Subject
-          </Label>
-          <TextInput
-            id="subject"
-            name="subject"
-            placeholder="Let us know how we can help you"
-          />
-        </div>
-        <div className="mb-6">
-          <Label htmlFor="message" className="mb-2 block">
-            Your message
-          </Label>
-          <Textarea
-            id="message"
-            name="message"
-            placeholder="Your message..."
-            rows={4}
-          />
-        </div>
-        <div className="mb-6">
-          <Button type="submit" className="w-full">
-            Send message
-          </Button>
-        </div>
-        <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-          <a href="mailto:info@company.com" className="hover:underline">
-            info@company.com
-          </a>
-        </p>
-        <p className="text-sm text-gray-500 dark:text-gray-400">
-          <a href="tel:2124567890" className="hover:underline">
-            212-456-7890
-          </a>
-        </p>
-      </form>
-    </>
+        <form action="#" className="w-full max-w-3xl">
+          <div className="mb-6">
+            <Label htmlFor="email" className="mb-2 block">
+              Your email
+            </Label>
+            <TextInput
+              id="email"
+              name="email"
+              placeholder="name@company.com"
+              type="email"
+            />
+          </div>
+          <div className="mb-6">
+            <Label htmlFor="subject" className="mb-2 block">
+              Subject
+            </Label>
+            <TextInput
+              id="subject"
+              name="subject"
+              placeholder="Let us know how we can help you"
+            />
+          </div>
+          <div className="mb-6">
+            <Label htmlFor="message" className="mb-2 block">
+              Your message
+            </Label>
+            <Textarea
+              id="message"
+              name="message"
+              placeholder="Your message..."
+              rows={4}
+            />
+          </div>
+          <div className="mb-6">
+            <Button
+              style={{
+                backgroundColor: "#92e3a9",
+                color: "#000000",
+                marginTop: "20px",
+              }}
+              type="submit"
+              className="w-full"
+            >
+              Send message
+            </Button>
+          </div>
+          <p className="mb-2 text-center text-sm text-gray-500 dark:text-gray-400">
+            <a href="mailto:info@company.com" className="hover:underline">
+              North East University Bangladesh
+            </a>
+          </p>
+          <p className="text-center text-sm text-gray-500 dark:text-gray-400">
+            <a href="tel:2124567890" className="hover:underline">
+              212-456-7890
+            </a>
+          </p>
+        </form>
+      </div>
+    </div>
   );
 }
