@@ -23,14 +23,14 @@ export default function Home() {
         </p>
         <Button
           style={{
-            backgroundColor: "#000",
-            color: "#fff",
+            backgroundColor: "#92e3a9",
+            color: "#000000",
             marginTop: "20px",
             width: "fit-content",
           }}
           onClick={handleClick}
         >
-          Get Started
+          Lets Get Started
         </Button>
       </div>
 
