@@ -1,5 +1,5 @@
 "use client";
-
+import { FaRocket } from "react-icons/fa";
 import {
   Button,
   Navbar,
@@ -73,6 +73,7 @@ export function MyNavbar() {
           }}
         >
           Get Started
+          <FaRocket className="ml-2" />
         </Button>
       </Link>
     </Navbar>

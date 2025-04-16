@@ -1,5 +1,5 @@
 import { Button, Label, TextInput } from "flowbite-react";
-import { MdEmail, MdLock } from "react-icons/md"; // Icon imports
+import { MdEmail, MdLock } from "react-icons/md";
 import Link from "next/link";
 
 export default function Component() {
