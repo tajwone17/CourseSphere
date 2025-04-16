@@ -1,4 +1,5 @@
 "use client";
+
 import { FaRocket } from "react-icons/fa";
 import {
   Button,
@@ -7,10 +8,10 @@ import {
   NavbarCollapse,
   NavbarToggle,
 } from "flowbite-react";
-import Image from "next/image";
-
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import Logo from "@/public/assets/icon";
 
 export function MyNavbar() {
   interface navlinks {
@@ -18,11 +19,49 @@ export function MyNavbar() {
     href: string;
   }
 
+  const pathname = usePathname();
+
+  // Simulate login check
+  const [loggedIn, setIsLoggedin] = useState(false);
+  useEffect(() => {
+    async function checkLogin() {
+      try {
+        await Promise.resolve(localStorage.getItem("loggedIn")).then(() => {
+          const token = localStorage.getItem("token");
+          console.log("Token:", token);
+          setIsLoggedin(!!token);
+          console.log("Logged in status:", loggedIn);
+        });
+
+        //eslint-disable-next-line
+      } catch (error: any) {
+        console.log("Error checking login status:", error.message);
+      }
+    }
+    checkLogin();
+  }, []);
+
   const navLinks: navlinks[] = [
     {
       name: "Home",
       href: "/",
     },
+    ...(loggedIn
+      ? [
+          {
+            name: "Courses",
+            href: "/courses",
+          },
+        ]
+      : []),
+    ...(loggedIn
+      ? [
+          {
+            name: "Notice",
+            href: "/notice",
+          },
+        ]
+      : []),
     {
       name: "About",
       href: "/about",
@@ -33,19 +72,11 @@ export function MyNavbar() {
     },
   ];
 
-  const pathname = usePathname();
-
   return (
     <Navbar color="black" fluid style={{ backgroundColor: "#92e3a9" }}>
       <NavbarBrand as={Link} href="/">
-        <Image
-          src="/favicon.ico"
-          className="mr-3 h-6 w-full sm:h-9"
-          alt="CourseSphere Logo"
-          width={100}
-          height={0}
-        />
-        <span className="self-center text-xl font-semibold whitespace-nowrap text-black">
+        <Logo className="mx-2 h-7 w-7 text-black" />
+        <span className="self-center text-xl font-semibold text-black text-shadow-initial">
           CourseSphere
         </span>
       </NavbarBrand>
@@ -70,10 +101,12 @@ export function MyNavbar() {
             backgroundColor: "#000000",
             color: "#ffffff",
             cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
           }}
         >
-          Get Started
-          <FaRocket className="ml-2" />
+          Get Started <FaRocket />
         </Button>
       </Link>
     </Navbar>
