@@ -3,8 +3,11 @@ import { MdInfoOutline } from "react-icons/md"; // Icon import
 
 export default function About() {
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <div className="w-full max-w-4xl rounded-lg border-2 border-white p-8">
+    <div className="flex min-h-screen items-center justify-center overflow-hidden">
+      <div
+        data-aos="zoom-in"
+        className="w-full max-w-4xl rounded-lg border-2 border-white p-8"
+      >
         <div className="mb-6 flex items-center justify-center gap-2">
           <MdInfoOutline size={30} color="#92e3a9" />
           <h1 className="text-3xl font-extrabold">About Us</h1>

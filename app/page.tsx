@@ -7,8 +7,8 @@ import Link from "next/link";
 import { HiArrowRight } from "react-icons/hi";
 export default function Home() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-between gap-10 p-24 md:flex-row">
-      <div className="flex w-full flex-col">
+    <div className="flex min-h-screen flex-col-reverse items-center justify-between gap-10 overflow-hidden p-10 md:flex-row lg:p-24">
+      <div className="flex w-full flex-col" data-aos="fade-right">
         <h1 className="text-3xl font-extrabold">CourseSphere</h1>
         <p className="mt-4 text-lg font-normal">
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod nostrum
@@ -34,7 +34,7 @@ export default function Home() {
         </Link>
       </div>
 
-      <div className="w-full">
+      <div className="w-full" data-aos="fade-left">
         <Image src={hero} alt="Hero Icon" />
       </div>
     </div>

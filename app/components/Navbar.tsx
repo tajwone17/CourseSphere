@@ -95,7 +95,7 @@ export function MyNavbar() {
           </Link>
         ))}
       </NavbarCollapse>
-      <Link href="/signup">
+      <Link href="/signup" className="hidden md:block">
         <Button
           style={{
             backgroundColor: "#000000",

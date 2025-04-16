@@ -3,6 +3,7 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 // import { ThemeModeScript } from "flowbite-react";
 import { MyNavbar } from "./components/Navbar";
+import { AOSInit } from "./utils/AOS";
 
 const poppins = Poppins({
   variable: "--font-geist-mono",
@@ -22,6 +23,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <AOSInit />
       <head>{/* <ThemeModeScript /> */}</head>
       <body className={`${poppins.variable} antialiased`}>
         <MyNavbar />
