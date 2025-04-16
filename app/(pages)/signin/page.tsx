@@ -52,11 +52,19 @@ export default function Component() {
           Log In
         </Button>
 
+        <Link
+          className="mt-5 text-center font-medium underline"
+          href="/"
+          style={{ color: "royalblue" }}
+        >
+          Forget Password?{" "}
+        </Link>
+
         {/* Link to Login */}
         <p className="text-center text-xs text-gray-400">
           Don`t have an account?{" "}
           <Link
-            className="font-medium"
+            className="font-medium hover:underline"
             href="/signup"
             style={{ color: "royalblue" }}
           >

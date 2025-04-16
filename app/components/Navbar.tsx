@@ -5,12 +5,12 @@ import {
   Navbar,
   NavbarBrand,
   NavbarCollapse,
-  NavbarLink,
   NavbarToggle,
 } from "flowbite-react";
 import Image from "next/image";
-import Link from "next/link";
+
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 export function MyNavbar() {
   interface navlinks {
@@ -52,7 +52,7 @@ export function MyNavbar() {
       <NavbarToggle />
       <NavbarCollapse>
         {navLinks.map((link) => (
-          <NavbarLink
+          <Link
             key={link.name}
             style={{
               color: pathname === link.href ? "#fff" : "#000",
@@ -61,7 +61,7 @@ export function MyNavbar() {
             href={link.href}
           >
             {link.name}
-          </NavbarLink>
+          </Link>
         ))}
       </NavbarCollapse>
       <Link href="/signup">

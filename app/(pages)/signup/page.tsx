@@ -183,7 +183,7 @@ export default function Component() {
         <p className="text-center text-xs text-gray-400">
           Already have an account?{" "}
           <Link
-            className="font-medium"
+            className="font-medium hover:underline"
             href="/signin"
             style={{ color: "royalblue" }}
           >

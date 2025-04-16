@@ -4,7 +4,7 @@ import hero from "@/public/assets/hero.svg";
 import { Button } from "flowbite-react";
 import Image from "next/image";
 import Link from "next/link";
-
+import { HiArrowRight } from "react-icons/hi";
 export default function Home() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-between gap-10 p-24 md:flex-row">
@@ -29,6 +29,7 @@ export default function Home() {
             }}
           >
             Let`s Get Started
+            <HiArrowRight className="ml-2" size={20} />
           </Button>
         </Link>
       </div>
