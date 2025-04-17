@@ -21,17 +21,22 @@ export function MyNavbar() {
 
   const pathname = usePathname();
 
-  // Simulate login check
+  // Simulate login check with a static token
   const [loggedIn, setIsLoggedin] = useState(false);
+
   useEffect(() => {
     async function checkLogin() {
       try {
-        await Promise.resolve(localStorage.getItem("loggedIn")).then(() => {
-          const token = localStorage.getItem("token");
-          console.log("Token:", token);
-          setIsLoggedin(!!token);
-          console.log("Logged in status:", loggedIn);
-        });
+        // Simulate a static token for testing
+        const staticToken = "sampleToken123"; // Replace this with your static token
+        localStorage.setItem("token", staticToken); // Store token in localStorage
+
+        // Check if token exists
+        const token = localStorage.getItem("token");
+        setIsLoggedin(!!token); // If there's a token, set loggedIn to true
+
+        console.log("Token:", token);
+        console.log("Logged in status:", loggedIn);
 
         //eslint-disable-next-line
       } catch (error: any) {
