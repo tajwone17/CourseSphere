@@ -1,6 +1,7 @@
 "use client";
 
 import hero from "@/public/assets/hero.svg";
+
 import { Button } from "flowbite-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,7 +10,13 @@ export default function Home() {
   return (
     <div className="flex min-h-screen flex-col-reverse items-center justify-between gap-10 overflow-hidden p-10 md:flex-row lg:p-24">
       <div className="flex w-full flex-col" data-aos="fade-right">
-        <h1 className="text-3xl font-extrabold">CourseSphere</h1>
+        <h1 className="text-3xl font-extrabold">CourseSphere </h1>
+
+        <br />
+        <h2 className="text-2xl font-bold">
+          ~ Where Learning Meets Simplicity
+        </h2>
+
         <p className="mt-4 text-lg font-normal">
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod nostrum
           non delectus, ad quasi exercitationem assumenda nam excepturi alias
