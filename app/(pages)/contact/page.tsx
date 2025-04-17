@@ -6,8 +6,11 @@ import Link from "next/link";
 
 export default function Component() {
   return (
-    <div className="flex h-screen items-center justify-center">
-      <div className="flex w-full max-w-4xl flex-col items-center rounded-lg border-2 border-white p-8">
+    <div className="flex h-screen items-center justify-center overflow-hidden">
+      <div
+        className="flex w-full max-w-4xl flex-col items-center rounded-lg border-2 border-white p-8"
+        data-aos="zoom-in"
+      >
         <div className="mb-6 flex items-center gap-2">
           <MdContactMail size={30} color="#92e3a9" />
           <h1 className="text-3xl font-extrabold">Contact</h1>

@@ -64,15 +64,16 @@ export default function Component() {
   return (
     <div className="px-4 py-8">
       {/* Headline */}
-      <h1 className="mb-8 flex items-center justify-center gap-2 text-center text-3xl text-4xl font-bold font-extrabold">
+      <h1 className="flex items-center justify-center gap-2 text-center text-3xl font-extrabold">
         Latest Notices
         <HiSpeakerphone className="text-4xl text-[#92e3a9]" />
       </h1>
 
       {/* Notice Cards */}
-      <div className="flex flex-wrap justify-center gap-x-4 gap-y-4">
+      <div className="mt-10 flex flex-wrap justify-center gap-x-4 gap-y-4 overflow-hidden">
         {notices.map((notice: notices, index: number) => (
           <Card
+            data-aos="fade-left"
             key={index}
             style={{
               backgroundColor: "#000000",
