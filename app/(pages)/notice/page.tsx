@@ -3,12 +3,7 @@
 import { useState } from "react";
 import { Button } from "flowbite-react";
 import Link from "next/link";
-import {
-  HiArrowRight,
-  HiCalendar,
-  HiUser,
-  HiSpeakerphone,
-} from "react-icons/hi";
+import { HiArrowRight, HiCalendar, HiSpeakerphone } from "react-icons/hi";
 
 interface Notice {
   title: string;
@@ -86,8 +81,8 @@ export default function NoticePage() {
         LATEST NOTICES
       </h2>
 
-      <div className="overflow-x-auto">
-        <table className="w-full table-auto rounded-md border text-left shadow">
+      <div className="flex justify-center overflow-hidden">
+        <table className="w-lg table-auto rounded-md border text-left shadow">
           <thead
             style={{ backgroundColor: "#92e3a9" }}
             className="text-sm font-semibold text-black"
@@ -95,8 +90,7 @@ export default function NoticePage() {
             <tr>
               <th className="p-3">Title</th>
               <th className="p-3">Date</th>
-              <th className="p-3">Created By</th>
-              <th className="p-3">Description</th>
+
               <th className="p-3">Action</th>
             </tr>
           </thead>
@@ -109,20 +103,12 @@ export default function NoticePage() {
                   {notice.date}
                 </td>
 
-                <td className="items-center gap-2">
-                  <div className="flex gap-2 p-3">
-                    <HiUser style={{ color: "#92e3a9" }} />
-                    {notice.createdBy}
-                  </div>
-                </td>
-
-                <td className="p-3 text-sm text-white">{notice.description}</td>
                 <td className="p-3">
                   <Link href={`/notice/${index}`} passHref>
                     <Button
                       size="sm"
                       className="text-black"
-                      style={{ backgroundColor: "#92e3a9" }}
+                      style={{ backgroundColor: "#92e3a9", cursor: "pointer" }}
                     >
                       Read More <HiArrowRight className="ml-2" size={16} />
                     </Button>
@@ -141,14 +127,14 @@ export default function NoticePage() {
         </table>
       </div>
 
-      <div className="mt-4 flex justify-center gap-2">
+      <div className="mt-10 flex justify-center gap-2">
         <Button
           size="sm"
           disabled={currentPage === 1}
           style={{ backgroundColor: "#92e3a9", color: "black" }}
           onClick={() => handlePageChange(currentPage - 1)}
         >
-          Previous
+          Prev
         </Button>
         <span className="flex items-center">{`Page ${currentPage} of ${totalPages}`}</span>
         <Button

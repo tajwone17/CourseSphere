@@ -13,7 +13,7 @@ export default function Home() {
         <h1 className="text-3xl font-extrabold">CourseSphere </h1>
 
         <br />
-        <h2 className="text-2xl font-bold">
+        <h2 className="text-2xl font-bold italic">
           ~ Where Learning Meets Simplicity
         </h2>
 
