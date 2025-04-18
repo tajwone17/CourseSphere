@@ -33,7 +33,7 @@ export function MyNavbar() {
     ...(loggedIn
       ? [
           { name: "Courses", href: "/courses" },
-          { name: "Course Status", href: "/course-status" },
+          { name: "Registration Status", href: "/registration-status" },
           { name: "Notice", href: "/notice" },
         ]
       : []),

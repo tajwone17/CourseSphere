@@ -1,275 +1,253 @@
 "use client";
 
 import { useState } from "react";
-import { Button, Card, TextInput, Select } from "flowbite-react";
-
+import { Button, Select, TextInput } from "flowbite-react";
 import {
-  HiArrowRight,
-  HiBookOpen,
-  HiOutlineIdentification,
-  HiOutlineCalculator,
-  HiOutlineOfficeBuilding,
-  HiOutlineUser,
   HiSearch,
+  HiBookOpen,
+  HiUser,
+  HiOutlineAcademicCap,
 } from "react-icons/hi";
 
-interface Course {
-  id: number;
-  name: string;
-  code: string;
-  credit: number;
-  department_id: number;
-  instructor: string;
-  prerequisites?: string[]; // Added field for prerequisites
-}
-
-// Static course data with multiple prerequisites
-const courses: Course[] = [
-  {
-    id: 1,
-    name: "Data Structures",
-    code: "CS201",
-    credit: 3.0,
-    department_id: 1,
-    instructor: "Dr. Abdullah",
-    prerequisites: [
-      "Introduction to Programming",
-      "Mathematics for Computer Science",
-    ], // Multiple prerequisites
-  },
-  {
-    id: 2,
-    name: "Operating Systems",
-    code: "CS301",
-    credit: 3.5,
-    department_id: 1,
-    instructor: "Prof. Jakaria",
-    prerequisites: ["Data Structures", "Computer Architecture"], // Multiple prerequisites
-  },
-  {
-    id: 3,
-    name: "Database Systems",
-    code: "CS305",
-    credit: 3.0,
-    department_id: 1,
-    instructor: "Dr. Chowdhury",
-    prerequisites: ["Operating Systems", "Data Structures"], // Multiple prerequisites
-  },
-  {
-    id: 4,
-    name: "Networking Basics",
-    code: "CS210",
-    credit: 2.5,
-    department_id: 2,
-    instructor: "Prof. Tajwone",
-    prerequisites: ["Introduction to Programming", "Mathematics for Engineers"], // Multiple prerequisites
-  },
-  {
-    id: 5,
-    name: "Elementary Programming",
-    code: "CS211",
-    credit: 2.5,
-    department_id: 2,
-    instructor: "Prof. Tajwone",
-    prerequisites: ["None"], // No prerequisites
-  },
-  {
-    id: 6,
-    name: "Software Engineering",
-    code: "CS212",
-    credit: 2.5,
-    department_id: 2,
-    instructor: "Prof. Tajwone",
-    prerequisites: ["Data Structures", "Software Development Practices"], // Multiple prerequisites
-  },
-  {
-    id: 7,
-    name: "Advanced Data Structures",
-    code: "CS213",
-    credit: 2.5,
-    department_id: 2,
-    instructor: "Prof. Tajwone",
-    prerequisites: ["Data Structures", "Algorithms"], // Multiple prerequisites
-  },
-];
-
+// ✅ Updated with more departments
 const departmentNames: Record<number, string> = {
   1: "Computer Science",
   2: "Electrical Engineering",
+  3: "Mechanical Engineering",
+  4: "Civil Engineering",
+  5: "Business Administration",
 };
 
-export default function CourseComponent() {
+const courses = [
+  {
+    id: 1,
+    name: "Data Structures",
+    code: "CS301",
+    credit: 3,
+    instructor: "Dr. Jane Smith",
+    department_id: 1,
+    prerequisites: ["Intro to Programming", "Mathematics I"],
+  },
+  {
+    id: 2,
+    name: "Database Systems",
+    code: "CS315",
+    credit: 3,
+    instructor: "Prof. Robert Johnson",
+    department_id: 1,
+    prerequisites: ["Data Structures", "Computer Architecture"],
+  },
+  {
+    id: 3,
+    name: "Operating Systems",
+    code: "CS325",
+    credit: 3,
+    instructor: "Dr. Michael Chen",
+    department_id: 1,
+    prerequisites: ["Computer Architecture", "Database Systems"],
+  },
+  {
+    id: 4,
+    name: "Web Development",
+    code: "CS375",
+    credit: 3,
+    instructor: "Dr. Emma Wilson",
+    department_id: 2,
+    prerequisites: ["Intro to Programming", "UI/UX Basics"],
+  },
+  {
+    id: 5,
+    name: "Thermodynamics",
+    code: "ME201",
+    credit: 3,
+    instructor: "Dr. Alice Brown",
+    department_id: 3,
+    prerequisites: ["Physics I"],
+  },
+  {
+    id: 6,
+    name: "Structural Analysis",
+    code: "CE310",
+    credit: 3,
+    instructor: "Prof. David Lee",
+    department_id: 4,
+    prerequisites: ["Engineering Mechanics"],
+  },
+  {
+    id: 7,
+    name: "Marketing 101",
+    code: "BA105",
+    credit: 3,
+    instructor: "Dr. Clara Evans",
+    department_id: 5,
+    prerequisites: [],
+  },
+];
+
+export default function CourseCatalogTable() {
   const [search, setSearch] = useState("");
   const [department, setDepartment] = useState("all");
-  const [cart, setCart] = useState<Course[]>([]); // Cart state to store added courses
-  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null); // Course details for modal
-  const [showModal, setShowModal] = useState(false); // State to control modal visibility
+  const [cart, setCart] = useState<number[]>([]);
 
-  const filteredCourses = courses.filter((course) => {
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5; // Set the number of items per page
+
+  const filtered = courses.filter((course) => {
     const matchesSearch =
       course.name.toLowerCase().includes(search.toLowerCase()) ||
-      course.code.toLowerCase().includes(search.toLowerCase());
-
+      course.code.toLowerCase().includes(search.toLowerCase()) ||
+      course.instructor.toLowerCase().includes(search.toLowerCase());
     const matchesDept =
       department === "all" || course.department_id.toString() === department;
-
     return matchesSearch && matchesDept;
   });
 
-  const handleCourseSelect = (course: Course) => {
-    setSelectedCourse(course);
-    setShowModal(true);
-  };
+  // Calculate the total pages
+  const totalPages = Math.ceil(filtered.length / itemsPerPage);
 
-  const handleAddToCart = (course: Course) => {
-    setCart([...cart, course]);
-    setShowModal(false); // Close the modal after adding to cart
-  };
+  // Get the current page data
+  const currentCourses = filtered.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage,
+  );
 
-  const handleCloseModal = () => {
-    setShowModal(false); // Close modal without adding to cart
+  // Handle page change
+  const handlePageChange = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
   };
 
   return (
-    <div className="px-4 py-8">
-      {/* Page Heading */}
-      <h1 className="flex items-center justify-center gap-2 text-center text-3xl font-extrabold">
-        Course List
-        <HiBookOpen className="text-4xl text-[#92e3a9]" />
-      </h1>
+    <div className="mx-auto max-w-7xl p-6">
+      <h2 className="mb-6 text-center text-3xl font-extrabold">
+        COURSE CATALOG
+      </h2>
 
-      {/* Search and Filter */}
-      <div className="mt-6 flex flex-wrap justify-center gap-4">
-        <TextInput
-          icon={HiSearch}
-          placeholder="Search by name or code"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full max-w-sm"
-        />
+      {/* Filter Controls */}
+      <div className="mb-6 flex flex-wrap justify-center gap-4">
         <Select
           value={department}
           onChange={(e) => setDepartment(e.target.value)}
-          className="w-full max-w-xs"
+          className="w-60"
         >
           <option value="all">All Departments</option>
-          <option value="1">Computer Science</option>
-          <option value="2">Electrical Engineering</option>
+          {Object.entries(departmentNames).map(([id, name]) => (
+            <option key={id} value={id}>
+              {name}
+            </option>
+          ))}
         </Select>
+
+        <TextInput
+          icon={HiSearch}
+          placeholder="Search by course, code or instructor"
+          className="w-full max-w-md"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
       </div>
 
-      {/* Course Cards */}
-      <div className="mt-10 flex flex-wrap justify-center gap-x-4 gap-y-4 overflow-hidden">
-        {filteredCourses.length > 0 ? (
-          filteredCourses.map((course) => (
-            <Card
-              key={course.id}
-              data-aos="fade-up"
-              style={{
-                backgroundColor: "#000000",
-                color: "#ffffff",
-                width: "280px",
-              }}
-              className="rounded-lg border-2 border-white"
-            >
-              <h5 className="flex items-center gap-2 text-xl font-bold">
-                <HiBookOpen className="text-[#92e3a9]" /> {course.name}
-              </h5>
-
-              <p className="flex items-center gap-2 text-gray-300">
-                <HiOutlineIdentification /> Code: {course.code}
-              </p>
-
-              <p className="flex items-center gap-2 text-gray-300">
-                <HiOutlineCalculator /> Credit: {course.credit}
-              </p>
-
-              <p className="flex items-center gap-2 text-gray-300">
-                <HiOutlineOfficeBuilding /> Dept:{" "}
-                {departmentNames[course.department_id]}
-              </p>
-
-              <p className="flex items-center gap-2 text-gray-300">
-                <HiOutlineUser /> Instructor: {course.instructor}
-              </p>
-
-              <Button
-                onClick={() => handleCourseSelect(course)}
-                className="mt-2 cursor-pointer"
-                style={{
-                  backgroundColor: "#92e3a9",
-                  color: "#000000",
-                }}
-              >
-                View Course
-                <HiArrowRight className="ml-2" size={20} />
-              </Button>
-            </Card>
-          ))
-        ) : (
-          <p className="text-center text-white">No courses found.</p>
-        )}
-      </div>
-
-      {/* Modal for course details */}
-      {showModal && selectedCourse && (
-        <div className="bg-opacity-50 fixed inset-0 flex items-center justify-center backdrop-blur">
-          <div
-            className="w-full max-w-md rounded-lg border-2 border-white bg-black p-8"
-            data-aos="zoom-in"
+      {/* Course Table */}
+      <div className="overflow-x-auto">
+        <table className="w-full table-auto rounded-md border text-left shadow">
+          <thead
+            style={{ backgroundColor: "#92e3a9" }}
+            className="text-sm font-semibold text-black"
           >
-            <h3 className="mb-4 text-2xl font-bold">Course Details</h3>
-            <p className="mb-2">
-              <strong>Name:</strong> {selectedCourse.name}
-            </p>
-            <p className="mb-2">
-              <strong>Code:</strong> {selectedCourse.code}
-            </p>
-            <p className="mb-2">
-              <strong>Instructor:</strong> {selectedCourse.instructor}
-            </p>
-            <p className="mb-2">
-              <strong>Credit:</strong> {selectedCourse.credit}
-            </p>
-            <p className="mb-2">
-              <strong>Department:</strong>{" "}
-              {departmentNames[selectedCourse.department_id]}
-            </p>
+            <tr>
+              <th className="p-3">Code</th>
+              <th className="p-3">Course Title</th>
+              <th className="p-3">Credits</th>
+              <th className="p-3">Instructor</th>
+              <th className="p-3">Department</th>
+              <th className="p-3">Prerequisites</th>
+              <th className="p-3">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {currentCourses.map((course) => (
+              <tr key={course.id} className="border-t transition">
+                <td className="flex items-center gap-2 p-3">
+                  <HiBookOpen style={{ color: "#92e3a9" }} />
+                  {course.code}
+                </td>
+                <td className="p-3 font-medium">{course.name}</td>
+                <td className="p-3">{course.credit}</td>
+                <td className="flex items-center gap-2 p-3">
+                  <HiUser style={{ color: "#92e3a9" }} />
+                  {course.instructor}
+                </td>
+                <td className="items-center gap-2 p-3">
+                  <HiOutlineAcademicCap style={{ color: "#92e3a9" }} />
+                  {departmentNames[course.department_id] || "Unknown"}
+                </td>
+                <td className="space-y-1 p-3 text-sm">
+                  {course.prerequisites.length > 0 ? (
+                    course.prerequisites.map((prereq, i) => (
+                      <div key={i} className="flex items-center gap-2">
+                        <HiBookOpen
+                          className="text-sm"
+                          style={{ color: "#92e3a9" }}
+                        />
+                        {prereq}
+                      </div>
+                    ))
+                  ) : (
+                    <span className="text-gray-400">None</span>
+                  )}
+                </td>
+                <td className="p-3">
+                  {cart.includes(course.id) ? (
+                    <span className="text-sm text-gray-500">In Cart</span>
+                  ) : (
+                    <Button
+                      size="sm"
+                      className="text-black"
+                      style={{ backgroundColor: "#92e3a9" }}
+                      onClick={() => setCart([...cart, course.id])}
+                    >
+                      Add to Cart
+                    </Button>
+                  )}
+                </td>
+              </tr>
+            ))}
+            {filtered.length === 0 && (
+              <tr>
+                <td colSpan={7} className="p-4 text-center text-gray-500">
+                  No courses found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
 
-            {/* Prerequisites */}
-            <p className="mb-2">
-              <strong>Prerequisites:</strong>{" "}
-              {selectedCourse.prerequisites?.length ? (
-                selectedCourse.prerequisites.join(", ")
-              ) : (
-                <span>No prerequisites</span>
-              )}
-            </p>
-
-            <div className="mt-4 flex justify-between">
-              <Button
-                onClick={handleCloseModal}
-                style={{
-                  backgroundColor: "#f00",
-                  color: "#fff",
-                }}
-              >
-                Close
-              </Button>
-
-              <Button
-                onClick={() => handleAddToCart(selectedCourse)}
-                style={{
-                  backgroundColor: "#92e3a9",
-                  color: "#000000",
-                }}
-              >
-                Checkout
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Pagination Controls */}
+      <div className="mt-4 flex justify-center gap-2">
+        <Button
+          size="sm"
+          disabled={currentPage === 1}
+          style={{ backgroundColor: "#92e3a9", color: "black" }}
+          onClick={() => handlePageChange(currentPage - 1)}
+        >
+          Previous
+        </Button>
+        <span className="flex items-center">{`Page ${currentPage} of ${totalPages}`}</span>
+        <Button
+          style={{
+            backgroundColor: "#92e3a9",
+            color: "black",
+          }}
+          size="sm"
+          disabled={currentPage === totalPages}
+          onClick={() => handlePageChange(currentPage + 1)}
+        >
+          Next
+        </Button>
+      </div>
     </div>
   );
 }
