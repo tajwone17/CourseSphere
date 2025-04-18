@@ -96,7 +96,7 @@ export default function Component() {
 
             <Link href={`/notice/${index}`} passHref>
               <Button
-                className="mt-2"
+                className="mt-2 cursor-pointer"
                 style={{
                   backgroundColor: "#92e3a9",
                   color: "#000000",
