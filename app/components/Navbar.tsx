@@ -29,7 +29,9 @@ export function MyNavbar() {
   }, []);
 
   const navLinks: navlinks[] = [
-    { name: "Home", href: "/" },
+    ...(loggedIn
+      ? [{ name: "Dashboard", href: "/" }]
+      : [{ name: "Home", href: "/" }]),
     ...(loggedIn
       ? [
           { name: "Courses", href: "/courses" },

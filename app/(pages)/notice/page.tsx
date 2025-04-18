@@ -64,7 +64,7 @@ const notices: Notice[] = [
 
 export default function NoticePage() {
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
 
   const totalPages = Math.ceil(notices.length / itemsPerPage);
 
