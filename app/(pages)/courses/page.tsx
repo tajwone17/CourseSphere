@@ -7,6 +7,7 @@ import {
   HiBookOpen,
   HiUser,
   HiOutlineAcademicCap,
+  HiOfficeBuilding,
 } from "react-icons/hi";
 
 // ✅ Updated with more departments
@@ -120,17 +121,18 @@ export default function CourseCatalogTable() {
   };
 
   return (
-    <div className="mx-auto max-w-7xl p-6">
-      <h2 className="mb-6 text-center text-3xl font-extrabold">
+    <div className="mx-auto max-w-7xl p-4 sm:p-6">
+      <h2 className="mb-6 flex flex-col items-center justify-center gap-2 text-center text-2xl font-extrabold sm:flex-row sm:text-3xl">
+        <HiOutlineAcademicCap className="text-[#92e3a9]" />
         COURSE CATALOG
       </h2>
 
       {/* Filter Controls */}
-      <div className="mb-6 flex flex-wrap justify-center gap-4">
+      <div className="mb-6 flex flex-col flex-wrap justify-center gap-4 sm:flex-row">
         <Select
           value={department}
           onChange={(e) => setDepartment(e.target.value)}
-          className="w-60"
+          className="w-full sm:w-60"
         >
           <option value="all">All Departments</option>
           {Object.entries(departmentNames).map(([id, name]) => (
@@ -143,54 +145,59 @@ export default function CourseCatalogTable() {
         <TextInput
           icon={HiSearch}
           placeholder="Search by course, code or instructor"
-          className="w-full max-w-md"
+          className="w-full sm:max-w-md"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
       </div>
 
-      {/* Course Table */}
-      <div className="overflow-x-auto">
-        <table className="w-full table-auto rounded-md border text-left shadow">
+      {/* Responsive Table Wrapper */}
+      <div className="w-full overflow-x-auto rounded-md shadow">
+        <table className="w-full min-w-[700px] table-auto text-left">
           <thead
             style={{ backgroundColor: "#92e3a9" }}
             className="text-sm font-semibold text-black"
           >
             <tr>
-              <th className="p-3">Code</th>
-              <th className="p-3">Course Title</th>
-              <th className="p-3">Credits</th>
-              <th className="p-3">Instructor</th>
-              <th className="p-3">Department</th>
-              <th className="p-3">Prerequisites</th>
-              <th className="p-3">Action</th>
+              <th className="p-3 whitespace-nowrap">Code</th>
+              <th className="p-3 whitespace-nowrap">Course Title</th>
+              <th className="p-3 whitespace-nowrap">Credits</th>
+              <th className="p-3 whitespace-nowrap">Instructor</th>
+              <th className="p-3 whitespace-nowrap">Department</th>
+              <th className="p-3 whitespace-nowrap">Prerequisites</th>
+              <th className="p-3 whitespace-nowrap">Action</th>
             </tr>
           </thead>
           <tbody>
             {currentCourses.map((course) => (
               <tr key={course.id} className="border-t transition">
-                <td className="flex items-center gap-2 p-3">
-                  <HiBookOpen style={{ color: "#92e3a9" }} />
-                  {course.code}
+                <td className="p-3 whitespace-nowrap">
+                  <div className="flex items-center gap-2">
+                    <HiBookOpen className="text-[#92e3a9]" />
+                    {course.code}
+                  </div>
                 </td>
-                <td className="p-3 font-medium">{course.name}</td>
-                <td className="p-3">{course.credit}</td>
-                <td className="flex items-center gap-2 p-3">
-                  <HiUser style={{ color: "#92e3a9" }} />
-                  {course.instructor}
+                <td className="p-3 font-medium whitespace-nowrap">
+                  {course.name}
                 </td>
-                <td className="items-center gap-2 p-3">
-                  <HiOutlineAcademicCap style={{ color: "#92e3a9" }} />
-                  {departmentNames[course.department_id] || "Unknown"}
+                <td className="p-3 whitespace-nowrap">{course.credit}</td>
+                <td className="p-3 whitespace-nowrap">
+                  <div className="flex items-center gap-2">
+                    <HiUser className="text-[#92e3a9]" />
+                    {course.instructor}
+                  </div>
                 </td>
-                <td className="space-y-1 p-3 text-sm">
+                <td className="p-3 whitespace-nowrap">
+                  <div className="flex items-center gap-2">
+                    <HiOfficeBuilding className="text-[#92e3a9]" />
+                    {departmentNames[course.department_id] || "Unknown"}
+                  </div>
+                </td>
+                <td className="space-y-1 p-3 text-sm whitespace-nowrap">
                   {course.prerequisites.length > 0 ? (
                     course.prerequisites.map((prereq, i) => (
                       <div key={i} className="flex items-center gap-2">
-                        <HiBookOpen
-                          className="text-sm"
-                          style={{ color: "#92e3a9" }}
-                        />
+                        <HiBookOpen className="text-sm text-[#92e3a9]" />
                         {prereq}
                       </div>
                     ))
@@ -198,7 +205,7 @@ export default function CourseCatalogTable() {
                     <span className="text-gray-400">None</span>
                   )}
                 </td>
-                <td className="p-3">
+                <td className="p-3 whitespace-nowrap">
                   {cart.includes(course.id) ? (
                     <span className="text-sm text-gray-500">In Cart</span>
                   ) : (
@@ -226,7 +233,7 @@ export default function CourseCatalogTable() {
       </div>
 
       {/* Pagination Controls */}
-      <div className="mt-4 flex justify-center gap-2">
+      <div className="mt-6 flex flex-col items-center justify-center gap-2 text-sm sm:flex-row">
         <Button
           size="sm"
           disabled={currentPage === 1}
@@ -235,12 +242,9 @@ export default function CourseCatalogTable() {
         >
           Previous
         </Button>
-        <span className="flex items-center">{`Page ${currentPage} of ${totalPages}`}</span>
+        <span className="px-2">{`Page ${currentPage} of ${totalPages}`}</span>
         <Button
-          style={{
-            backgroundColor: "#92e3a9",
-            color: "black",
-          }}
+          style={{ backgroundColor: "#92e3a9", color: "black" }}
           size="sm"
           disabled={currentPage === totalPages}
           onClick={() => handlePageChange(currentPage + 1)}

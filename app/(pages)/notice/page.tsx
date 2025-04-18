@@ -1,5 +1,7 @@
 "use client";
-import { Button, Card } from "flowbite-react";
+
+import { useState } from "react";
+import { Button } from "flowbite-react";
 import Link from "next/link";
 import {
   HiArrowRight,
@@ -8,14 +10,14 @@ import {
   HiSpeakerphone,
 } from "react-icons/hi";
 
-interface notices {
+interface Notice {
   title: string;
   date: string;
   description: string;
   createdBy: string;
 }
 
-const notices: notices[] = [
+const notices: Notice[] = [
   {
     title: "Notice 1",
     date: "2023-10-01",
@@ -60,54 +62,103 @@ const notices: notices[] = [
   },
 ];
 
-export default function Component() {
+export default function NoticePage() {
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  const totalPages = Math.ceil(notices.length / itemsPerPage);
+
+  const currentNotices = notices.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage,
+  );
+
+  const handlePageChange = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
   return (
-    <div className="px-4 py-8">
-      {/* Headline */}
-      <h1 className="flex items-center justify-center gap-2 text-center text-3xl font-extrabold">
-        Latest Notices
-        <HiSpeakerphone className="text-4xl text-[#92e3a9]" />
-      </h1>
+    <div className="mx-auto max-w-7xl px-4 py-8">
+      <h2 className="mb-6 flex items-center justify-center gap-2 text-3xl font-extrabold">
+        <HiSpeakerphone className="text-[#92e3a9]" />
+        LATEST NOTICES
+      </h2>
 
-      {/* Notice Cards */}
-      <div className="mt-10 flex flex-wrap justify-center gap-x-4 gap-y-4 overflow-hidden">
-        {notices.map((notice: notices, index: number) => (
-          <Card
-            data-aos="fade-left"
-            key={index}
-            style={{
-              backgroundColor: "#000000",
-              color: "#ffffff",
-              width: "280px",
-            }}
-            className="rounded-lg border-2 border-white"
+      <div className="overflow-x-auto">
+        <table className="w-full table-auto rounded-md border text-left shadow">
+          <thead
+            style={{ backgroundColor: "#92e3a9" }}
+            className="text-sm font-semibold text-black"
           >
-            <h5 className="text-2xl font-bold tracking-tight">
-              {notice.title}
-            </h5>
+            <tr>
+              <th className="p-3">Title</th>
+              <th className="p-3">Date</th>
+              <th className="p-3">Created By</th>
+              <th className="p-3">Description</th>
+              <th className="p-3">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {currentNotices.map((notice, index) => (
+              <tr key={index} className="border-t transition">
+                <td className="p-3 font-medium">{notice.title}</td>
+                <td className="flex items-center gap-2 p-3">
+                  <HiCalendar style={{ color: "#92e3a9" }} />
+                  {notice.date}
+                </td>
 
-            <p className="flex items-center gap-1 text-gray-300">
-              <HiCalendar /> {notice.date}
-            </p>
+                <td className="items-center gap-2">
+                  <div className="flex gap-2 p-3">
+                    <HiUser style={{ color: "#92e3a9" }} />
+                    {notice.createdBy}
+                  </div>
+                </td>
 
-            <p className="flex items-center gap-1 text-gray-300">
-              <HiUser /> {notice.createdBy}
-            </p>
+                <td className="p-3 text-sm text-white">{notice.description}</td>
+                <td className="p-3">
+                  <Link href={`/notice/${index}`} passHref>
+                    <Button
+                      size="sm"
+                      className="text-black"
+                      style={{ backgroundColor: "#92e3a9" }}
+                    >
+                      Read More <HiArrowRight className="ml-2" size={16} />
+                    </Button>
+                  </Link>
+                </td>
+              </tr>
+            ))}
+            {currentNotices.length === 0 && (
+              <tr>
+                <td colSpan={5} className="p-4 text-center text-gray-500">
+                  No notices found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
 
-            <Link href={`/notice/${index}`} passHref>
-              <Button
-                className="mt-2 cursor-pointer"
-                style={{
-                  backgroundColor: "#92e3a9",
-                  color: "#000000",
-                }}
-              >
-                Read more
-                <HiArrowRight className="ml-2" size={20} />
-              </Button>
-            </Link>
-          </Card>
-        ))}
+      <div className="mt-4 flex justify-center gap-2">
+        <Button
+          size="sm"
+          disabled={currentPage === 1}
+          style={{ backgroundColor: "#92e3a9", color: "black" }}
+          onClick={() => handlePageChange(currentPage - 1)}
+        >
+          Previous
+        </Button>
+        <span className="flex items-center">{`Page ${currentPage} of ${totalPages}`}</span>
+        <Button
+          size="sm"
+          disabled={currentPage === totalPages}
+          style={{ backgroundColor: "#92e3a9", color: "black" }}
+          onClick={() => handlePageChange(currentPage + 1)}
+        >
+          Next
+        </Button>
       </div>
     </div>
   );
