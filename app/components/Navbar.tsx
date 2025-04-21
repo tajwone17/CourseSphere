@@ -24,13 +24,13 @@ export function MyNavbar() {
   const [loggedIn, setIsLoggedin] = useState(false);
 
   useEffect(() => {
-    const token =" abcd";
+    const token = " abcd";
     setIsLoggedin(!!token);
   }, []);
 
   const navLinks: navlinks[] = [
     ...(loggedIn
-      ? [{ name: "Dashboard", href: "/" }]
+      ? [{ name: "Dashboard", href: "/student-dashboard" }]
       : [{ name: "Home", href: "/" }]),
     ...(loggedIn
       ? [
