@@ -72,11 +72,11 @@ export function MyNavbar() {
           <Link
             key={link.name}
             style={{
-              color: pathname === link.href ? "#fff" : "#000",
+              color: pathname === link.href ? "#4B5563" : "#000",
               fontWeight: pathname === link.href ? "bold" : "normal",
             }}
             href={link.href}
-            className="flex items-center gap-1 py-2 transition-colors hover:text-white"
+            className="flex items-center gap-1 py-2 transition-colors hover:text-gray-700"
           >
             <link.icon className="h-5 w-5" />
             {link.name}
@@ -112,8 +112,8 @@ export function MyNavbar() {
               alignItems: "center",
               gap: "8px",
             }}
+            className="transition-all hover:scale-105 hover:bg-gray-900"
           >
-           
             Sign Out
             <HiLogout className="h-5 w-5" />
           </Button>

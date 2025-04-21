@@ -81,7 +81,7 @@ export default function NoticePage() {
         data-aos="fade-down"
         data-aos-duration="1000"
       >
-        <h1 className="mb-2 flex items-center justify-center gap-2 text-3xl font-bold tracking-tight text-white lg:text-5xl">
+        <h1 className="mb-2 flex items-center justify-center gap-2 text-3xl font-bold tracking-tight text-gray-200 lg:text-5xl">
           <HiSpeakerphone className="text-[#92e3a9]" />
           Latest Notices
         </h1>

@@ -53,7 +53,7 @@ export default function page() {
         data-aos="fade-down"
         data-aos-duration="1000"
       >
-        <h1 className="mb-2 text-3xl font-bold tracking-tight text-white lg:text-5xl">
+        <h1 className="mb-2 text-3xl font-bold tracking-tight text-gray-200 lg:text-5xl">
           Registration Status
         </h1>
         <p className="mt-4 text-lg text-gray-400">
@@ -246,13 +246,12 @@ export default function page() {
               Cancel
             </button>
             <Link href="/payment">
-            <button className="hover:bg-opacity-90 rounded-md bg-[#92e3a9] px-4 py-2 text-black transition-colors cursor-pointer">
-              Proceed to Payment
-            </button>
+              <button className="hover:bg-opacity-90 flex cursor-pointer items-center gap-2 rounded-md bg-[#92e3a9] px-4 py-2 text-black transition-colors">
+                <MdPayment className="h-5 w-5" />
+                Proceed to Payment
+              </button>
             </Link>
           </div>
-          
-         
         </div>
       </div>
     </div>
