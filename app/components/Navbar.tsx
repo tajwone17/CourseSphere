@@ -1,7 +1,7 @@
 "use client";
 
 import { FaRocket } from "react-icons/fa";
-import { HiShoppingCart } from "react-icons/hi";
+import { HiAcademicCap } from "react-icons/hi";
 import {
   Button,
   Navbar,
@@ -70,8 +70,9 @@ export function MyNavbar() {
 
       <div className="flex items-center gap-4">
         {loggedIn && (
-          <Link href="/cart">
-            <HiShoppingCart className="cursor-pointer text-3xl text-black hover:text-white" />
+          <Link href="/course-selection" className="flex items-center gap-2 text-black hover:text-white">
+            <HiAcademicCap className="text-2xl" />
+            <span className="hidden text-sm font-medium sm:inline">Course Selection</span>
           </Link>
         )}
 

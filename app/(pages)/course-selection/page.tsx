@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Button, Checkbox } from "flowbite-react";
 import {
-  HiShoppingCart,
+
   HiAcademicCap,
   HiCurrencyDollar,
   HiTrash,
@@ -10,7 +10,7 @@ import {
 } from "react-icons/hi";
 import Link from "next/link";
 
-export default function CartPage() {
+export default function CourseSelectionPage() {
   // Sample cart data - in a real app, this would come from a state management solution
   const [selectedCourses] = useState([
     {
@@ -51,17 +51,17 @@ export default function CartPage() {
       {/* Heading */}
       <div className="mb-8 text-center">
         <h1 className="mb-2 flex items-center justify-center gap-2 text-3xl font-bold">
-          <HiShoppingCart className="text-[#92e3a9]" />
-          Course Cart
+          <HiAcademicCap className="text-[#92e3a9]" />
+          Course Selection Review
         </h1>
         <p className="text-gray-400">
-          Review your selected courses before proceeding to checkout.
+          Review your selected courses before proceeding with registration
         </p>
       </div>
 
       {/* Selected Courses */}
       <div className="rounded-lg border border-gray-800 bg-gray-900 p-6 shadow-xl">
-        <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold">
+        <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold text-white">
           <HiAcademicCap className="text-[#92e3a9]" />
           Selected Courses
         </h2>
@@ -121,7 +121,7 @@ export default function CartPage() {
 
       {/* Registration Summary */}
       <div className="rounded-lg border border-gray-800 bg-gray-900 p-6 shadow-xl">
-        <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold">
+        <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold text-white">
           <HiCurrencyDollar className="text-[#92e3a9]" />
           Registration Summary
         </h2>
@@ -170,7 +170,7 @@ export default function CartPage() {
                 />
                 <label htmlFor="terms" className="text-gray-400">
                   I confirm that I have reviewed the courses and accept the
-                  terms
+                  registration terms
                 </label>
               </div>
 
@@ -186,7 +186,7 @@ export default function CartPage() {
                     }}
                   >
                     <HiArrowLeft />
-                    Add More Courses
+                    Select More Courses
                   </Button>
                 </Link>
                 <Button
@@ -198,7 +198,7 @@ export default function CartPage() {
                     color: acceptedTerms ? "black" : "white",
                   }}
                 >
-                  Submit Registration
+                  Proceed to Registration
                 </Button>
               </div>
             </div>

@@ -1,14 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Button, Select, TextInput } from "flowbite-react";
-import {
-  HiSearch,
-  HiBookOpen,
-  HiUser,
-  HiOutlineAcademicCap,
-  HiOfficeBuilding,
-} from "react-icons/hi";
+import { Select, TextInput } from "flowbite-react";
+import { HiSearch, HiBookOpen, HiUser, HiOfficeBuilding } from "react-icons/hi";
 
 // ✅ Updated with more departments
 const departmentNames: Record<number, string> = {
@@ -88,7 +82,7 @@ const courses = [
 export default function CourseCatalogTable() {
   const [search, setSearch] = useState("");
   const [department, setDepartment] = useState("all");
-  const [cart, setCart] = useState<number[]>([]);
+  const [selectedCourses, setSelectedCourses] = useState<number[]>([]);
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -121,136 +115,174 @@ export default function CourseCatalogTable() {
   };
 
   return (
-    <div className="mx-auto max-w-7xl p-4 sm:p-6">
-      <h2 className="mb-6 flex flex-col items-center justify-center gap-2 text-center text-2xl font-extrabold sm:flex-row sm:text-3xl">
-        <HiOutlineAcademicCap className="text-[#92e3a9]" />
-        COURSE CATALOG
-      </h2>
-
-      {/* Filter Controls */}
-      <div className="mb-6 flex flex-col flex-wrap justify-center gap-4 sm:flex-row">
-        <Select
-          value={department}
-          onChange={(e) => setDepartment(e.target.value)}
-          className="w-full sm:w-60"
-        >
-          <option value="all">All Departments</option>
-          {Object.entries(departmentNames).map(([id, name]) => (
-            <option key={id} value={id}>
-              {name}
-            </option>
-          ))}
-        </Select>
-
-        <TextInput
-          icon={HiSearch}
-          placeholder="Search by course, code or instructor"
-          className="w-full sm:max-w-md"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+    <div className="mx-auto max-w-7xl space-y-8 px-4 py-8">
+      {/* Heading */}
+      <div className="mb-8 text-center">
+        <h1 className="mb-2 text-3xl font-bold">Course Catalog</h1>
+        <p className="text-gray-400">
+          Browse and select courses for registration
+        </p>
       </div>
 
-      {/* Responsive Table Wrapper */}
-      <div className="w-full overflow-x-auto rounded-md shadow">
-        <table className="w-full min-w-[700px] table-auto text-left">
-          <thead
-            style={{ backgroundColor: "#92e3a9" }}
-            className="text-sm font-semibold text-black"
+      {/* Search and Filter Section */}
+      <div className="rounded-lg border border-gray-800 bg-gray-900 p-6 shadow-xl">
+        <h2 className="mb-4 text-xl font-semibold text-white">
+          Search & Filter
+        </h2>
+        <div className="flex flex-col gap-4 sm:flex-row">
+          <Select
+            value={department}
+            onChange={(e) => setDepartment(e.target.value)}
+            className="w-full sm:w-60"
           >
-            <tr>
-              <th className="p-3 whitespace-nowrap">Code</th>
-              <th className="p-3 whitespace-nowrap">Course Title</th>
-              <th className="p-3 whitespace-nowrap">Credits</th>
-              <th className="p-3 whitespace-nowrap">Instructor</th>
-              <th className="p-3 whitespace-nowrap">Department</th>
-              <th className="p-3 whitespace-nowrap">Prerequisites</th>
-              <th className="p-3 whitespace-nowrap">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentCourses.map((course) => (
-              <tr key={course.id} className="border-t transition">
-                <td className="p-3 whitespace-nowrap">
-                  <div className="flex items-center gap-2">
-                    <HiBookOpen className="text-[#92e3a9]" />
-                    {course.code}
-                  </div>
-                </td>
-                <td className="p-3 font-medium whitespace-nowrap">
-                  {course.name}
-                </td>
-                <td className="p-3 whitespace-nowrap">{course.credit}</td>
-                <td className="p-3 whitespace-nowrap">
-                  <div className="flex items-center gap-2">
-                    <HiUser className="text-[#92e3a9]" />
-                    {course.instructor}
-                  </div>
-                </td>
-                <td className="p-3 whitespace-nowrap">
-                  <div className="flex items-center gap-2">
-                    <HiOfficeBuilding className="text-[#92e3a9]" />
-                    {departmentNames[course.department_id] || "Unknown"}
-                  </div>
-                </td>
-                <td className="space-y-1 p-3 text-sm whitespace-nowrap">
-                  {course.prerequisites.length > 0 ? (
-                    course.prerequisites.map((prereq, i) => (
-                      <div key={i} className="flex items-center gap-2">
-                        <HiBookOpen className="text-sm text-[#92e3a9]" />
-                        {prereq}
-                      </div>
-                    ))
-                  ) : (
-                    <span className="text-gray-400">None</span>
-                  )}
-                </td>
-                <td className="p-3 whitespace-nowrap">
-                  {cart.includes(course.id) ? (
-                    <span className="text-sm text-gray-500">In Cart</span>
-                  ) : (
-                    <Button
-                      size="sm"
-                      className="text-black"
-                      style={{ backgroundColor: "#92e3a9" }}
-                      onClick={() => setCart([...cart, course.id])}
-                    >
-                      Add to Cart
-                    </Button>
-                  )}
-                </td>
-              </tr>
+            <option value="all">All Departments</option>
+            {Object.entries(departmentNames).map(([id, name]) => (
+              <option key={id} value={id}>
+                {name}
+              </option>
             ))}
-            {filtered.length === 0 && (
+          </Select>
+
+          <TextInput
+            icon={HiSearch}
+            placeholder="Search by course, code or instructor"
+            className="w-full sm:max-w-md"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+      </div>
+
+      {/* Course List Section */}
+      <div className="rounded-lg border border-gray-800 bg-gray-900 p-6 shadow-xl">
+        <h2 className="mb-4 text-xl font-semibold text-white">
+          Available Courses
+        </h2>
+        <div className="relative overflow-x-auto">
+          <table className="min-w-full table-fixed divide-y divide-gray-800">
+            <thead className="bg-gray-800">
               <tr>
-                <td colSpan={7} className="p-4 text-center text-gray-500">
-                  No courses found.
-                </td>
+                <th className="w-24 px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+                  Code
+                </th>
+                <th className="w-48 px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+                  Course Title
+                </th>
+                <th className="w-20 px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+                  Credits
+                </th>
+                <th className="w-40 px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+                  Instructor
+                </th>
+                <th className="w-40 px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+                  Department
+                </th>
+                <th className="w-40 px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+                  Prerequisites
+                </th>
+                <th className="w-32 px-4 py-3 text-center text-xs font-medium text-gray-400 uppercase">
+                  Selection
+                </th>
               </tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-gray-800">
+              {currentCourses.map((course) => (
+                <tr key={course.id} className="bg-gray-900">
+                  <td className="px-4 py-4 whitespace-nowrap">
+                    <div className="flex items-center gap-2 text-white">
+                      <HiBookOpen className="text-[#92e3a9]" />
+                      {course.code}
+                    </div>
+                  </td>
+                  <td className="px-4 py-4 whitespace-nowrap text-white">
+                    {course.name}
+                  </td>
+                  <td className="px-4 py-4 whitespace-nowrap text-white">
+                    {course.credit}
+                  </td>
+                  <td className="px-4 py-4 whitespace-nowrap">
+                    <div className="flex items-center gap-2 text-white">
+                      <HiUser className="text-[#92e3a9]" />
+                      {course.instructor}
+                    </div>
+                  </td>
+                  <td className="px-4 py-4 whitespace-nowrap">
+                    <div className="flex items-center gap-2 text-white">
+                      <HiOfficeBuilding className="text-[#92e3a9]" />
+                      {departmentNames[course.department_id] || "Unknown"}
+                    </div>
+                  </td>
+                  <td className="px-4 py-4 whitespace-nowrap">
+                    {course.prerequisites.length > 0 ? (
+                      <div className="space-y-1">
+                        {course.prerequisites.map((prereq, i) => (
+                          <div
+                            key={i}
+                            className="flex items-center gap-2 text-white"
+                          >
+                            <HiBookOpen className="text-sm text-[#92e3a9]" />
+                            {prereq}
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <span className="text-gray-400">None</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-4 whitespace-nowrap">
+                    <div className="flex justify-center">
+                      {selectedCourses.includes(course.id) ? (
+                        <span className="inline-block min-w-[100px] text-center text-gray-400">
+                          Selected
+                        </span>
+                      ) : (
+                        <button
+                          className="hover:bg-opacity-90 inline-flex w-full min-w-[100px] justify-center rounded-md bg-[#92e3a9] px-3 py-2 text-sm font-medium text-black transition-colors"
+                          onClick={() =>
+                            setSelectedCourses([...selectedCourses, course.id])
+                          }
+                        >
+                          Select Course
+                        </button>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+              {filtered.length === 0 && (
+                <tr>
+                  <td
+                    colSpan={7}
+                    className="px-4 py-4 text-center text-gray-400"
+                  >
+                    No courses found.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* Pagination Controls */}
-      <div className="mt-6 flex flex-col items-center justify-center gap-2 text-sm sm:flex-row">
-        <Button
-          size="sm"
+      <div className="mt-6 flex justify-center gap-4">
+        <button
+          className="rounded-md border border-gray-700 bg-[#92e3a9] px-4 py-2 text-black transition-colors hover:bg-gray-800 disabled:opacity-50"
           disabled={currentPage === 1}
-          style={{ backgroundColor: "#92e3a9", color: "black" }}
           onClick={() => handlePageChange(currentPage - 1)}
         >
-          Prev
-        </Button>
-        <span className="px-2">{`Page ${currentPage} of ${totalPages}`}</span>
-        <Button
-          style={{ backgroundColor: "#92e3a9", color: "black" }}
-          size="sm"
+          Previous
+        </button>
+        <span className="flex items-center text-gray-400">
+          Page {currentPage} of {totalPages}
+        </span>
+        <button
+          className="hover:bg-opacity-90 rounded-md bg-[#92e3a9] px-4 py-2 text-black transition-colors disabled:opacity-50"
           disabled={currentPage === totalPages}
           onClick={() => handlePageChange(currentPage + 1)}
         >
           Next
-        </Button>
+        </button>
       </div>
     </div>
   );

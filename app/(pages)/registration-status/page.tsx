@@ -1,11 +1,12 @@
 import React from "react";
 import {
   MdCheckCircle,
-  MdPending,
+ 
   MdPayment,
   MdDescription,
   MdPerson,
 } from "react-icons/md";
+import { HiCheck, HiClock as HiPending } from "react-icons/hi";
 
 export default function page() {
   const registrationDetails = [
@@ -153,9 +154,9 @@ export default function page() {
                       }`}
                     >
                       {course.advisorApproval === "Approved" ? (
-                        <MdCheckCircle className="h-4 w-4" />
+                        <HiCheck className="h-4 w-4" />
                       ) : (
-                        <MdPending className="h-4 w-4" />
+                        <HiPending className="h-4 w-4" />
                       )}
                       {course.advisorApproval}
                     </span>
@@ -164,14 +165,14 @@ export default function page() {
                     <span
                       className={`flex w-fit items-center gap-1 rounded-full px-3 py-1 text-xs ${
                         course.hodApproval === "Approved"
-                          ? "bg-opacity-20 bg-[#92e3a9] text-[#0f0f0f]"
+                          ? "bg-opacity-20 bg-[#92e3a9] text-[#92e3a9]"
                           : "bg-yellow-900 text-yellow-300"
                       }`}
                     >
                       {course.hodApproval === "Approved" ? (
-                        <MdCheckCircle className="h-4 w-4" />
+                        <HiCheck className="h-4 w-4" />
                       ) : (
-                        <MdPending className="h-4 w-4" />
+                        <HiPending className="h-4 w-4" />
                       )}
                       {course.hodApproval}
                     </span>

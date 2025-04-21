@@ -5,6 +5,8 @@ import {
   HiClock,
   HiCurrencyDollar,
   HiCalendar,
+  HiCheck,
+  HiClock as HiPending,
 } from "react-icons/hi";
 
 export default function StudentDashboard() {
@@ -198,12 +200,17 @@ export default function StudentDashboard() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span
-                        className={`rounded-full px-3 py-1 text-xs ${
+                        className={`flex items-center gap-2 rounded-full px-3 py-1 text-xs ${
                           course.status === "Approved"
-                            ? "bg-opacity-20 bg-[#92e3a9] text-[#92e3a9]"
+                            ? "bg-opacity-20 bg-[#92e3a9] text-black"
                             : "bg-yellow-900 text-yellow-300"
                         }`}
                       >
+                        {course.status === "Approved" ? (
+                          <HiCheck className="h-4 w-4" />
+                        ) : (
+                          <HiPending className="h-4 w-4" />
+                        )}
                         {course.status}
                       </span>
                     </td>
