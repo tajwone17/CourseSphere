@@ -24,7 +24,7 @@ export function MyNavbar() {
   const [loggedIn, setIsLoggedin] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token =" abcd";
     setIsLoggedin(!!token);
   }, []);
 

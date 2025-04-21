@@ -240,7 +240,7 @@ export default function CourseCatalogTable() {
           style={{ backgroundColor: "#92e3a9", color: "black" }}
           onClick={() => handlePageChange(currentPage - 1)}
         >
-          Previous
+          Prev
         </Button>
         <span className="px-2">{`Page ${currentPage} of ${totalPages}`}</span>
         <Button
