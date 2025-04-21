@@ -96,14 +96,15 @@ export default function StudentDashboard() {
         data-aos="fade-down"
         data-aos-duration="1000"
       >
-        <h1 className="mb-2 text-4xl font-extrabold tracking-tight text-white lg:text-5xl">
-          Welcome Back, John Doe
-          <span className="mt-2 block text-2xl font-bold text-[#92e3a9]">
-            Your Academic Portal
-          </span>
+        <h1 className="mb-2 text-4xl font-bold tracking-tight text-white lg:text-5xl">
+          Welcome Back, Tajwone Vai
+       
         </h1>
         <p className="mt-4 text-lg text-gray-400">
-          Student ID: 2024001 | Computer Science
+          Student ID: 2024001 | Computer Science Engineering
+        </p>
+        <p className="mt-4 text-lg text-gray-400">
+         North East University Bangladesh
         </p>
       </div>
 
