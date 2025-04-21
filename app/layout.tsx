@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
-// import { ThemeModeScript } from "flowbite-react";
-import { MyNavbar } from "./components/Navbar";
+
 import { AOSInit } from "./utils/AOS";
 
 const poppins = Poppins({
@@ -26,7 +25,7 @@ export default function RootLayout({
       <AOSInit />
       <head>{/* <ThemeModeScript /> */}</head>
       <body className={`${poppins.variable} antialiased`}>
-        <MyNavbar />
+        {/* <MyNavbar /> */}
         {children}
       </body>
     </html>
