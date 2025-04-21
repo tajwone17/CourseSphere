@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import { Button, Checkbox } from "flowbite-react";
 import {
-
   HiAcademicCap,
   HiCurrencyDollar,
   HiTrash,
@@ -49,18 +48,28 @@ export default function CourseSelectionPage() {
   return (
     <div className="mx-auto max-w-7xl space-y-8 px-4 py-8">
       {/* Heading */}
-      <div className="mb-8 text-center">
-        <h1 className="mb-2 flex items-center justify-center gap-2 text-3xl font-bold">
-          <HiAcademicCap className="text-[#92e3a9]" />
+      <div
+        className="mb-8 text-center"
+        data-aos="fade-down"
+        data-aos-duration="1000"
+      >
+        <h1 className="mb-2 text-4xl font-extrabold tracking-tight text-white lg:text-5xl">
           Course Selection Review
+          <span className="block text-2xl font-bold text-[#92e3a9]">
+            Review and Confirm Your Choices
+          </span>
         </h1>
-        <p className="text-gray-400">
+        <p className="mt-4 text-lg text-gray-400">
           Review your selected courses before proceeding with registration
         </p>
       </div>
 
       {/* Selected Courses */}
-      <div className="rounded-lg border border-gray-800 bg-gray-900 p-6 shadow-xl">
+      <div
+        className="rounded-lg border border-gray-800 bg-gray-900 p-6 shadow-xl"
+        data-aos="fade-up"
+        data-aos-duration="800"
+      >
         <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold text-white">
           <HiAcademicCap className="text-[#92e3a9]" />
           Selected Courses
@@ -120,7 +129,11 @@ export default function CourseSelectionPage() {
       </div>
 
       {/* Registration Summary */}
-      <div className="rounded-lg border border-gray-800 bg-gray-900 p-6 shadow-xl">
+      <div
+        className="rounded-lg border border-gray-800 bg-gray-900 p-6 shadow-xl"
+        data-aos="fade-up"
+        data-aos-delay="200"
+      >
         <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold text-white">
           <HiCurrencyDollar className="text-[#92e3a9]" />
           Registration Summary

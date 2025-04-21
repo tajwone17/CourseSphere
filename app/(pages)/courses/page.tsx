@@ -117,15 +117,28 @@ export default function CourseCatalogTable() {
   return (
     <div className="mx-auto max-w-7xl space-y-8 px-4 py-8">
       {/* Heading */}
-      <div className="mb-8 text-center">
-        <h1 className="mb-2 text-3xl font-bold">Course Catalog</h1>
-        <p className="text-gray-400">
-          Browse and select courses for registration
+      <div
+        className="mb-8 text-center"
+        data-aos="fade-down"
+        data-aos-duration="1000"
+      >
+        <h1 className="mb-2 text-4xl font-extrabold tracking-tight text-white lg:text-5xl">
+          Course Catalog
+          <span className="block text-2xl font-bold text-[#92e3a9]">
+            Explore Available Courses
+          </span>
+        </h1>
+        <p className="mt-4 text-lg text-gray-400">
+          Browse and select courses for your upcoming semester
         </p>
       </div>
 
       {/* Search and Filter Section */}
-      <div className="rounded-lg border border-gray-800 bg-gray-900 p-6 shadow-xl">
+      <div
+        className="rounded-lg border border-gray-800 bg-gray-900 p-6 shadow-xl"
+        data-aos="fade-up"
+        data-aos-duration="800"
+      >
         <h2 className="mb-4 text-xl font-semibold text-white">
           Search & Filter
         </h2>
@@ -154,7 +167,11 @@ export default function CourseCatalogTable() {
       </div>
 
       {/* Course List Section */}
-      <div className="rounded-lg border border-gray-800 bg-gray-900 p-6 shadow-xl">
+      <div
+        className="rounded-lg border border-gray-800 bg-gray-900 p-6 shadow-xl"
+        data-aos="fade-up"
+        data-aos-delay="200"
+      >
         <h2 className="mb-4 text-xl font-semibold text-white">
           Available Courses
         </h2>
@@ -265,7 +282,11 @@ export default function CourseCatalogTable() {
       </div>
 
       {/* Pagination Controls */}
-      <div className="mt-6 flex justify-center gap-4">
+      <div
+        className="mt-6 flex justify-center gap-4"
+        data-aos="fade-up"
+        data-aos-delay="400"
+      >
         <button
           className="rounded-md border border-gray-700 bg-[#92e3a9] px-4 py-2 text-black transition-colors hover:bg-gray-800 disabled:opacity-50"
           disabled={currentPage === 1}

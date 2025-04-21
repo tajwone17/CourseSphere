@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import {
   HiAcademicCap,
@@ -7,10 +9,10 @@ import {
   HiCalendar,
   HiCheck,
   HiClock as HiPending,
+  HiDocumentText,
 } from "react-icons/hi";
 
 export default function StudentDashboard() {
-  // Sample data - in a real app, this would come from an API or state management
   const stats = [
     {
       title: "Total Credits",
@@ -25,42 +27,42 @@ export default function StudentDashboard() {
       description: "3rd semester",
     },
     {
-      title: "Active Courses",
+      title: "Registered Courses",
       value: "5",
       icon: HiClipboardCheck,
-      description: "Currently enrolled",
+      description: "This semester",
     },
     {
-      title: "Due Payment",
+      title: "Pending Payment",
       value: "$2,500",
       icon: HiCurrencyDollar,
-      description: "Current semester",
+      description: "Registration fee",
     },
   ];
 
-  const deadlines = [
-    {
-      title: "Mid-term Examination",
-      date: "May 15, 2024",
-      description: "All enrolled courses",
-      urgent: true,
-    },
+  const importantDates = [
     {
       title: "Course Registration",
       date: "April 30, 2024",
-      description: "Summer 2024 semester",
+      description: "Summer 2024 semester registration opens",
       urgent: true,
     },
     {
-      title: "Fee Payment",
+      title: "Registration Fee",
       date: "May 1, 2024",
-      description: "Last date without fine",
+      description: "Last date for registration payment",
+      urgent: true,
+    },
+    {
+      title: "Add/Drop Period",
+      date: "May 5, 2024",
+      description: "Last day to modify course selection",
       urgent: false,
     },
     {
-      title: "Assignment Submission",
-      date: "April 25, 2024",
-      description: "Database Systems",
+      title: "Department Approval",
+      date: "May 10, 2024",
+      description: "Final course approval deadline",
       urgent: false,
     },
   ];
@@ -89,19 +91,36 @@ export default function StudentDashboard() {
   return (
     <div className="mx-auto max-w-7xl space-y-8 px-4 py-8">
       {/* Welcome Section */}
-      <div className="mb-8 text-center">
-        <h1 className="mb-2 text-3xl font-bold">Welcome, John Doe</h1>
-        <p className="text-gray-400">Student ID: 2024001 | Computer Science</p>
+      <div
+        className="mb-8 text-center"
+        data-aos="fade-down"
+        data-aos-duration="1000"
+      >
+        <h1 className="mb-2 text-4xl font-extrabold tracking-tight text-white lg:text-5xl">
+          Welcome Back, John Doe
+          <span className="mt-2 block text-2xl font-bold text-[#92e3a9]">
+            Your Academic Portal
+          </span>
+        </h1>
+        <p className="mt-4 text-lg text-gray-400">
+          Student ID: 2024001 | Computer Science
+        </p>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+      <div
+        className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4"
+        data-aos="fade-up"
+        data-aos-delay="200"
+      >
         {stats.map((stat, index) => {
           const Icon = stat.icon;
           return (
             <div
               key={index}
-              className="rounded-lg border border-gray-800 bg-gray-900 p-6 shadow-xl"
+              className="rounded-lg border border-gray-800 bg-gray-900 p-6 shadow-xl transition-transform hover:scale-105"
+              data-aos="fade-up"
+              data-aos-delay={300 + index * 100}
             >
               <div className="mb-4 flex items-center justify-between">
                 <div className="rounded-lg bg-gray-800 p-3">
@@ -120,42 +139,46 @@ export default function StudentDashboard() {
         })}
       </div>
 
-      {/* Two Column Layout for Deadlines and Recent Registrations */}
+      {/* Two Column Layout for Important Dates and Recent Registrations */}
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-        {/* Upcoming Deadlines */}
-        <div className="rounded-lg border border-gray-800 bg-gray-900 p-6 shadow-xl">
+        {/* Important Registration Dates */}
+        <div
+          className="rounded-lg border border-gray-800 bg-gray-900 p-6 shadow-xl"
+          data-aos="fade-right"
+          data-aos-delay="400"
+        >
           <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold">
             <HiClock className="text-[#92e3a9]" />
-            <span className="text-white">Upcoming Deadlines</span>
+            <span className="text-white">Important Registration Dates</span>
           </h2>
           <div className="space-y-4">
-            {deadlines.map((deadline, index) => (
+            {importantDates.map((date, index) => (
               <div
                 key={index}
-                className="flex items-start gap-4 rounded-lg bg-gray-800 p-4"
+                className="flex items-start gap-4 rounded-lg bg-gray-800 p-4 transition-transform hover:scale-105"
+                data-aos="fade-up"
+                data-aos-delay={500 + index * 100}
               >
                 <div className="min-w-[40px] text-center">
                   <div className="text-sm font-medium text-gray-400">
-                    {new Date(deadline.date).toLocaleDateString("en-US", {
+                    {new Date(date.date).toLocaleDateString("en-US", {
                       month: "short",
                     })}
                   </div>
                   <div className="text-xl font-bold text-white">
-                    {new Date(deadline.date).getDate()}
+                    {new Date(date.date).getDate()}
                   </div>
                 </div>
                 <div className="flex-1">
                   <h3 className="flex items-center gap-2 font-medium text-white">
-                    {deadline.title}
-                    {deadline.urgent && (
+                    {date.title}
+                    {date.urgent && (
                       <span className="rounded-full bg-red-900 px-2 py-1 text-xs text-red-300">
                         Urgent
                       </span>
                     )}
                   </h3>
-                  <p className="text-sm text-gray-400">
-                    {deadline.description}
-                  </p>
+                  <p className="text-sm text-gray-400">{date.description}</p>
                 </div>
               </div>
             ))}
@@ -163,9 +186,13 @@ export default function StudentDashboard() {
         </div>
 
         {/* Recent Course Registrations */}
-        <div className="rounded-lg border border-gray-800 bg-gray-900 p-6 shadow-xl">
+        <div
+          className="rounded-lg border border-gray-800 bg-gray-900 p-6 shadow-xl"
+          data-aos="fade-left"
+          data-aos-delay="400"
+        >
           <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold">
-            <HiClipboardCheck className="text-[#92e3a9]" />
+            <HiDocumentText className="text-[#92e3a9]" />
             <span className="text-white">Recent Course Registrations</span>
           </h2>
           <div className="overflow-x-auto">
@@ -188,7 +215,12 @@ export default function StudentDashboard() {
               </thead>
               <tbody className="divide-y divide-gray-800">
                 {recentRegistrations.map((course, index) => (
-                  <tr key={index} className="bg-gray-900">
+                  <tr
+                    key={index}
+                    className="bg-gray-900 transition-colors hover:bg-gray-800"
+                    data-aos="fade-up"
+                    data-aos-delay={600 + index * 100}
+                  >
                     <td className="px-6 py-4 whitespace-nowrap text-white">
                       {course.courseCode}
                     </td>

@@ -1,7 +1,6 @@
 import React from "react";
 import {
   MdCheckCircle,
- 
   MdPayment,
   MdDescription,
   MdPerson,
@@ -48,13 +47,28 @@ export default function page() {
   return (
     <div className="mx-auto max-w-7xl space-y-8 px-4 py-8">
       {/* Heading */}
-      <div className="mb-8 text-center">
-        <h1 className="mb-2 text-3xl font-bold">Registration Status</h1>
-        <p className="text-gray-400">Track your course registration progress</p>
+      <div
+        className="mb-8 text-center"
+        data-aos="fade-down"
+        data-aos-duration="1000"
+      >
+        <h1 className="mb-2 text-4xl font-extrabold tracking-tight text-white lg:text-5xl">
+          Registration Status
+          <span className="block text-2xl font-bold text-[#92e3a9]">
+            Track Your Progress
+          </span>
+        </h1>
+        <p className="mt-4 text-lg text-gray-400">
+          Monitor your course registration approval process
+        </p>
       </div>
 
       {/* Registration Progress */}
-      <div className="rounded-lg border border-gray-800 bg-gray-900 p-6 shadow-xl">
+      <div
+        className="rounded-lg border border-gray-800 bg-gray-900 p-6 shadow-xl"
+        data-aos="fade-up"
+        data-aos-duration="800"
+      >
         <h2 className="mb-4 text-xl font-semibold text-white">
           Registration Progress
         </h2>
@@ -63,7 +77,11 @@ export default function page() {
           <div className="absolute top-1/2 left-0 h-0.5 w-full bg-gray-800"></div>
 
           {/* Steps */}
-          <div className="relative flex items-center justify-between">
+          <div
+            className="relative flex items-center justify-between"
+            data-aos="fade-right"
+            data-aos-delay="200"
+          >
             {steps.map((step, index) => {
               const Icon = step.icon;
               return (
@@ -90,11 +108,19 @@ export default function page() {
       </div>
 
       {/* Registration Details */}
-      <div className="rounded-lg border border-gray-800 bg-gray-900 p-6 shadow-xl">
+      <div
+        className="rounded-lg border border-gray-800 bg-gray-900 p-6 shadow-xl"
+        data-aos="fade-up"
+        data-aos-delay="400"
+      >
         <h2 className="mb-4 text-xl font-semibold text-white">
           Registration Details
         </h2>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <div
+          className="grid grid-cols-1 gap-4 md:grid-cols-3"
+          data-aos="fade-up"
+          data-aos-delay="600"
+        >
           {registrationDetails.map((detail, index) => (
             <div key={index} className="rounded-md bg-gray-800 p-4">
               <p className="text-sm text-gray-400">{detail.label}</p>
@@ -105,7 +131,11 @@ export default function page() {
       </div>
 
       {/* Course Approval Status */}
-      <div className="rounded-lg border border-gray-800 bg-gray-900 p-6 shadow-xl">
+      <div
+        className="rounded-lg border border-gray-800 bg-gray-900 p-6 shadow-xl"
+        data-aos="fade-up"
+        data-aos-delay="800"
+      >
         <h2 className="mb-4 text-xl font-semibold text-white">
           Course Approval Status
         </h2>
@@ -165,7 +195,7 @@ export default function page() {
                     <span
                       className={`flex w-fit items-center gap-1 rounded-full px-3 py-1 text-xs ${
                         course.hodApproval === "Approved"
-                          ? "bg-opacity-20 bg-[#92e3a9] text-[#92e3a9]"
+                          ? "bg-opacity-20 bg-[#92e3a9] text-black"
                           : "bg-yellow-900 text-yellow-300"
                       }`}
                     >
@@ -188,7 +218,11 @@ export default function page() {
       </div>
 
       {/* Payment Information */}
-      <div className="rounded-lg border border-gray-800 bg-gray-900 p-6 shadow-xl">
+      <div
+        className="rounded-lg border border-gray-800 bg-gray-900 p-6 shadow-xl"
+        data-aos="fade-up"
+        data-aos-delay="1000"
+      >
         <h2 className="mb-4 text-xl font-semibold text-white">
           Payment Information
         </h2>
