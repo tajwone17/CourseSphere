@@ -72,7 +72,7 @@ export default function page() {
                       step.status === "completed"
                         ? "bg-[#92e3a9] text-black"
                         : step.status === "current"
-                          ? "bg-opacity-50 bg-[#92e3a9] text-white"
+                          ? "bg-opacity-50 bg-[#92e3a9] text-black"
                           : "bg-gray-800 text-gray-400"
                     }`}
                   >
@@ -148,7 +148,7 @@ export default function page() {
                     <span
                       className={`flex w-fit items-center gap-1 rounded-full px-3 py-1 text-xs ${
                         course.advisorApproval === "Approved"
-                          ? "bg-opacity-20 bg-[#92e3a9] text-[#92e3a9]"
+                          ? "bg-opacity-20 bg-[#92e3a9] text-black"
                           : "bg-yellow-900 text-yellow-300"
                       }`}
                     >
@@ -164,7 +164,7 @@ export default function page() {
                     <span
                       className={`flex w-fit items-center gap-1 rounded-full px-3 py-1 text-xs ${
                         course.hodApproval === "Approved"
-                          ? "bg-opacity-20 bg-[#92e3a9] text-[#92e3a9]"
+                          ? "bg-opacity-20 bg-[#92e3a9] text-[#0f0f0f]"
                           : "bg-yellow-900 text-yellow-300"
                       }`}
                     >
