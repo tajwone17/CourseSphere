@@ -2,6 +2,7 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "flowbite-react";
+import { HiCalendar, HiUser, HiArrowLeft } from "react-icons/hi";
 
 interface Notice {
   title: string;
@@ -65,25 +66,41 @@ export default function NoticeDetailPage(props: PageProps) {
   const notice = notices[Number(id)];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/60 px-4 backdrop-blur-sm">
       <div
-        className="w-full max-w-2xl rounded-xl border border-white bg-black/80 p-8 text-white shadow-2xl"
+        className="w-full max-w-2xl rounded-lg border border-gray-800 bg-gray-900 p-8 shadow-xl"
         data-aos="zoom-in"
       >
-        <h1 className="mb-4 text-center text-3xl font-bold">{notice.title}</h1>
-        <p className="mb-6 text-center text-sm text-gray-400">
-          Posted on {notice.date} by {notice.createdBy}
-        </p>
-        <p className="mb-8 text-lg leading-relaxed text-gray-200">
-          {notice.description}
-        </p>
+        <h1 className="mb-4 text-center text-3xl font-bold text-white">
+          {notice.title}
+        </h1>
+
+        <div className="mb-6 flex items-center justify-center gap-6 text-sm text-gray-400">
+          <div className="flex items-center gap-2">
+            <HiCalendar className="text-[#92e3a9]" />
+            <span>{notice.date}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <HiUser className="text-[#92e3a9]" />
+            <span>{notice.createdBy}</span>
+          </div>
+        </div>
+
+        <div className="mb-8 rounded-lg bg-gray-800 p-6">
+          <p className="text-lg leading-relaxed text-gray-200">
+            {notice.description}
+          </p>
+        </div>
+
         <div className="flex justify-center">
           <Button
-            className="text-black"
-            style={{ backgroundColor: "#92e3a9", cursor: "pointer" }}
+            size="sm"
+            className="flex items-center gap-2 transition-transform hover:scale-105"
+            style={{ backgroundColor: "#92e3a9", color: "black" }}
             onClick={() => router.back()}
           >
-            Close
+            <HiArrowLeft size={16} />
+            Back to Notices
           </Button>
         </div>
       </div>

@@ -77,6 +77,42 @@ const courses = [
     department_id: 5,
     prerequisites: [],
   },
+  {
+    id: 8,
+    name: "Marketing 101",
+    code: "BA105",
+    credit: 3,
+    instructor: "Dr. Clara Evans",
+    department_id: 5,
+    prerequisites: [],
+  },
+  {
+    id: 9,
+    name: "Marketing 101",
+    code: "BA105",
+    credit: 3,
+    instructor: "Dr. Clara Evans",
+    department_id: 5,
+    prerequisites: [],
+  },
+  {
+    id: 10,
+    name: "Marketing 101",
+    code: "BA105",
+    credit: 3,
+    instructor: "Dr. Clara Evans",
+    department_id: 5,
+    prerequisites: [],
+  },
+  {
+    id: 11,
+    name: "Marketing 101",
+    code: "BA105",
+    credit: 3,
+    instructor: "Dr. Clara Evans",
+    department_id: 5,
+    prerequisites: [],
+  },
 ];
 
 export default function CourseCatalogTable() {
@@ -122,11 +158,8 @@ export default function CourseCatalogTable() {
         data-aos="fade-down"
         data-aos-duration="1000"
       >
-        <h1 className="mb-2 text-4xl font-extrabold tracking-tight text-white lg:text-5xl">
+        <h1 className="mb-2 text-3xl font-extrabold tracking-tight text-white lg:text-5xl">
           Course Catalog
-          <span className="block text-2xl font-bold text-[#92e3a9]">
-            Explore Available Courses
-          </span>
         </h1>
         <p className="mt-4 text-lg text-gray-400">
           Browse and select courses for your upcoming semester
@@ -204,28 +237,31 @@ export default function CourseCatalogTable() {
             </thead>
             <tbody className="divide-y divide-gray-800">
               {currentCourses.map((course) => (
-                <tr key={course.id} className="bg-gray-900">
+                <tr
+                  key={course.id}
+                  className="bg-gray-900 transition-colors duration-200 hover:bg-gray-800"
+                >
                   <td className="px-4 py-4 whitespace-nowrap">
-                    <div className="flex items-center gap-2 text-white">
-                      <HiBookOpen className="text-[#92e3a9]" />
+                    <div className="group flex items-center gap-2 text-white">
+                      <HiBookOpen className="text-[#92e3a9] transition-transform group-hover:scale-110" />
                       {course.code}
                     </div>
                   </td>
-                  <td className="px-4 py-4 whitespace-nowrap text-white">
+                  <td className="px-4 py-4 whitespace-nowrap text-white transition-colors hover:text-[#92e3a9]">
                     {course.name}
                   </td>
                   <td className="px-4 py-4 whitespace-nowrap text-white">
                     {course.credit}
                   </td>
                   <td className="px-4 py-4 whitespace-nowrap">
-                    <div className="flex items-center gap-2 text-white">
-                      <HiUser className="text-[#92e3a9]" />
+                    <div className="group flex items-center gap-2 text-white">
+                      <HiUser className="text-[#92e3a9] transition-transform group-hover:scale-110" />
                       {course.instructor}
                     </div>
                   </td>
                   <td className="px-4 py-4 whitespace-nowrap">
-                    <div className="flex items-center gap-2 text-white">
-                      <HiOfficeBuilding className="text-[#92e3a9]" />
+                    <div className="group flex items-center gap-2 text-white">
+                      <HiOfficeBuilding className="text-[#92e3a9] transition-transform group-hover:scale-110" />
                       {departmentNames[course.department_id] || "Unknown"}
                     </div>
                   </td>
@@ -235,9 +271,9 @@ export default function CourseCatalogTable() {
                         {course.prerequisites.map((prereq, i) => (
                           <div
                             key={i}
-                            className="flex items-center gap-2 text-white"
+                            className="group flex items-center gap-2 text-white"
                           >
-                            <HiBookOpen className="text-sm text-[#92e3a9]" />
+                            <HiBookOpen className="text-sm text-[#92e3a9] transition-transform group-hover:scale-110" />
                             {prereq}
                           </div>
                         ))}
@@ -249,12 +285,12 @@ export default function CourseCatalogTable() {
                   <td className="px-4 py-4 whitespace-nowrap">
                     <div className="flex justify-center">
                       {selectedCourses.includes(course.id) ? (
-                        <span className="inline-block min-w-[100px] text-center text-gray-400">
+                        <span className="inline-block min-w-[100px] rounded-md border border-[#92e3a9] bg-[#92e3a9]/10 px-3 py-2 text-center text-[#92e3a9]">
                           Selected
                         </span>
                       ) : (
                         <button
-                          className="hover:bg-opacity-90 inline-flex w-full min-w-[100px] justify-center rounded-md bg-[#92e3a9] px-3 py-2 text-sm font-medium text-black transition-colors"
+                          className="inline-flex w-full min-w-[100px] justify-center rounded-md bg-[#92e3a9] px-3 py-2 text-sm font-medium text-black transition-all hover:scale-105 hover:bg-[#7acc91] hover:shadow-lg"
                           onClick={() =>
                             setSelectedCourses([...selectedCourses, course.id])
                           }
@@ -281,14 +317,10 @@ export default function CourseCatalogTable() {
         </div>
       </div>
 
-      {/* Pagination Controls */}
-      <div
-        className="mt-6 flex justify-center gap-4"
-        data-aos="fade-up"
-        data-aos-delay="400"
-      >
+      {/* Simple Pagination Controls */}
+      <div className="mt-6 flex items-center justify-center gap-4">
         <button
-          className="rounded-md border border-gray-700 bg-[#92e3a9] px-4 py-2 text-black transition-colors hover:bg-gray-800 disabled:opacity-50"
+          className="rounded-md bg-[#92e3a9] px-4 py-2 text-black transition-all hover:bg-[#7acc91] hover:shadow-lg disabled:opacity-50 disabled:hover:bg-[#92e3a9] disabled:hover:shadow-none"
           disabled={currentPage === 1}
           onClick={() => handlePageChange(currentPage - 1)}
         >
@@ -298,7 +330,7 @@ export default function CourseCatalogTable() {
           Page {currentPage} of {totalPages}
         </span>
         <button
-          className="hover:bg-opacity-90 rounded-md bg-[#92e3a9] px-4 py-2 text-black transition-colors disabled:opacity-50"
+          className="rounded-md bg-[#92e3a9] px-4 py-2 text-black transition-all hover:bg-[#7acc91] hover:shadow-lg disabled:opacity-50 disabled:hover:bg-[#92e3a9] disabled:hover:shadow-none"
           disabled={currentPage === totalPages}
           onClick={() => handlePageChange(currentPage + 1)}
         >

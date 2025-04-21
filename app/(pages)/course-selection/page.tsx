@@ -53,11 +53,9 @@ export default function CourseSelectionPage() {
         data-aos="fade-down"
         data-aos-duration="1000"
       >
-        <h1 className="mb-2 text-4xl font-extrabold tracking-tight text-white lg:text-5xl">
+        <h1 className="mb-2 text-3xl font-extrabold tracking-tight text-white lg:text-5xl">
           Course Selection Review
-          <span className="block text-2xl font-bold text-[#92e3a9]">
-            Review and Confirm Your Choices
-          </span>
+       
         </h1>
         <p className="mt-4 text-lg text-gray-400">
           Review your selected courses before proceeding with registration
@@ -212,6 +210,7 @@ export default function CourseSelectionPage() {
                   }}
                 >
                   Proceed to Registration
+                  
                 </Button>
               </div>
             </div>

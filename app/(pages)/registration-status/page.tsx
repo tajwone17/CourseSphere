@@ -6,6 +6,7 @@ import {
   MdPerson,
 } from "react-icons/md";
 import { HiCheck, HiClock as HiPending } from "react-icons/hi";
+import Link from "next/link";
 
 export default function page() {
   const registrationDetails = [
@@ -52,11 +53,8 @@ export default function page() {
         data-aos="fade-down"
         data-aos-duration="1000"
       >
-        <h1 className="mb-2 text-4xl font-extrabold tracking-tight text-white lg:text-5xl">
+        <h1 className="mb-2 text-3xl font-extrabold tracking-tight text-white lg:text-5xl">
           Registration Status
-          <span className="block text-2xl font-bold text-[#92e3a9]">
-            Track Your Progress
-          </span>
         </h1>
         <p className="mt-4 text-lg text-gray-400">
           Monitor your course registration approval process
@@ -69,25 +67,25 @@ export default function page() {
         data-aos="fade-up"
         data-aos-duration="800"
       >
-        <h2 className="mb-4 text-xl font-semibold text-white">
+        <h2 className="mb-8 text-center text-xl font-semibold text-white">
           Registration Progress
         </h2>
-        <div className="relative">
+        <div className="relative mx-auto max-w-4xl px-8">
           {/* Progress Line */}
-          <div className="absolute top-1/2 left-0 h-0.5 w-full bg-gray-800"></div>
+          <div className="absolute top-6 left-0 h-0.5 w-full bg-gray-800"></div>
 
           {/* Steps */}
-          <div
-            className="relative flex items-center justify-between"
-            data-aos="fade-right"
-            data-aos-delay="200"
-          >
+          <div className="relative flex items-center justify-between">
             {steps.map((step, index) => {
               const Icon = step.icon;
               return (
-                <div key={index} className="z-10 flex flex-col items-center">
+                <div
+                  key={index}
+                  className="z-10 flex flex-col items-center"
+                  style={{ width: "120px" }}
+                >
                   <div
-                    className={`mb-2 flex h-12 w-12 items-center justify-center rounded-full ${
+                    className={`mb-3 flex h-12 w-12 items-center justify-center rounded-full transition-colors ${
                       step.status === "completed"
                         ? "bg-[#92e3a9] text-black"
                         : step.status === "current"
@@ -97,7 +95,7 @@ export default function page() {
                   >
                     <Icon className="h-6 w-6" />
                   </div>
-                  <span className="w-20 text-center text-sm text-gray-400">
+                  <span className="text-center text-sm text-gray-400">
                     {step.name}
                   </span>
                 </div>
@@ -247,10 +245,14 @@ export default function page() {
             <button className="rounded-md border border-gray-700 px-4 py-2 text-white transition-colors hover:bg-gray-800">
               Cancel
             </button>
-            <button className="hover:bg-opacity-90 rounded-md bg-[#92e3a9] px-4 py-2 text-black transition-colors">
+            <Link href="/payment">
+            <button className="hover:bg-opacity-90 rounded-md bg-[#92e3a9] px-4 py-2 text-black transition-colors cursor-pointer">
               Proceed to Payment
             </button>
+            </Link>
           </div>
+          
+         
         </div>
       </div>
     </div>

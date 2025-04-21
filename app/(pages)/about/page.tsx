@@ -32,11 +32,9 @@ export default function About() {
         <div className="mb-10 text-center">
           <div className="mb-6 flex items-center justify-center gap-2">
             <MdInfoOutline size={40} className="text-[#92e3a9]" />
-            <h1 className="text-4xl font-extrabold tracking-tight text-white lg:text-5xl">
+            <h1 className="text-3xl font-extrabold tracking-tight text-white lg:text-5xl">
               About CourseSphere
-              <span className="mt-2 block text-2xl font-bold text-[#92e3a9]">
-                Your Academic Journey Simplified
-              </span>
+           
             </h1>
           </div>
           <p className="mx-auto max-w-3xl text-lg text-gray-400">
