@@ -58,7 +58,7 @@ export function MyNavbar() {
   ];
 
   return (
-    <Navbar color="black" fluid style={{ backgroundColor: "#92e3a9" }}>
+    <Navbar fluid style={{ backgroundColor: "#92e3a9" }}>
       <NavbarBrand as={Link} href="/">
         <Logo className="mx-2 h-8 w-8 text-black" />
         <span className="self-center text-xl font-semibold text-black text-shadow-initial">
@@ -118,7 +118,7 @@ export function MyNavbar() {
             <HiLogout className="h-5 w-5" />
           </Button>
         ) : (
-          <Link href="/signup" className="hidden md:block">
+          <Link href="/signup">
             <Button
               style={{
                 backgroundColor: "#000000",
