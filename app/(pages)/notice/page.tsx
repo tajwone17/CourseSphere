@@ -10,50 +10,28 @@ interface Notice {
   date: string;
   description: string;
   createdBy: string;
+  semester: string;
+  registrationDeadline: string;
 }
 
 const notices: Notice[] = [
   {
-    title: "Notice 1",
-    date: "2023-10-01",
-    description: "This is the description for Notice 1",
-    createdBy: "Admin",
+    title: "Fall 2024 Course Registration",
+    date: "2024-04-23",
+    description:
+      "Course registration for Fall 2024 semester is now open. Please complete your registration by the deadline.",
+    createdBy: "Dr. Tajwone",
+    semester: "Fall 2024",
+    registrationDeadline: "2024-07-30",
   },
   {
-    title: "Notice 2",
-    date: "2023-10-02",
-    description: "This is the description for Notice 2",
-    createdBy: "Admin",
-  },
-  {
-    title: "Notice 3",
-    date: "2023-10-03",
-    description: "This is the description for Notice 3",
-    createdBy: "Admin",
-  },
-  {
-    title: "Notice 4",
-    date: "2023-10-03",
-    description: "This is the description for Notice 4",
-    createdBy: "Admin",
-  },
-  {
-    title: "Notice 5",
-    date: "2023-10-03",
-    description: "This is the description for Notice 5",
-    createdBy: "Admin",
-  },
-  {
-    title: "Notice 6",
-    date: "2023-10-03",
-    description: "This is the description for Notice 6",
-    createdBy: "Admin",
-  },
-  {
-    title: "Notice 7",
-    date: "2023-10-03",
-    description: "This is the description for Notice 7",
-    createdBy: "Admin",
+    title: "Spring 2024 Registration Notice",
+    date: "2024-04-22",
+    description:
+      "Registration for Spring 2024 semester courses is now available.",
+    createdBy: "Dr. Chowdhury",
+    semester: "Spring 2024",
+    registrationDeadline: "2024-05-15",
   },
 ];
 
@@ -104,7 +82,10 @@ export default function NoticePage() {
                   Title
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
-                  Date
+                  Semester
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+                  Deadline
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                   Posted By
@@ -123,10 +104,13 @@ export default function NoticePage() {
                   <td className="px-6 py-4 whitespace-nowrap text-white">
                     {notice.title}
                   </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-white">
+                    {notice.semester}
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-2 text-white">
                       <HiCalendar className="text-[#92e3a9]" />
-                      {notice.date}
+                      {notice.registrationDeadline}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-gray-400">
@@ -150,7 +134,7 @@ export default function NoticePage() {
               {currentNotices.length === 0 && (
                 <tr>
                   <td
-                    colSpan={4}
+                    colSpan={5}
                     className="px-6 py-4 text-center text-gray-400"
                   >
                     No notices found.

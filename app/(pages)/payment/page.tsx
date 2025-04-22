@@ -1,93 +1,93 @@
 "use client";
-import React, { useState } from "react";
-import { Button, Label, TextInput, Select } from "flowbite-react";
+
+import { Button, Radio } from "flowbite-react";
+import { useState, useEffect } from "react";
 import {
   HiCreditCard,
-  HiCurrencyDollar,
-  HiInformationCircle,
-  HiLockClosed,
+  HiCash,
+  HiDeviceMobile,
+  HiChevronRight,
 } from "react-icons/hi";
+import { withAuth } from "@/app/utils/withAuth";
 
-export default function PaymentPage() {
-  const [paymentMethod, setPaymentMethod] = useState("credit-card");
+function PaymentPage() {
+  const [paymentMethod, setPaymentMethod] = useState("");
+  const [studentData, setStudentData] = useState({
+    name: "",
+    id: "",
+    department: "",
+    email: "",
+    waiver: ""
+  });
 
-  // Sample payment details - in a real app, this would come from your cart/state management
-  const orderDetails = {
-    subTotal: 3000,
-    waiver: 10,
-    waiverAmount: 300,
-    total: 2700,
-    courses: [
-      { code: "CS301", name: "Data Structures", credits: 3, cost: 1500 },
-      { code: "CS315", name: "Database Systems", credits: 3, cost: 1500 },
-    ],
-  };
+  useEffect(() => {
+    const email = localStorage.getItem("studentEmail");
+    const name = localStorage.getItem("studentName");
+    const id = localStorage.getItem("studentId");
+    const department = localStorage.getItem("studentDepartment");
+    const waiver = localStorage.getItem("studentWaiver") || "0";
+
+    setStudentData({
+      name: name || "",
+      id: id || "",
+      department: department || "",
+      email: email || "",
+      waiver: waiver
+    });
+  }, []);
+
+  const totalFee = 5000;
+  const waiverAmount = (totalFee * parseInt(studentData.waiver)) / 100;
+  const finalAmount = totalFee - waiverAmount;
 
   return (
-    <div className="mx-auto max-w-7xl space-y-8 px-4 py-8">
-      {/* Header */}
+    <div className="mx-auto max-w-4xl space-y-8 px-4 py-8">
+      {/* Heading */}
       <div className="mb-8 text-center">
-        <h1 className="mb-2 flex items-center justify-center gap-2 text-3xl font-bold">
-          <HiCreditCard className="text-[#92e3a9]" />
+        <h1 className="mb-2 text-3xl font-bold tracking-tight text-gray-200 lg:text-4xl">
           Payment Details
         </h1>
-        <p className="text-gray-400">
-          Complete your course registration payment
+        <p className="mt-4 text-lg text-gray-400">
+          Complete your registration by making the payment
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-        {/* Payment Form */}
-        <div className="lg:col-span-2">
-          <div className="space-y-6 rounded-lg border border-gray-800 bg-gray-900 p-6 shadow-xl">
-            {/* Payment Method Selection */}
-            <div>
-              <Label htmlFor="payment-method" className="mb-2 block text-white">
-                Payment Method
-              </Label>
-              <Select
-                id="payment-method"
-                value={paymentMethod}
-                onChange={(e) => setPaymentMethod(e.target.value)}
-                className="border-gray-700 bg-gray-800 text-white"
-              >
-                <option value="credit-card">Credit/Debit Card</option>
-                <option value="bank-transfer">Bank Transfer</option>
-                <option value="online-banking">Online Banking</option>
-              </Select>
-            </div>
+      {/* Student Information */}
+      <div className="rounded-lg border border-gray-800 bg-gray-900 p-6">
+        <h2 className="mb-4 text-xl font-semibold text-white">
+          Student Information
+        </h2>
+        <div className="grid gap-4 md:grid-cols-2">
+          <div>
+            <p className="text-sm text-gray-400">Name</p>
+            <p className="font-medium text-white">{studentData.name}</p>
+          </div>
+          <div>
+            <p className="text-sm text-gray-400">Student ID</p>
+            <p className="font-medium text-white">{studentData.id}</p>
+          </div>
+          <div>
+            <p className="text-sm text-gray-400">Department</p>
+            <p className="font-medium text-white">{studentData.department}</p>
+          </div>
+          <div>
+            <p className="text-sm text-gray-400">Email</p>
+            <p className="font-medium text-white">{studentData.email}</p>
+          </div>
+        </div>
+      </div>
 
-            {paymentMethod === "credit-card" && (
-              <>
-                {/* Card Number */}
-                <div>
-                  <Label
-                    htmlFor="card-number"
-                    className="mb-2 block text-white"
-                  >
-                    Card Number
-                  </Label>
-                  <div className="relative">
-                    <TextInput
-                      id="card-number"
-                      type="text"
-                      placeholder="1234 5678 9012 3456"
-                      required
-                      icon={HiCreditCard}
-                    />
-                  </div>
-                </div>
-
-                {/* Name on Card */}
-                <div>
-                  <Label htmlFor="card-name" className="mb-2 block text-white">
-                    Name on Card
-                  </Label>
-                  <TextInput
-                    id="card-name"
-                    type="text"
-                    placeholder="John Doe"
-                    required
+      {/* Fee Details */}
+      <div className="rounded-lg border border-gray-800 bg-gray-900 p-6">
+        <h2 className="mb-4 text-xl font-semibold text-white">Fee Details</h2>
+        <div className="space-y-3">
+          <div className="flex justify-between">
+            <span className="text-gray-400">Total Fee</span>
+            <span className="text-white">${totalFee}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-400">Waiver ({studentData.waiver}%)</span>
+            <span className="text-[#92e3a9]">-${waiverAmount}</span>
                   />
                 </div>
 
