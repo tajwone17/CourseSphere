@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, TextInput, Modal, Label } from "flowbite-react";
+import { Button, TextInput, Modal, Label, Select } from "flowbite-react";
 import { HiSearch, HiPlus, HiPencil, HiTrash } from "react-icons/hi";
 import { useState } from "react";
 
@@ -20,7 +20,7 @@ export default function ManageAdvisors() {
       id: 1,
       name: "Prof. AB De Villiers",
       department: "Computer Science",
-      email: "michael.b@neub.edu.bd",
+      email: "villers.b@neub.edu.bd",
       phone: "+880 1712345678",
       status: "Active",
     },
@@ -28,7 +28,7 @@ export default function ManageAdvisors() {
       id: 2,
       name: "Dr. Tamim Iqbal",
       department: "Electrical Engineering",
-      email: "sarah.w@neub.edu.bd",
+      email: "tamim.w@neub.edu.bd",
       phone: "+880 1812345678",
       status: "Active",
     },
@@ -36,7 +36,7 @@ export default function ManageAdvisors() {
       id: 3,
       name: "Prof. Joe Root",
       department: "Civil Engineering",
-      email: "david.l@neub.edu.bd",
+      email: "root.l@neub.edu.bd",
       phone: "+880 1912345678",
       status: "Inactive",
     },
@@ -52,6 +52,22 @@ export default function ManageAdvisors() {
     email: "",
     phone: "",
     password: "",
+  });
+  const [searchTerm, setSearchTerm] = useState("");
+  const [departmentFilter, setDepartmentFilter] = useState("all");
+
+  // Filter advisors based on search and department
+  const filteredAdvisors = advisorsList.filter((advisor) => {
+    const matchesSearch =
+      advisor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      advisor.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      advisor.phone.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesDepartment =
+      departmentFilter === "all" ||
+      advisor.department.toLowerCase() === departmentFilter.toLowerCase();
+
+    return matchesSearch && matchesDepartment;
   });
 
   const handleAddAdvisor = () => {
@@ -113,14 +129,30 @@ export default function ManageAdvisors() {
       </div>
 
       <div className="rounded-lg border border-gray-800 bg-gray-900 p-6">
-        <div className="mb-6 flex items-center justify-between">
-          <div className="relative w-64">
-            <TextInput
-              type="search"
-              placeholder="Search Advisors..."
-              className="rounded-lg border-gray-700 bg-gray-800 text-white placeholder-gray-400 focus:border-[#92e3a9] focus:ring-[#92e3a9]"
-            />
-            <HiSearch className="absolute top-2.5 right-3 h-5 w-5 text-gray-400" />
+        <div className="mb-6 flex items-center justify-between gap-4">
+          <div className="flex flex-1 items-center gap-4">
+            <div className="relative w-64">
+              <TextInput
+                type="search"
+                placeholder="Search Advisors..."
+                className="rounded-lg border-gray-700 bg-gray-800 text-white placeholder-gray-400 focus:border-[#92e3a9] focus:ring-[#92e3a9]"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <HiSearch className="absolute top-2.5 right-3 h-5 w-5 text-gray-400" />
+            </div>
+            <Select
+              className="w-48 border-gray-700 bg-gray-800 text-white"
+              value={departmentFilter}
+              onChange={(e) => setDepartmentFilter(e.target.value)}
+            >
+              <option value="all">All Departments</option>
+              <option value="computer science">Computer Science</option>
+              <option value="electrical engineering">
+                Electrical Engineering
+              </option>
+              <option value="civil engineering">Civil Engineering</option>
+            </Select>
           </div>
         </div>
 
@@ -146,7 +178,7 @@ export default function ManageAdvisors() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-800">
-              {advisorsList.map((advisor) => (
+              {filteredAdvisors.map((advisor) => (
                 <tr
                   key={advisor.id}
                   className="bg-gray-900 transition-colors hover:bg-gray-800"
@@ -189,6 +221,16 @@ export default function ManageAdvisors() {
                   </td>
                 </tr>
               ))}
+              {filteredAdvisors.length === 0 && (
+                <tr>
+                  <td
+                    colSpan={5}
+                    className="px-6 py-4 text-center text-gray-400"
+                  >
+                    No advisors found matching your search criteria.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

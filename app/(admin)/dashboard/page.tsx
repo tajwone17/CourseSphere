@@ -15,7 +15,7 @@ export default function AdvisorDashboard() {
   const urgentApprovals = [
     {
       id: 1,
-      student: "John Smith",
+      student: "Lionel Messi",
       regId: "2024CSE001",
       submissionDate: "2024-04-20",
       courses: ["Database Systems", "Software Engineering"],
@@ -23,7 +23,7 @@ export default function AdvisorDashboard() {
     },
     {
       id: 2,
-      student: "Emma Wilson",
+      student: "Emi Martinez",
       regId: "2024CSE045",
       submissionDate: "2024-04-21",
       courses: ["Computer Networks", "Operating Systems"],
@@ -31,7 +31,7 @@ export default function AdvisorDashboard() {
     },
     {
       id: 3,
-      student: "Michael Brown",
+      student: "Paolo Dybala",
       regId: "2024CSE078",
       submissionDate: "2024-04-21",
       courses: ["Web Development", "Data Structures"],
