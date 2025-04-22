@@ -3,6 +3,7 @@
 import { Button, TextInput, Select } from "flowbite-react";
 import Link from "next/link";
 import { HiSearch } from "react-icons/hi";
+import { FaCheckCircle, FaClock, FaTimesCircle } from "react-icons/fa";
 
 export default function StudentManagement() {
   const students = [
@@ -13,6 +14,7 @@ export default function StudentManagement() {
       email: "john.smith@example.com",
       semester: "Spring 2024",
       department: "CSE",
+      status: "pending",
     },
     {
       id: "2",
@@ -21,6 +23,7 @@ export default function StudentManagement() {
       email: "emma.wilson@example.com",
       semester: "Spring 2024",
       department: "CSE",
+      status: "approved",
     },
     {
       id: "3",
@@ -29,6 +32,7 @@ export default function StudentManagement() {
       email: "michael.brown@example.com",
       semester: "Spring 2024",
       department: "CSE",
+      status: "rejected",
     },
     {
       id: "4",
@@ -37,6 +41,7 @@ export default function StudentManagement() {
       email: "sarah.j@example.com",
       semester: "Spring 2024",
       department: "CSE",
+      status: "approved",
     },
     {
       id: "5",
@@ -45,8 +50,36 @@ export default function StudentManagement() {
       email: "david.lee@example.com",
       semester: "Spring 2024",
       department: "CSE",
+      status: "pending",
     },
   ];
+
+  const getStatus = (status: string) => {
+    switch (status) {
+      case "approved":
+        return (
+          <span className="inline-flex items-center gap-1 rounded px-2 py-1 text-sm font-medium text-green-500 bg-green-800/30">
+            <FaCheckCircle className="text-green-400" />
+            Approved
+          </span>
+        );
+      case "rejected":
+        return (
+          <span className="inline-flex items-center gap-1 rounded px-2 py-1 text-sm font-medium text-red-500 bg-red-800/30">
+            <FaTimesCircle className="text-red-400" />
+            Rejected
+          </span>
+        );
+      case "pending":
+      default:
+        return (
+          <span className="inline-flex items-center gap-1 rounded px-2 py-1 text-sm font-medium text-yellow-400 bg-yellow-700/30">
+            <FaClock className="text-yellow-300" />
+            Pending
+          </span>
+        );
+    }
+  };
 
   return (
     <div className="mx-auto max-w-7xl p-8">
@@ -89,6 +122,7 @@ export default function StudentManagement() {
               <th className="px-6 py-3 text-left text-sm font-medium">Email</th>
               <th className="px-6 py-3 text-left text-sm font-medium">Department</th>
               <th className="px-6 py-3 text-left text-sm font-medium">Semester</th>
+              <th className="px-6 py-3 text-left text-sm font-medium">Status</th>
               <th className="px-6 py-3 text-left text-sm font-medium">Actions</th>
             </tr>
           </thead>
@@ -100,18 +134,16 @@ export default function StudentManagement() {
                 <td className="px-6 py-4">{student.email}</td>
                 <td className="px-6 py-4">{student.department}</td>
                 <td className="px-6 py-4">{student.semester}</td>
+                <td className="px-6 py-4">{getStatus(student.status)}</td>
                 <td className="px-6 py-4">
                   <div className="flex gap-2">
-                 
                     <Link href={`/dashboard/student-management/${student.id}`}>
                       <Button
-                          style={{
-                            backgroundColor: "#92e3a9",
-                            color: "#000000",
-              
-                        
-                            cursor: "pointer",
-                          }}
+                        style={{
+                          backgroundColor: "#92e3a9",
+                          color: "#000000",
+                          cursor: "pointer",
+                        }}
                         size="sm"
                         className="bg-[#92e3a9] text-gray-900 hover:bg-[#7ac892]"
                       >
