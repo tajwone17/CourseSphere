@@ -24,19 +24,28 @@ export default function RegistrationApproval() {
   const [courses, setCourses] = useState<Course[]>([
     {
       id: "1",
-      code: "CSE4047",
-      title: "Web Engineering",
+      code: "CSE301",
+      title: "Database Management Systems",
       credit: 3,
-      prerequisite: "CSE3015",
+      prerequisite: "CSE201",
       status: "pending",
       comments: "",
     },
     {
       id: "2",
-      code: "CSE4048",
-      title: "Machine Learning",
+      code: "CSE311",
+      title: "Computer Networks",
       credit: 3,
-      prerequisite: "CSE3016",
+      prerequisite: "CSE251",
+      status: "pending",
+      comments: "",
+    },
+    {
+      id: "3",
+      code: "CSE325",
+      title: "Operating Systems",
+      credit: 3,
+      prerequisite: "CSE221",
       status: "pending",
       comments: "",
     },
@@ -44,12 +53,12 @@ export default function RegistrationApproval() {
 
   const handleStatusChange = (
     courseId: string,
-    newStatus: "pending" | "approved" | "rejected"
+    newStatus: "pending" | "approved" | "rejected",
   ) => {
     setCourses(
       courses.map((course) =>
-        course.id === courseId ? { ...course, status: newStatus } : course
-      )
+        course.id === courseId ? { ...course, status: newStatus } : course,
+      ),
     );
   };
 
@@ -83,15 +92,16 @@ export default function RegistrationApproval() {
         <div className="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2 lg:grid-cols-3">
           <div>
             <p className="text-gray-400">
-              <span className="font-medium text-white">Name:</span> John Smith
+              <span className="font-medium text-white">Name:</span> Tajwone
+              Chowdhury
             </p>
             <p className="text-gray-400">
               <span className="font-medium text-white">Student ID:</span>{" "}
-              2024CSE001
+              0562310005101031
             </p>
             <p className="text-gray-400">
               <span className="font-medium text-white">Email:</span>{" "}
-              john.smith@example.com
+              tajwone.chowdhury@neub.edu.bd
             </p>
           </div>
           <div>
@@ -104,7 +114,7 @@ export default function RegistrationApproval() {
             </p>
             <p className="text-gray-400">
               <span className="font-medium text-white">Submission Date:</span>{" "}
-              April 30, 2025
+              April 23, 2025
             </p>
           </div>
           <div>
@@ -112,11 +122,11 @@ export default function RegistrationApproval() {
               <span className="font-medium text-white">Department:</span> CSE
             </p>
             <p className="text-gray-400">
-              <span className="font-medium text-white">Advisor:</span> Dr. Allen
-              Parker
+              <span className="font-medium text-white">Advisor:</span> Jakaria
             </p>
             <p className="text-gray-400">
-              <span className="font-medium text-white">Amount:</span> 250,000 BDT
+              <span className="font-medium text-white">Amount:</span> 250,000
+              BDT
             </p>
           </div>
         </div>
@@ -169,7 +179,7 @@ export default function RegistrationApproval() {
                       onChange={(e) =>
                         handleStatusChange(
                           course.id,
-                          e.target.value as "pending" | "approved" | "rejected"
+                          e.target.value as "pending" | "approved" | "rejected",
                         )
                       }
                       className="border-gray-700 bg-gray-800 text-white"
@@ -210,7 +220,7 @@ export default function RegistrationApproval() {
       </div>
 
       {/* Action Buttons */}
-      <div className="flex flex-wrap justify-between items-center mt-8">
+      <div className="mt-8 flex flex-wrap items-center justify-between">
         {/* Left-aligned Back Button */}
         <Link href="/dashboard/student-management">
           <Button

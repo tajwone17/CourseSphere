@@ -10,30 +10,38 @@ import Link from "next/link";
 
 export default function page() {
   const registrationDetails = [
-    { label: "Student Name", value: "John Doe" },
-    { label: "Student ID", value: "2024001" },
-    { label: "Semester", value: "Fall 2024" },
-    { label: "Program", value: "Computer Science" },
-    { label: "Registration Date", value: "April 21, 2025" },
+    { label: "Student Name", value: "Tajwone Chowdhury" },
+    { label: "Student ID", value: "0562310005101031" },
+    { label: "Semester", value: "Spring 2024" },
+    { label: "Program", value: "Computer Science Engineering" },
+    { label: "Registration Date", value: "April 23, 2025" },
     { label: "Status", value: "Pending" },
   ];
 
   const courseApprovalData = [
     {
-      courseCode: "CS101",
-      courseTitle: "Introduction to Programming",
+      courseCode: "CSE301",
+      courseTitle: "Database Management Systems",
       credits: 3,
       advisorApproval: "Approved",
       hodApproval: "Pending",
       comments: "Prerequisites met",
     },
     {
-      courseCode: "CS102",
-      courseTitle: "Data Structures",
-      credits: 4,
+      courseCode: "CSE311",
+      courseTitle: "Computer Networks",
+      credits: 3,
       advisorApproval: "Pending",
       hodApproval: "Pending",
       comments: "Waiting for advisor review",
+    },
+    {
+      courseCode: "CSE325",
+      courseTitle: "Operating Systems",
+      credits: 3,
+      advisorApproval: "Pending",
+      hodApproval: "Pending",
+      comments: "Under review",
     },
   ];
 

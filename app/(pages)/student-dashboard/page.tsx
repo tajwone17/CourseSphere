@@ -69,19 +69,19 @@ export default function StudentDashboard() {
 
   const recentRegistrations = [
     {
-      courseCode: "CS301",
-      title: "Data Structures",
+      courseCode: "CSE301",
+      title: "Database Management Systems",
       credits: 3,
       status: "Approved",
     },
     {
-      courseCode: "CS315",
-      title: "Database Systems",
+      courseCode: "CSE311",
+      title: "Computer Networks",
       credits: 3,
       status: "Pending",
     },
     {
-      courseCode: "CS325",
+      courseCode: "CSE325",
       title: "Operating Systems",
       credits: 3,
       status: "Pending",
@@ -97,14 +97,13 @@ export default function StudentDashboard() {
         data-aos-duration="1000"
       >
         <h1 className="mb-2 text-4xl font-bold tracking-tight text-white lg:text-5xl">
-          Welcome Back, Tajwone Vai
-       
+          Welcome Back, Tajwone Chowdhury
         </h1>
         <p className="mt-4 text-lg text-gray-400">
-          Student ID: 2024001 | Computer Science Engineering
+          Student ID: 0562310005101031 | Computer Science Engineering
         </p>
         <p className="mt-4 text-lg text-gray-400">
-         North East University Bangladesh
+          North East University Bangladesh
         </p>
       </div>
 
@@ -141,7 +140,7 @@ export default function StudentDashboard() {
       </div>
 
       {/* Two Column Layout for Important Dates and Recent Registrations */}
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         {/* Important Registration Dates */}
         <div
           className="rounded-lg border border-gray-800 bg-gray-900 p-6 shadow-xl"
@@ -188,69 +187,71 @@ export default function StudentDashboard() {
 
         {/* Recent Course Registrations */}
         <div
-          className="rounded-lg border border-gray-800 bg-gray-900 p-6 shadow-xl"
+          className="rounded-lg border border-gray-800 bg-gray-900 shadow-xl"
           data-aos="fade-left"
           data-aos-delay="400"
         >
-          <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold">
-            <HiDocumentText className="text-[#92e3a9]" />
-            <span className="text-white">Recent Course Registrations</span>
-          </h2>
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-800">
-              <thead className="bg-gray-800">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
-                    Course Code
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
-                    Title
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
-                    Credits
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
-                    Status
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-800">
-                {recentRegistrations.map((course, index) => (
-                  <tr
-                    key={index}
-                    className="bg-gray-900 transition-colors hover:bg-gray-800"
-                    data-aos="fade-up"
-                    data-aos-delay={600 + index * 100}
-                  >
-                    <td className="px-6 py-4 whitespace-nowrap text-white">
-                      {course.courseCode}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-white">
-                      {course.title}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-white">
-                      {course.credits}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span
-                        className={`flex items-center gap-2 rounded-full px-3 py-1 text-xs ${
-                          course.status === "Approved"
-                            ? "bg-opacity-20 bg-[#92e3a9] text-black"
-                            : "bg-yellow-900 text-yellow-300"
-                        }`}
-                      >
-                        {course.status === "Approved" ? (
-                          <HiCheck className="h-4 w-4" />
-                        ) : (
-                          <HiPending className="h-4 w-4" />
-                        )}
-                        {course.status}
-                      </span>
-                    </td>
+          <div className="p-6">
+            <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold">
+              <HiDocumentText className="text-[#92e3a9]" />
+              <span className="text-white">Recent Course Registrations</span>
+            </h2>
+          </div>
+          <div className="overflow-hidden">
+            <div className="w-full overflow-x-auto">
+              <table className="min-w-full">
+                <thead>
+                  <tr className="border-b border-gray-800 bg-gray-800">
+                    <th scope="col" className="whitespace-nowrap px-4 py-2 text-left text-xs font-medium text-gray-400">
+                      Code
+                    </th>
+                    <th scope="col" className="whitespace-nowrap px-4 py-2 text-left text-xs font-medium text-gray-400">
+                      Title
+                    </th>
+                    <th scope="col" className="whitespace-nowrap px-4 py-2 text-left text-xs font-medium text-gray-400">
+                      Credits
+                    </th>
+                    <th scope="col" className="whitespace-nowrap px-4 py-2 text-left text-xs font-medium text-gray-400">
+                      Status
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-gray-800">
+                  {recentRegistrations.map((course, index) => (
+                    <tr
+                      key={index}
+                      className="bg-gray-900 transition-colors hover:bg-gray-800"
+                    >
+                      <td className="whitespace-nowrap px-4 py-2 text-sm text-white">
+                        {course.courseCode}
+                      </td>
+                      <td className="px-4 py-2 text-sm text-white">
+                        {course.title}
+                      </td>
+                      <td className="whitespace-nowrap px-4 py-2 text-sm text-white">
+                        {course.credits}
+                      </td>
+                      <td className="whitespace-nowrap px-4 py-2">
+                        <span
+                          className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${
+                            course.status === "Approved"
+                              ? "bg-[#92e3a9] bg-opacity-20 text-black"
+                              : "bg-yellow-900 text-yellow-300"
+                          }`}
+                        >
+                          {course.status === "Approved" ? (
+                            <HiCheck className="h-3 w-3" />
+                          ) : (
+                            <HiPending className="h-3 w-3" />
+                          )}
+                          {course.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>

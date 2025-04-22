@@ -9,45 +9,36 @@ export default function StudentManagement() {
   const students = [
     {
       id: "1",
-      name: "John Smith",
-      studentId: "2024CSE001",
-      email: "john.smith@example.com",
+      name: "Tajwone Chowdhury",
+      studentId: "0562310005101031",
+      email: "tajwone.chowdhury@neub.edu.bd",
       semester: "Spring 2024",
       department: "CSE",
       status: "pending",
     },
     {
       id: "2",
-      name: "Emma Wilson",
-      studentId: "2024CSE045",
-      email: "emma.wilson@example.com",
+      name: "Jakaria",
+      studentId: "0562310005101032",
+      email: "jakaria@neub.edu.bd",
       semester: "Spring 2024",
       department: "CSE",
       status: "approved",
     },
     {
       id: "3",
-      name: "Michael Brown",
-      studentId: "2024CSE078",
-      email: "michael.brown@example.com",
+      name: "Oli Ahmed",
+      studentId: "0562310005101033",
+      email: "oli.ahmed@neub.edu.bd",
       semester: "Spring 2024",
       department: "CSE",
-      status: "rejected",
+      status: "pending",
     },
     {
       id: "4",
-      name: "Sarah Johnson",
-      studentId: "2024CSE102",
-      email: "sarah.j@example.com",
-      semester: "Spring 2024",
-      department: "CSE",
-      status: "approved",
-    },
-    {
-      id: "5",
-      name: "David Lee",
-      studentId: "2024CSE156",
-      email: "david.lee@example.com",
+      name: "Masum Pradhania",
+      studentId: "0562310005101034",
+      email: "masum.pradhania@neub.edu.bd",
       semester: "Spring 2024",
       department: "CSE",
       status: "pending",
@@ -58,14 +49,14 @@ export default function StudentManagement() {
     switch (status) {
       case "approved":
         return (
-          <span className="inline-flex items-center gap-1 rounded px-2 py-1 text-sm font-medium text-green-500 bg-green-800/30">
+          <span className="inline-flex items-center gap-1 rounded bg-green-800/30 px-2 py-1 text-sm font-medium text-green-500">
             <FaCheckCircle className="text-green-400" />
             Approved
           </span>
         );
       case "rejected":
         return (
-          <span className="inline-flex items-center gap-1 rounded px-2 py-1 text-sm font-medium text-red-500 bg-red-800/30">
+          <span className="inline-flex items-center gap-1 rounded bg-red-800/30 px-2 py-1 text-sm font-medium text-red-500">
             <FaTimesCircle className="text-red-400" />
             Rejected
           </span>
@@ -73,7 +64,7 @@ export default function StudentManagement() {
       case "pending":
       default:
         return (
-          <span className="inline-flex items-center gap-1 rounded px-2 py-1 text-sm font-medium text-yellow-400 bg-yellow-700/30">
+          <span className="inline-flex items-center gap-1 rounded bg-yellow-700/30 px-2 py-1 text-sm font-medium text-yellow-400">
             <FaClock className="text-yellow-300" />
             Pending
           </span>
@@ -117,18 +108,28 @@ export default function StudentManagement() {
         <table className="min-w-full divide-y divide-gray-700">
           <thead className="bg-gray-800 text-gray-400">
             <tr>
-              <th className="px-6 py-3 text-left text-sm font-medium">Student ID</th>
+              <th className="px-6 py-3 text-left text-sm font-medium">
+                Student ID
+              </th>
               <th className="px-6 py-3 text-left text-sm font-medium">Name</th>
               <th className="px-6 py-3 text-left text-sm font-medium">Email</th>
-              <th className="px-6 py-3 text-left text-sm font-medium">Department</th>
-              <th className="px-6 py-3 text-left text-sm font-medium">Semester</th>
-              <th className="px-6 py-3 text-left text-sm font-medium">Status</th>
-              <th className="px-6 py-3 text-left text-sm font-medium">Actions</th>
+              <th className="px-6 py-3 text-left text-sm font-medium">
+                Department
+              </th>
+              <th className="px-6 py-3 text-left text-sm font-medium">
+                Semester
+              </th>
+              <th className="px-6 py-3 text-left text-sm font-medium">
+                Status
+              </th>
+              <th className="px-6 py-3 text-left text-sm font-medium">
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-700 bg-gray-900">
             {students.map((student) => (
-              <tr key={student.id} className="hover:bg-gray-800 text-white">
+              <tr key={student.id} className="text-white hover:bg-gray-800">
                 <td className="px-6 py-4">{student.studentId}</td>
                 <td className="px-6 py-4">{student.name}</td>
                 <td className="px-6 py-4">{student.email}</td>
