@@ -238,6 +238,7 @@ export default function CourseSelectionPage() {
                     Select More Courses
                   </Button>
                 </Link>
+                <Link href="/registration-status">
                 <Button
                   size="sm"
                   disabled={!acceptedTerms || selectedAdvisor === ""}
@@ -250,6 +251,7 @@ export default function CourseSelectionPage() {
                 >
                   Proceed to Registration
                 </Button>
+                </Link>
               </div>
             </div>
           </div>
