@@ -41,7 +41,15 @@ export default function ManageAdvisors() {
           </p>
         </div>
 
-        <Button className="flex items-center gap-2 bg-[#92e3a9] text-gray-900 transition-all duration-200 hover:bg-[#7ac892]">
+        <Button 
+               style={{
+                backgroundColor: "#92e3a9",
+                color: "#000000",
+                marginTop: "20px",
+                width: "fit-content",
+                cursor: "pointer",
+              }}
+           className="flex items-center gap-2 bg-[#92e3a9] text-gray-900 transition-all duration-200 hover:bg-[#7ac892]">
           <HiPlus className="h-5 w-5" />
           Add New Advisor
         </Button>
@@ -75,9 +83,7 @@ export default function ManageAdvisors() {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                   Phone
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
-                  Status
-                </th>
+            
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                   Actions
                 </th>
@@ -101,23 +107,19 @@ export default function ManageAdvisors() {
                   <td className="px-6 py-4 whitespace-nowrap text-white">
                     {advisor.phone}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span
-                      className={`rounded-full px-3 py-1 text-xs font-medium ${
-                        advisor.status === "Active"
-                          ? "bg-green-900 text-green-300"
-                          : "bg-red-900 text-red-300"
-                      }`}
-                    >
-                      {advisor.status}
-                    </span>
-                  </td>
+             
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-2">
-                      <Button size="xs" color="warning">
+                      <Button
+                        size="xs"
+                        style={{ backgroundColor: "#f59e0b", color: "#ffffff" }}
+                      >
                         <HiPencil className="h-4 w-4" />
                       </Button>
-                      <Button size="xs" color="failure">
+                      <Button
+                        size="xs"
+                        style={{ backgroundColor: "#ef4444", color: "#ffffff" }}
+                      >
                         <HiTrash className="h-4 w-4" />
                       </Button>
                     </div>

@@ -84,9 +84,7 @@ export default function ManageHOD() {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                   Phone
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
-                  Status
-                </th>
+          
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                   Actions
                 </th>
@@ -110,23 +108,13 @@ export default function ManageHOD() {
                   <td className="px-6 py-4 whitespace-nowrap text-white">
                     {hod.phone}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span
-                      className={`rounded-full px-3 py-1 text-xs font-medium ${
-                        hod.status === "Active"
-                          ? "bg-green-900 text-green-300"
-                          : "bg-red-900 text-red-300"
-                      }`}
-                    >
-                      {hod.status}
-                    </span>
-                  </td>
+             
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-2">
-                      <Button size="xs" color="warning">
+                      <Button style={{ backgroundColor: "#f59e0b", color: "#ffffff" }} size="xs" color="warning">
                         <HiPencil className="h-4 w-4" />
                       </Button>
-                      <Button size="xs" color="failure">
+                      <Button style={{ backgroundColor: "#ef4444", color: "#ffffff" }} size="xs" color="failure">
                         <HiTrash className="h-4 w-4" />
                       </Button>
                     </div>

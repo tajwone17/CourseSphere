@@ -128,12 +128,26 @@ export default function StudentManagement() {
                 <td className="px-6 py-4 text-sm whitespace-nowrap">
                   <div className="flex gap-2">
                     <Button
+                         style={{
+                            backgroundColor: "#92e3a9",
+                            color: "#000000",
+                       
+                            width: "fit-content",
+                            cursor: "pointer",
+                          }}
                       size="sm"
                       className="bg-[#92e3a9] text-gray-900 hover:bg-[#7ac892]"
                     >
                       <HiEye className="h-4 w-4" />
                     </Button>
                     <Button
+                         style={{
+                            backgroundColor: "#92e3a9",
+                            color: "#000000",
+                           
+                            width: "fit-content",
+                            cursor: "pointer",
+                          }}
                       size="sm"
                       className="bg-[#92e3a9] text-gray-900 hover:bg-[#7ac892]"
                     >

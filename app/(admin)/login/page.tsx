@@ -34,7 +34,9 @@ export default function AdminLogin() {
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
     setFormData({
       ...formData,
       [e.target.id]: e.target.value,
@@ -56,10 +58,12 @@ export default function AdminLogin() {
         <form onSubmit={handleSubmit} className="mt-8 space-y-6">
           {/* Role Selection */}
           <div className="space-y-2">
-            <Label htmlFor="role" className="text-gray-300">Select Role</Label>
+            <Label htmlFor="role" className="text-gray-300">
+              Select Role
+            </Label>
             <div className="flex items-center gap-2">
               <MdSupervisorAccount size={20} className="text-[#92e3a9]" />
-              <Select 
+              <Select
                 id="role"
                 value={formData.role}
                 onChange={handleChange}
@@ -75,7 +79,9 @@ export default function AdminLogin() {
 
           {/* Email */}
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-gray-300">Email Address</Label>
+            <Label htmlFor="email" className="text-gray-300">
+              Email Address
+            </Label>
             <div className="flex items-center gap-2">
               <MdEmail size={20} className="text-[#92e3a9]" />
               <TextInput
@@ -92,7 +98,9 @@ export default function AdminLogin() {
 
           {/* Password */}
           <div className="space-y-2">
-            <Label htmlFor="password" className="text-gray-300">Password</Label>
+            <Label htmlFor="password" className="text-gray-300">
+              Password
+            </Label>
             <div className="flex items-center gap-2">
               <MdLock size={20} className="text-[#92e3a9]" />
               <TextInput
@@ -108,8 +116,15 @@ export default function AdminLogin() {
           </div>
 
           <Button
+            style={{
+              backgroundColor: "#92e3a9",
+              color: "#000000",
+
+              width: "full",
+              cursor: "pointer",
+            }}
             type="submit"
-            className="w-full bg-[#92e3a9] text-gray-900 hover:bg-[#7ac892] transition-all duration-200"
+            className="w-full bg-[#92e3a9] text-gray-900 transition-all duration-200 hover:bg-[#7ac892]"
           >
             Sign In
           </Button>
