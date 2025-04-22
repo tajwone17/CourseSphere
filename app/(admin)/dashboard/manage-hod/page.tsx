@@ -18,7 +18,7 @@ export default function ManageHOD() {
   const [hodList, setHodList] = useState<HOD[]>([
     {
       id: 1,
-      name: "Dr. John Doe",
+      name: "Dr. Tajwone",
       department: "Computer Science",
       email: "john.doe@neub.edu.bd",
       phone: "+880 1712345678",
@@ -26,7 +26,7 @@ export default function ManageHOD() {
     },
     {
       id: 2,
-      name: "Dr. Jane Smith",
+      name: "Dr. Chowdhury",
       department: "Electrical Engineering",
       email: "jane.smith@neub.edu.bd",
       phone: "+880 1812345678",
@@ -34,7 +34,7 @@ export default function ManageHOD() {
     },
     {
       id: 3,
-      name: "Dr. Robert Johnson",
+      name: "Dr. Jakaria",
       department: "Civil Engineering",
       email: "robert.j@neub.edu.bd",
       phone: "+880 1912345678",

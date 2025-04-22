@@ -18,7 +18,7 @@ export default function ManageAdvisors() {
   const [advisorsList, setAdvisorsList] = useState<Advisor[]>([
     {
       id: 1,
-      name: "Prof. Michael Brown",
+      name: "Prof. AB De Villiers",
       department: "Computer Science",
       email: "michael.b@neub.edu.bd",
       phone: "+880 1712345678",
@@ -26,7 +26,7 @@ export default function ManageAdvisors() {
     },
     {
       id: 2,
-      name: "Dr. Sarah Wilson",
+      name: "Dr. Tamim Iqbal",
       department: "Electrical Engineering",
       email: "sarah.w@neub.edu.bd",
       phone: "+880 1812345678",
@@ -34,7 +34,7 @@ export default function ManageAdvisors() {
     },
     {
       id: 3,
-      name: "Prof. David Lee",
+      name: "Prof. Joe Root",
       department: "Civil Engineering",
       email: "david.l@neub.edu.bd",
       phone: "+880 1912345678",
