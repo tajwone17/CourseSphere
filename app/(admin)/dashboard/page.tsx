@@ -49,9 +49,9 @@ export default function AdvisorDashboard() {
     },
     {
       id: 2,
-      title: "Mid-term Exam Schedule Submission",
+      title: "Admit Card Collection",
       date: "2024-05-15",
-      description: "Deadline for submitting mid-term examination schedule",
+      description: "Deadline for Collecting Admit Card",
     },
     {
       id: 3,
@@ -65,7 +65,7 @@ export default function AdvisorDashboard() {
     <div className="mx-auto max-w-7xl p-8">
       {/* Welcome Section */}
       <div className="mb-8">
-        <h1 className="text-4xl font-bold text-white">Welcome, Dr. Johnson</h1>
+        <h1 className="text-4xl font-bold text-white">Welcome, Dr. Tajwone Chowdhury</h1>
         <p className="mt-2 text-lg text-gray-400">
           Overview of your advisees&apos; activities today
         </p>
@@ -80,7 +80,7 @@ export default function AdvisorDashboard() {
             </div>
             <div>
               <p className="text-sm font-medium text-gray-400">
-                Total Advisees
+                Total Approved
               </p>
               <p className="text-2xl font-bold text-white">145</p>
             </div>
@@ -94,7 +94,7 @@ export default function AdvisorDashboard() {
             </div>
             <div>
               <p className="text-sm font-medium text-gray-400">
-                Pending Approvals
+                Total Rejected
               </p>
               <p className="text-2xl font-bold text-white">12</p>
             </div>
@@ -108,7 +108,7 @@ export default function AdvisorDashboard() {
             </div>
             <div>
               <p className="text-sm font-medium text-gray-400">
-                Registered Students
+               Pending Approvals
               </p>
               <p className="text-2xl font-bold text-white">98</p>
             </div>
@@ -122,7 +122,7 @@ export default function AdvisorDashboard() {
             </div>
             <div>
               <p className="text-sm font-medium text-gray-400">
-                Urgent Actions
+              Hours Remaining
               </p>
               <p className="text-2xl font-bold text-white">8</p>
             </div>

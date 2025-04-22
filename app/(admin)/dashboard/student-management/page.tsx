@@ -102,11 +102,16 @@ export default function StudentManagement() {
                 <td className="px-6 py-4">{student.semester}</td>
                 <td className="px-6 py-4">
                   <div className="flex gap-2">
-                    <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
-                      View
-                    </Button>
+                 
                     <Link href={`/dashboard/student-management/${student.id}`}>
                       <Button
+                          style={{
+                            backgroundColor: "#92e3a9",
+                            color: "#000000",
+              
+                        
+                            cursor: "pointer",
+                          }}
                         size="sm"
                         className="bg-[#92e3a9] text-gray-900 hover:bg-[#7ac892]"
                       >

@@ -47,14 +47,6 @@ export default function RegistrationApproval() {
     );
   };
 
-  const handleCommentChange = (courseId: string, comment: string) => {
-    setCourses(
-      courses.map((course) =>
-        course.id === courseId ? { ...course, comments: comment } : course,
-      ),
-    );
-  };
-
   const handleApproveAll = () => {
     setCourses(courses.map((course) => ({ ...course, status: "approved" })));
   };
@@ -79,29 +71,45 @@ export default function RegistrationApproval() {
       </div>
 
       {/* Student Details */}
-      <div className="mb-8 rounded-lg border border-gray-700 bg-gray-800 p-6">
-        <h2 className="mb-4 text-2xl font-semibold text-white">
-          Student Details
-        </h2>
-        <div className="grid gap-4 md:grid-cols-2">
-          <div>
-            <p className="text-gray-400">
-              Name: <span className="text-white">John Smith</span>
-            </p>
-            <p className="text-gray-400">
-              Student ID: <span className="text-white">2024CSE001</span>
-            </p>
-          </div>
-          <div>
-            <p className="text-gray-400">
-              Email: <span className="text-white">john.smith@example.com</span>
-            </p>
-            <p className="text-gray-400">
-              Semester: <span className="text-white">Spring 2024</span>
-            </p>
-          </div>
-        </div>
-      </div>
+   
+<div className="mb-8 rounded-lg border border-gray-700 bg-gray-800 p-6">
+  <h2 className="mb-6 text-2xl font-semibold text-white">Student Details</h2>
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-4 gap-x-8">
+    <div>
+      <p className="text-gray-400">
+        <span className="font-medium text-white">Name:</span> John Smith
+      </p>
+      <p className="text-gray-400">
+        <span className="font-medium text-white">Student ID:</span> 2024CSE001
+      </p>
+      <p className="text-gray-400">
+        <span className="font-medium text-white">Email:</span> john.smith@example.com
+      </p>
+    </div>
+    <div>
+      <p className="text-gray-400">
+        <span className="font-medium text-white">Total Credit:</span> 21
+      </p>
+      <p className="text-gray-400">
+        <span className="font-medium text-white">Semester:</span> Spring 2024
+      </p>
+      <p className="text-gray-400">
+        <span className="font-medium text-white">Submission Date:</span> April 30, 2025
+      </p>
+    </div>
+    <div>
+      <p className="text-gray-400">
+        <span className="font-medium text-white">Department:</span> CSE
+      </p>
+      <p className="text-gray-400">
+        <span className="font-medium text-white">Advisor:</span> Dr. Allen Parker
+      </p>
+      <p className="text-gray-400">
+        <span className="font-medium text-white">Department:</span> CSE
+      </p>
+    </div>
+  </div>
+</div>
 
       {/* Course Selection Review */}
       <div className="mb-8">
@@ -126,9 +134,6 @@ export default function RegistrationApproval() {
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                   Status
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
-                  Comments
                 </th>
               </tr>
             </thead>
@@ -163,39 +168,65 @@ export default function RegistrationApproval() {
                       <option value="rejected">Rejected</option>
                     </Select>
                   </td>
-                  <td className="px-6 py-4 text-sm">
-                    <Textarea
-                      value={course.comments}
-                      onChange={(e) =>
-                        handleCommentChange(course.id, e.target.value)
-                      }
-                      className="border-gray-700 bg-gray-800 text-white"
-                      rows={2}
-                      placeholder="Add comments..."
-                    />
-                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       </div>
-
+      {/* Comments Section */}
+      <div className="mb-8">
+        <h2 className="mb-4 text-2xl font-semibold text-white">
+          Students Comments
+        </h2>
+        <div className="rounded-lg bg-gray-900 p-10">
+          lorerm ipsum dolor sit amet, consectetur adipiscing elit. Integer nec
+          odio. Praesent libero. Sed cursus ante dapibus diam.
+        </div>
+      </div>
+ {/* Comments Section Admin*/}
+ <div className="mb-8">
+        <h2 className="mb-4 text-2xl font-semibold text-white">
+          Admin Comments
+        </h2>
+      <Textarea className="p-10" placeholder="Enter any comments or feedback for student" name="Admin comment" id=""></Textarea>
+      </div>
       {/* Action Buttons */}
       <div className="flex flex-wrap justify-end gap-4">
         <Button
+             style={{
+              backgroundColor: "#92e3a9",
+              color: "lightwhite",
+
+          
+              cursor: "pointer",
+            }}
           onClick={handleApproveAll}
           className="bg-green-600 text-white hover:bg-green-700"
         >
           Approve All
         </Button>
         <Button
+             style={{
+              backgroundColor: "red",
+              color: "white",
+
+          
+              cursor: "pointer",
+            }}
           onClick={handleRejectAll}
           className="bg-red-600 text-white hover:bg-red-700"
         >
           Reject All
         </Button>
         <Button
+             style={{
+              backgroundColor: "royalblue",
+              color: "white",
+
+          
+              cursor: "pointer",
+            }}
           onClick={handleSaveChanges}
           className="bg-[#92e3a9] text-gray-900 hover:bg-[#7ac892]"
         >
