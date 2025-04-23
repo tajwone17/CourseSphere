@@ -56,7 +56,7 @@ export default function Component() {
         </div>
         <Link
           className="mt-5 text-center font-medium underline"
-          href="/"
+          href="/forgot-password"
           style={{ color: "royalblue" }}
         >
           Forget Password?{" "}
