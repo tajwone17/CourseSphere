@@ -18,11 +18,11 @@ import {
   NavbarCollapse,
   NavbarToggle,
 } from "flowbite-react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import Logo from "@/public/assets/icon";
-let token;
+
 export function MyNavbar() {
   interface navlinks {
     name: string;
@@ -31,11 +31,25 @@ export function MyNavbar() {
   }
 
   const pathname = usePathname();
+  const router = useRouter();
   const [loggedIn, setIsLoggedin] = useState(false);
 
   useEffect(() => {
-     token = "abc";
-    setIsLoggedin(!!token);
+    // Check authentication status on component mount and when localStorage changes
+    const checkAuth = () => {
+      const isAuth = localStorage.getItem("isAuthenticated") === "true";
+      setIsLoggedin(isAuth);
+    };
+
+    // Initial check
+    checkAuth();
+
+    // Listen for storage changes (in case other tabs modify auth state)
+    window.addEventListener("storage", checkAuth);
+
+    return () => {
+      window.removeEventListener("storage", checkAuth);
+    };
   }, []);
 
   const navLinks: navlinks[] = [
@@ -56,6 +70,15 @@ export function MyNavbar() {
     { name: "About", href: "/about", icon: HiInformationCircle },
     { name: "Contact", href: "/contact", icon: HiMail },
   ];
+
+  const handleSignOut = () => {
+    // Clear auth data
+    localStorage.removeItem("isAuthenticated");
+    localStorage.removeItem("userEmail");
+    setIsLoggedin(false);
+    // Redirect to home page
+    router.push("/");
+  };
 
   return (
     <Navbar fluid style={{ backgroundColor: "#92e3a9" }}>
@@ -99,12 +122,7 @@ export function MyNavbar() {
 
         {loggedIn ? (
           <Button
-            onClick={() => {
-              localStorage.removeItem("token");
-              token = null;
-              setIsLoggedin(false);
-              
-            }}
+            onClick={handleSignOut}
             style={{
               backgroundColor: "#000000",
               color: "#ffffff",
@@ -119,7 +137,7 @@ export function MyNavbar() {
             <HiLogout className="h-5 w-5" />
           </Button>
         ) : (
-          <Link href="/signup">
+          <Link href="/signin">
             <Button
               style={{
                 backgroundColor: "#000000",

@@ -20,9 +20,12 @@ export default function ForgotPassword() {
     return (
       <div className="flex h-full flex-col items-center justify-center">
         <div className="w-full max-w-md rounded-lg border-2 border-gray-300 px-4 py-8 shadow-lg">
-          <h2 className="mb-4 text-center text-xl font-bold text-gray-900">Check Your Email</h2>
+          <h2 className="mb-4 text-center text-xl font-bold text-gray-900">
+            Check Your Email
+          </h2>
           <p className="mb-4 text-center text-gray-600">
-            If an account exists with the email you entered, we`ve sent password reset instructions to your email address.
+            If an account exists with the email you entered, we`ve sent password
+            reset instructions to your email address.
           </p>
           <div className="flex justify-center">
             <Link href="/signin">
@@ -41,7 +44,10 @@ export default function ForgotPassword() {
       <div className="mt-10 mb-9 text-2xl font-extrabold">
         <h1>Reset Your Password</h1>
       </div>
-      <form onSubmit={handleSubmit} className="flex h-full w-full max-w-md flex-col gap-6 rounded-lg border-2 border-gray-300 px-4 py-8 shadow-lg">
+      <form
+        onSubmit={handleSubmit}
+        className="flex h-full w-full max-w-md flex-col gap-6 rounded-lg border-2 border-gray-300 px-4 py-8 shadow-lg"
+      >
         <div className="flex items-center gap-2">
           <MdEmail size={20} color="#92e3a9" />
           <div className="w-full">

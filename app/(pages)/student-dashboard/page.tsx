@@ -87,7 +87,7 @@ export default function StudentDashboard() {
       status: "Pending",
     },
   ];
-
+ 
   return (
     <div className="mx-auto max-w-7xl space-y-8 px-4 py-8">
       {/* Welcome Section */}
