@@ -83,7 +83,7 @@ export default function Component() {
         <div className="flex items-center justify-center">
           <Button
             type="submit"
-            className="mt-4 font-medium"
+            className="mt-4 font-medium w-full"
             style={{ backgroundColor: "#92e3a9", color: "#000000" }}
           >
             Sign In
