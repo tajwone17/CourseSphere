@@ -20,8 +20,8 @@ import {
 } from "flowbite-react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import Logo from "@/public/assets/icon";
+import { useAuth } from "../context/AuthContext";
 
 export function MyNavbar() {
   interface navlinks {
@@ -32,31 +32,13 @@ export function MyNavbar() {
 
   const pathname = usePathname();
   const router = useRouter();
-  const [loggedIn, setIsLoggedin] = useState(false);
-
-  useEffect(() => {
-    // Check authentication status on component mount and when localStorage changes
-    const checkAuth = () => {
-      const isAuth = localStorage.getItem("isAuthenticated") === "true";
-      setIsLoggedin(isAuth);
-    };
-
-    // Initial check
-    checkAuth();
-
-    // Listen for storage changes (in case other tabs modify auth state)
-    window.addEventListener("storage", checkAuth);
-
-    return () => {
-      window.removeEventListener("storage", checkAuth);
-    };
-  }, []);
+  const { isAuthenticated, logout } = useAuth();
 
   const navLinks: navlinks[] = [
-    ...(loggedIn
+    ...(isAuthenticated
       ? [{ name: "Dashboard", href: "/student-dashboard", icon: HiHome }]
       : [{ name: "Home", href: "/", icon: HiHome }]),
-    ...(loggedIn
+    ...(isAuthenticated
       ? [
           { name: "Courses", href: "/courses", icon: HiBookOpen },
           {
@@ -72,11 +54,7 @@ export function MyNavbar() {
   ];
 
   const handleSignOut = () => {
-    // Clear auth data
-    localStorage.removeItem("isAuthenticated");
-    localStorage.removeItem("userEmail");
-    setIsLoggedin(false);
-    // Redirect to home page
+    logout();
     router.push("/");
   };
 
@@ -108,7 +86,7 @@ export function MyNavbar() {
       </NavbarCollapse>
 
       <div className="flex items-center gap-4">
-        {loggedIn && (
+        {isAuthenticated && (
           <Link
             href="/course-selection"
             className="flex items-center gap-2 rounded-lg bg-black px-4 py-2 text-[#92e3a9] transition-all hover:scale-105 hover:bg-gray-900"
@@ -120,7 +98,7 @@ export function MyNavbar() {
           </Link>
         )}
 
-        {loggedIn ? (
+        {isAuthenticated ? (
           <Button
             onClick={handleSignOut}
             style={{
@@ -147,6 +125,7 @@ export function MyNavbar() {
                 alignItems: "center",
                 gap: "8px",
               }}
+              className="transition-all hover:scale-105 hover:bg-gray-900"
             >
               Get Started <FaRocket />
             </Button>

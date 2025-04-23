@@ -5,9 +5,12 @@ import { MdEmail, MdLock } from "react-icons/md";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useAuth } from "@/app/context/AuthContext";
 
 export default function Component() {
   const router = useRouter();
+  const { login } = useAuth();
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -15,15 +18,12 @@ export default function Component() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // TODO: Replace with actual backend authentication
-    // For now, we'll just simulate authentication with localStorage
-    localStorage.setItem("userEmail", formData.email);
-    localStorage.setItem("isAuthenticated", "true");
+
+    // Log in using the auth context
+    login(formData.email);
+
+    // Navigate to dashboard
     router.push("/student-dashboard");
-     // Reload the page to reflect the authentication status
-    // Redirect to student dashboard
-   
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,7 +38,10 @@ export default function Component() {
       <div className="mt-10 mb-9 text-2xl font-extrabold">
         <h1>Sign In to Access Your Account</h1>
       </div>
-      <form onSubmit={handleSubmit} className="flex h-full w-full max-w-md flex-col gap-6 rounded-lg border-2 border-gray-300 px-4 py-8 shadow-lg">
+      <form
+        onSubmit={handleSubmit}
+        className="flex h-full w-full max-w-md flex-col gap-6 rounded-lg border-2 border-gray-300 px-4 py-8 shadow-lg"
+      >
         {/* Email */}
         <div className="flex items-center gap-2">
           <MdEmail size={20} color="#92e3a9" />
@@ -76,8 +79,8 @@ export default function Component() {
             />
           </div>
         </div>
-        
-        <div className="flex justify-center items-center">
+
+        <div className="flex items-center justify-center">
           <Button
             type="submit"
             className="mt-4 font-medium"
@@ -97,7 +100,7 @@ export default function Component() {
 
         {/* Link to Sign up */}
         <p className="text-center text-xs text-gray-400">
-          Don`t have an account?{" "}
+          Don&apos;t have an account?{" "}
           <Link
             className="font-medium hover:underline"
             href="/signup"
