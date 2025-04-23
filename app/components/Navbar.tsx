@@ -22,7 +22,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import Logo from "@/public/assets/icon";
-
+let token;
 export function MyNavbar() {
   interface navlinks {
     name: string;
@@ -34,7 +34,7 @@ export function MyNavbar() {
   const [loggedIn, setIsLoggedin] = useState(false);
 
   useEffect(() => {
-    const token = " abcd";
+     token = "abc";
     setIsLoggedin(!!token);
   }, []);
 
@@ -101,8 +101,9 @@ export function MyNavbar() {
           <Button
             onClick={() => {
               localStorage.removeItem("token");
+              token = null;
               setIsLoggedin(false);
-              window.location.reload();
+              
             }}
             style={{
               backgroundColor: "#000000",

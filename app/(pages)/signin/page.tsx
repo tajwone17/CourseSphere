@@ -42,16 +42,18 @@ export default function Component() {
             />
           </div>
         </div>
-
-        {/* Submit Button */}
-        <Button
-          type="submit"
-          className="mt-4 font-medium"
-          style={{ backgroundColor: "#92e3a9", color: "#000000" }}
-        >
-          Log In
-        </Button>
-
+        <div className="flex justify-center items-center">
+          {/* Submit Button */}
+          <Link href="/student-dashboard">
+            <Button
+              type="submit"
+              className="mt-4  font-medium"
+              style={{ backgroundColor: "#92e3a9", color: "#000000" }}
+            >
+              Log In
+            </Button>
+          </Link>
+        </div>
         <Link
           className="mt-5 text-center font-medium underline"
           href="/"
