@@ -44,7 +44,7 @@ export default function StudentManagement() {
       status: "pending",
     },
   ];
-
+  const adminRole = typeof window !== "undefined" ? localStorage.getItem("adminRole") : null;
   const getStatus = (status: string) => {
     switch (status) {
       case "approved":
@@ -119,9 +119,10 @@ export default function StudentManagement() {
               <th className="px-6 py-3 text-left text-sm font-medium">
                 Semester
               </th>
+              {adminRole !== "accounts" && (
               <th className="px-6 py-3 text-left text-sm font-medium">
                 Status
-              </th>
+              </th>)}
               <th className="px-6 py-3 text-left text-sm font-medium">
                 Actions
               </th>
@@ -135,7 +136,7 @@ export default function StudentManagement() {
                 <td className="px-6 py-4">{student.email}</td>
                 <td className="px-6 py-4">{student.department}</td>
                 <td className="px-6 py-4">{student.semester}</td>
-                <td className="px-6 py-4">{getStatus(student.status)}</td>
+                {adminRole !== "accounts" && ( <td className="px-6 py-4">{getStatus(student.status)}</td>)}
                 <td className="px-6 py-4">
                   <div className="flex gap-2">
                     <Link href={`/dashboard/student-management/${student.id}`}>

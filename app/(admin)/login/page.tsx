@@ -30,6 +30,14 @@ export default function AdminLogin() {
       case "advisor":
         router.push("/dashboard");
         break;
+      case "exam-controller":
+        router.push("/dashboard/manage-students");
+        break;
+
+      case "accounts":
+        router.push("/dashboard/student-management");
+        break;
+
       default:
         router.push("/login");
     }
@@ -71,9 +79,11 @@ export default function AdminLogin() {
                 required
                 className="w-full rounded-lg border-gray-700 bg-gray-800 text-white focus:border-[#92e3a9] focus:ring-[#92e3a9]"
               >
-                <option value="hod">Head of Department</option>
-                <option value="advisor">Advisor</option>
                 <option value="superadmin">Super Admin</option>
+                <option value="advisor">Advisor</option>
+                <option value="hod">Head of Department</option>
+                <option value="exam-controller">Exam Controller Office</option>
+                <option value="accounts">Accounts Office</option>
               </Select>
             </div>
           </div>
@@ -115,17 +125,17 @@ export default function AdminLogin() {
               />
             </div>
           </div>
-   {/* Remember Me */}
-   <div className="flex items-center gap-2 mb-3">
-          <Checkbox
-            id="rememberMe"
-            checked={formData.rememberMe}
-            onChange={handleChange}
-          />
-          <Label htmlFor="rememberMe" className="text-gray-600 text-sm">
-            Remember Me
-          </Label>
-        </div>
+          {/* Remember Me */}
+          <div className="mb-3 flex items-center gap-2">
+            <Checkbox
+              id="rememberMe"
+              checked={formData.rememberMe}
+              onChange={handleChange}
+            />
+            <Label htmlFor="rememberMe" className="text-sm text-gray-600">
+              Remember Me
+            </Label>
+          </div>
           <Button
             style={{
               backgroundColor: "#92e3a9",

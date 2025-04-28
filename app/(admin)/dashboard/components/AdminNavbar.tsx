@@ -77,6 +77,24 @@ export default function AdminNavbar() {
             icon: HiSpeakerphone,
           },
         ];
+      case "accounts":
+        return [
+          { name: "Dashboard", href: "/dashboard", icon: HiHome },
+          {
+            name: "Student Management",
+            href: "/dashboard/student-management",
+            icon: HiUsers,
+          },
+        ];
+      case "exam-controller":
+        return [
+          { name: "Dashboard", href: "/dashboard", icon: HiHome },
+          {
+            name: "Student Management",
+            href: "/dashboard/student-management",
+            icon: HiUsers,
+          },
+        ];
       default:
         return [];
     }
@@ -96,7 +114,11 @@ export default function AdminNavbar() {
             ? "Super Admin"
             : role === "hod"
               ? "HOD Portal"
-              : "Advisor Portal"}
+              : role === "exam-controller"
+                ? "Exam Controller Portal"
+                : role === "accounts"
+                  ? "Accounts Office Portal"
+                  : "Advisor Portal"}
         </Link>
       </div>
 

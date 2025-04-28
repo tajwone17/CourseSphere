@@ -66,12 +66,11 @@ export default function AdvisorDashboard() {
       {/* Welcome Section */}
       <div className="mb-8">
         <h1 className="text-4xl font-bold text-white">Welcome, Dr. Tajwone Chowdhury</h1>
-        <p className="mt-2 text-lg text-gray-400">
-          Overview of your advisees&apos; activities today
-        </p>
+     
       </div>
 
       {/* Stats Section */}
+      
       <div className="mb-8 grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
         <Card className="border-gray-700 bg-gray-800">
           <div className="flex items-center">

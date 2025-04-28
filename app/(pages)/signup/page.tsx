@@ -118,26 +118,6 @@ export default function Component() {
           </div>
         </div>
 
-        {/* Waiver (Percentage) */}
-        <div className="flex items-center gap-2">
-          <MdLock size={20} color="#92e3a9" />
-          <div className="flex w-full items-center gap-1">
-            <div className="w-full">
-              <div className="mb-2 block">
-                <Label htmlFor="waiver">Waiver</Label>
-              </div>
-              <TextInput
-                id="waiver"
-                type="number"
-                placeholder="Enter percentage (e.g., 10)"
-                required
-                shadow
-              />
-            </div>
-            <span className="mt-6 text-gray-500">%</span>{" "}
-            {/* Percentage symbol */}
-          </div>
-        </div>
 
         {/* Mobile */}
         <div className="flex items-center gap-2">
