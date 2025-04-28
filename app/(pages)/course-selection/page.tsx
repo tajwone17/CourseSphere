@@ -60,12 +60,6 @@ export default function CourseSelectionPage() {
     (sum, course) => sum + course.credit,
     0,
   );
-  const totalCost = selectedCourses.reduce(
-    (sum, course) => sum + course.cost,
-    0,
-  );
-  const waiver = 10;
-  const costAfterWaiver = totalCost * (1 - waiver / 100);
 
   return (
     <div className="mx-auto max-w-7xl space-y-8 px-4 py-8">
@@ -182,20 +176,12 @@ export default function CourseSelectionPage() {
               <span className="font-medium text-white">{totalCourses}</span>
             </div>
             <div className="flex items-center justify-between border-b border-gray-800 pb-2">
+              <span className="text-gray-400">Course Advisor:</span>
+              <span className="font-medium text-white">{selectedAdvisor}</span>
+            </div>
+            <div className="flex items-center justify-between border-b border-gray-800 pb-2">
               <span className="text-gray-400">Total Credits:</span>
               <span className="font-medium text-white">{totalCredits}</span>
-            </div>
-            <div className="flex items-center justify-between border-b border-gray-800 pb-2">
-              <span className="text-gray-400">Total Cost:</span>
-              <span className="font-medium text-white">${totalCost}</span>
-            </div>
-            <div className="flex items-center justify-between border-b border-gray-800 pb-2">
-              <span className="text-gray-400">Waiver:</span>
-              <span className="font-medium text-[#92e3a9]">{waiver}%</span>
-            </div>
-            <div className="flex items-center justify-between text-lg font-semibold">
-              <span className="text-gray-400">Total After Waiver:</span>
-              <span className="text-[#92e3a9]">${costAfterWaiver}</span>
             </div>
           </div>
 
@@ -239,18 +225,21 @@ export default function CourseSelectionPage() {
                   </Button>
                 </Link>
                 <Link href="/registration-status">
-                <Button
-                  size="sm"
-                  disabled={!acceptedTerms || selectedAdvisor === ""}
-                  className="flex items-center gap-2"
-                  style={{
-                    backgroundColor:
-                      acceptedTerms && selectedAdvisor ? "#92e3a9" : "#4B5563",
-                    color: acceptedTerms && selectedAdvisor ? "black" : "white",
-                  }}
-                >
-                  Proceed to Registration
-                </Button>
+                  <Button
+                    size="sm"
+                    disabled={!acceptedTerms || selectedAdvisor === ""}
+                    className="flex items-center gap-2"
+                    style={{
+                      backgroundColor:
+                        acceptedTerms && selectedAdvisor
+                          ? "#92e3a9"
+                          : "#4B5563",
+                      color:
+                        acceptedTerms && selectedAdvisor ? "black" : "white",
+                    }}
+                  >
+                    Proceed to Registration
+                  </Button>
                 </Link>
               </div>
             </div>

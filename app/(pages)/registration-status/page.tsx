@@ -47,12 +47,13 @@ export default function page() {
 
   const steps = [
     { name: "Form Submission", icon: MdDescription, status: "completed" },
-    { name: "Advisor Review", icon: MdPerson, status: "current" },
-    { name: "HOD Approval", icon: MdCheckCircle, status: "pending" },
+    { name: "Advisor Review", icon: MdPerson, status: "completed" },
+    { name: "HOD Approval", icon: MdCheckCircle, status: "completed" },
+    { name: "Accounts Review", icon: MdCheckCircle, status: "completed" }, // <-- Added this new step
     { name: "Payment", icon: MdPayment, status: "pending" },
     { name: "Confirmation", icon: MdCheckCircle, status: "pending" },
   ];
-
+  const isAccountsReviewed = steps.find(step => step.name === "HOD Approval")?.status === "completed";
   return (
     <div className="mx-auto max-w-7xl space-y-8 px-4 py-8">
       {/* Heading */}
@@ -78,7 +79,7 @@ export default function page() {
         <h2 className="mb-8 text-center text-xl font-semibold text-white">
           Registration Progress
         </h2>
-        <div className="relative mx-auto max-w-4xl px-8">
+        <div className="relative mx-auto max-w-4xl px-8 overflow-x-auto">
           {/* Progress Line */}
           <div className="absolute top-6 left-0 h-0.5 w-full bg-gray-800"></div>
 
@@ -90,7 +91,7 @@ export default function page() {
                 <div
                   key={index}
                   className="z-10 flex flex-col items-center"
-                  style={{ width: "120px" }}
+                  style={{ minWidth: "120px" }}
                 >
                   <div
                     className={`mb-3 flex h-12 w-12 items-center justify-center rounded-full transition-colors ${
@@ -224,6 +225,7 @@ export default function page() {
       </div>
 
       {/* Payment Information */}
+      {isAccountsReviewed && (
       <div
         className="rounded-lg border border-gray-800 bg-gray-900 p-6 shadow-xl"
         data-aos="fade-up"
@@ -261,7 +263,7 @@ export default function page() {
             </Link>
           </div>
         </div>
-      </div>
+      </div>     )}
     </div>
   );
 }
