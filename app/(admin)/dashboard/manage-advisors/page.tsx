@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, TextInput, Modal, Label, Select } from "flowbite-react";
-import { HiSearch, HiPlus, HiPencil, HiTrash } from "react-icons/hi";
+import { HiSearch, HiPlus } from "react-icons/hi";
 import { useState } from "react";
 
 interface Advisor {
@@ -23,6 +23,7 @@ export default function ManageAdvisors() {
       email: "villers.b@neub.edu.bd",
       phone: "+880 1712345678",
       status: "Active",
+      password: "villers.b1234",
     },
     {
       id: 2,
@@ -31,6 +32,7 @@ export default function ManageAdvisors() {
       email: "tamim.w@neub.edu.bd",
       phone: "+880 1812345678",
       status: "Active",
+      password: "tamim.w5678",
     },
     {
       id: 3,
@@ -39,13 +41,11 @@ export default function ManageAdvisors() {
       email: "root.l@neub.edu.bd",
       phone: "+880 1912345678",
       status: "Inactive",
+      password: "root.l4321",
     },
   ]);
 
   const [showAddModal, setShowAddModal] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [selectedAdvisor, setSelectedAdvisor] = useState<Advisor | null>(null);
   const [newAdvisor, setNewAdvisor] = useState({
     name: "",
     department: "",
@@ -56,7 +56,6 @@ export default function ManageAdvisors() {
   const [searchTerm, setSearchTerm] = useState("");
   const [departmentFilter, setDepartmentFilter] = useState("all");
 
-  // Filter advisors based on search and department
   const filteredAdvisors = advisorsList.filter((advisor) => {
     const matchesSearch =
       advisor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -72,9 +71,23 @@ export default function ManageAdvisors() {
 
   const handleAddAdvisor = () => {
     const id = advisorsList.length + 1;
-    const advisorData = { ...newAdvisor, id, status: "Active" };
+
+    // Generate password based on email
+    const emailPrefix = newAdvisor.email.split("@")[0];
+    const randomNum = Math.floor(1000 + Math.random() * 9000);
+    const generatedPassword = `${emailPrefix}${randomNum}`;
+
+    const advisorData = {
+      ...newAdvisor,
+      id,
+      status: "Active",
+      password: generatedPassword,
+    };
+
     setAdvisorsList([...advisorsList, advisorData]);
     setShowAddModal(false);
+
+    // Reset the form
     setNewAdvisor({
       name: "",
       department: "",
@@ -82,24 +95,24 @@ export default function ManageAdvisors() {
       phone: "",
       password: "",
     });
+
+    // Simulate sending email
+    console.log(`Simulated Email Sent to: ${newAdvisor.email}`);
+    console.log(`Generated Password: ${generatedPassword}`);
+    alert(`Password "${generatedPassword}" has been sent to ${newAdvisor.email}`);
   };
 
-  const handleEditAdvisor = () => {
-    if (!selectedAdvisor) return;
-    const updatedList = advisorsList.map((advisor) =>
-      advisor.id === selectedAdvisor.id ? selectedAdvisor : advisor,
+  const toggleAdvisorStatus = (id: number) => {
+    setAdvisorsList((prev) =>
+      prev.map((advisor) =>
+        advisor.id === id
+          ? {
+              ...advisor,
+              status: advisor.status === "Active" ? "Inactive" : "Active",
+            }
+          : advisor,
+      ),
     );
-    setAdvisorsList(updatedList);
-    setShowEditModal(false);
-  };
-
-  const handleDeleteAdvisor = () => {
-    if (!selectedAdvisor) return;
-    const updatedList = advisorsList.filter(
-      (advisor) => advisor.id !== selectedAdvisor.id,
-    );
-    setAdvisorsList(updatedList);
-    setShowDeleteModal(false);
   };
 
   return (
@@ -107,9 +120,7 @@ export default function ManageAdvisors() {
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="text-4xl font-bold text-white">Manage Advisors</h1>
-          <p className="mt-4 text-lg text-gray-400">
-            Add, edit, or remove Academic Advisors
-          </p>
+          <p className="mt-4 text-lg text-gray-400">Manage Academic Advisors</p>
         </div>
 
         <Button
@@ -148,9 +159,7 @@ export default function ManageAdvisors() {
             >
               <option value="all">All Departments</option>
               <option value="computer science">Computer Science</option>
-              <option value="electrical engineering">
-                Electrical Engineering
-              </option>
+              <option value="electrical engineering">Electrical Engineering</option>
               <option value="civil engineering">Civil Engineering</option>
             </Select>
           </div>
@@ -173,7 +182,13 @@ export default function ManageAdvisors() {
                   Phone
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
-                  Actions
+                  Status
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+                  Password
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+                  Action
                 </th>
               </tr>
             </thead>
@@ -195,36 +210,31 @@ export default function ManageAdvisors() {
                   <td className="px-6 py-4 whitespace-nowrap text-white">
                     {advisor.phone}
                   </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-white">
+                    {advisor.status}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-white">
+                    {advisor.password || "-"}
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center gap-2">
-                      <Button
-                        size="xs"
-                        style={{ backgroundColor: "#f59e0b", color: "#ffffff" }}
-                        onClick={() => {
-                          setSelectedAdvisor(advisor);
-                          setShowEditModal(true);
-                        }}
-                      >
-                        <HiPencil className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        size="xs"
-                        style={{ backgroundColor: "#ef4444", color: "#ffffff" }}
-                        onClick={() => {
-                          setSelectedAdvisor(advisor);
-                          setShowDeleteModal(true);
-                        }}
-                      >
-                        <HiTrash className="h-4 w-4" />
-                      </Button>
-                    </div>
+                    <Button
+                      size="xs"
+                      style={{
+                        backgroundColor:
+                          advisor.status === "Active" ? "#ef4444" : "#22c55e",
+                        color: "#ffffff",
+                      }}
+                      onClick={() => toggleAdvisorStatus(advisor.id)}
+                    >
+                      {advisor.status === "Active" ? "Set Inactive" : "Set Active"}
+                    </Button>
                   </td>
                 </tr>
               ))}
               {filteredAdvisors.length === 0 && (
                 <tr>
                   <td
-                    colSpan={5}
+                    colSpan={7}
                     className="px-6 py-4 text-center text-gray-400"
                   >
                     No advisors found matching your search criteria.
@@ -288,26 +298,12 @@ export default function ManageAdvisors() {
                 placeholder="Enter phone number"
               />
             </div>
-            <div>
-              <Label htmlFor="password">Password</Label>
-              <TextInput
-                id="password"
-                type="password"
-                value={newAdvisor.password}
-                onChange={(e) =>
-                  setNewAdvisor({ ...newAdvisor, password: e.target.value })
-                }
-                placeholder="Enter password"
-                required
-              />
-            </div>
           </div>
           <div className="mt-6 flex justify-end gap-4">
             <Button
               style={{
                 backgroundColor: "#92e3a9",
                 color: "black",
-
                 width: "fit-content",
                 cursor: "pointer",
               }}
@@ -316,117 +312,6 @@ export default function ManageAdvisors() {
               Add Advisor
             </Button>
             <Button color="gray" onClick={() => setShowAddModal(false)}>
-              Cancel
-            </Button>
-          </div>
-        </div>
-      </Modal>
-
-      {/* Edit Advisor Modal */}
-      <Modal show={showEditModal} onClose={() => setShowEditModal(false)}>
-        <div className="relative bg-gray-800 p-4">
-          <div className="mb-4 text-xl font-semibold text-white">
-            Edit Advisor
-          </div>
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="edit-name">Name</Label>
-              <TextInput
-                id="edit-name"
-                value={selectedAdvisor?.name}
-                onChange={(e) =>
-                  setSelectedAdvisor(
-                    selectedAdvisor
-                      ? { ...selectedAdvisor, name: e.target.value }
-                      : null,
-                  )
-                }
-              />
-            </div>
-            <div>
-              <Label htmlFor="edit-department">Department</Label>
-              <TextInput
-                id="edit-department"
-                value={selectedAdvisor?.department}
-                onChange={(e) =>
-                  setSelectedAdvisor(
-                    selectedAdvisor
-                      ? { ...selectedAdvisor, department: e.target.value }
-                      : null,
-                  )
-                }
-              />
-            </div>
-            <div>
-              <Label htmlFor="edit-email">Email</Label>
-              <TextInput
-                id="edit-email"
-                type="email"
-                value={selectedAdvisor?.email}
-                onChange={(e) =>
-                  setSelectedAdvisor(
-                    selectedAdvisor
-                      ? { ...selectedAdvisor, email: e.target.value }
-                      : null,
-                  )
-                }
-              />
-            </div>
-            <div>
-              <Label htmlFor="edit-phone">Phone</Label>
-              <TextInput
-                id="edit-phone"
-                value={selectedAdvisor?.phone}
-                onChange={(e) =>
-                  setSelectedAdvisor(
-                    selectedAdvisor
-                      ? { ...selectedAdvisor, phone: e.target.value }
-                      : null,
-                  )
-                }
-              />
-            </div>
-            <div>
-              <Label htmlFor="edit-password">New Password (Optional)</Label>
-              <TextInput
-                id="edit-password"
-                type="password"
-                value={selectedAdvisor?.password || ""}
-                onChange={(e) =>
-                  setSelectedAdvisor(
-                    selectedAdvisor
-                      ? { ...selectedAdvisor, password: e.target.value }
-                      : null,
-                  )
-                }
-                placeholder="Enter new password"
-              />
-            </div>
-          </div>
-          <div className="mt-6 flex justify-end gap-4">
-            <Button onClick={handleEditAdvisor}>Save Changes</Button>
-            <Button color="gray" onClick={() => setShowEditModal(false)}>
-              Cancel
-            </Button>
-          </div>
-        </div>
-      </Modal>
-
-      {/* Delete Confirmation Modal */}
-      <Modal show={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
-        <div className="relative bg-gray-800 p-4">
-          <div className="mb-4 text-xl font-semibold text-white">
-            Delete Advisor
-          </div>
-          <p className="mb-6 text-gray-300">
-            Are you sure you want to delete this advisor? This action cannot be
-            undone.
-          </p>
-          <div className="flex justify-end gap-4">
-            <Button color="failure" onClick={handleDeleteAdvisor}>
-              Delete
-            </Button>
-            <Button color="gray" onClick={() => setShowDeleteModal(false)}>
               Cancel
             </Button>
           </div>

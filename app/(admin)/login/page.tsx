@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Label, TextInput, Select } from "flowbite-react";
+import { Button, Label, TextInput, Select, Checkbox } from "flowbite-react";
 import { MdEmail, MdLock, MdSupervisorAccount } from "react-icons/md";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -11,6 +11,7 @@ export default function AdminLogin() {
     email: "",
     password: "",
     role: "hod",
+    rememberMe: false,
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -114,7 +115,17 @@ export default function AdminLogin() {
               />
             </div>
           </div>
-
+   {/* Remember Me */}
+   <div className="flex items-center gap-2 mb-3">
+          <Checkbox
+            id="rememberMe"
+            checked={formData.rememberMe}
+            onChange={handleChange}
+          />
+          <Label htmlFor="rememberMe" className="text-gray-600 text-sm">
+            Remember Me
+          </Label>
+        </div>
           <Button
             style={{
               backgroundColor: "#92e3a9",

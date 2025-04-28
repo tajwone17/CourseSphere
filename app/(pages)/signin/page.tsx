@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Label, TextInput } from "flowbite-react";
+import { Button, Checkbox, Label, TextInput } from "flowbite-react";
 import { MdEmail, MdLock } from "react-icons/md";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -14,6 +14,7 @@ export default function Component() {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
+    rememberMe: false,
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -22,15 +23,23 @@ export default function Component() {
     // Log in using the auth context
     login(formData.email);
 
+    // (Optional) Handle Remember Me
+    if (formData.rememberMe) {
+      localStorage.setItem("rememberedEmail", formData.email);
+    } else {
+      localStorage.removeItem("rememberedEmail");
+    }
+
     // Navigate to dashboard
     router.push("/student-dashboard");
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.id]: e.target.value,
-    });
+    const { id, type, checked, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [id]: type === "checkbox" ? checked : value,
+    }));
   };
 
   return (
@@ -80,10 +89,22 @@ export default function Component() {
           </div>
         </div>
 
+        {/* Remember Me */}
+        <div className="flex items-center gap-2 mb-0">
+          <Checkbox
+            id="rememberMe"
+            checked={formData.rememberMe}
+            onChange={handleChange}
+          />
+          <Label htmlFor="rememberMe" className="text-gray-600 text-sm">
+            Remember Me
+          </Label>
+        </div>
+
         <div className="flex items-center justify-center">
           <Button
             type="submit"
-            className="mt-4 font-medium w-full"
+            className=" font-medium w-full"
             style={{ backgroundColor: "#92e3a9", color: "#000000" }}
           >
             Sign In
