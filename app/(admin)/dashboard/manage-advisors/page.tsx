@@ -10,7 +10,7 @@ interface Advisor {
   department: string;
   email: string;
   phone: string;
-  password?: string;
+
   status: string;
 }
 
@@ -23,7 +23,6 @@ export default function ManageAdvisors() {
       email: "villers.b@neub.edu.bd",
       phone: "+880 1712345678",
       status: "Active",
-      password: "villers.b1234",
     },
     {
       id: 2,
@@ -32,7 +31,6 @@ export default function ManageAdvisors() {
       email: "tamim.w@neub.edu.bd",
       phone: "+880 1812345678",
       status: "Active",
-      password: "tamim.w5678",
     },
     {
       id: 3,
@@ -41,7 +39,6 @@ export default function ManageAdvisors() {
       email: "root.l@neub.edu.bd",
       phone: "+880 1912345678",
       status: "Inactive",
-      password: "root.l4321",
     },
   ]);
 
@@ -51,7 +48,6 @@ export default function ManageAdvisors() {
     department: "",
     email: "",
     phone: "",
-    password: "",
   });
   const [searchTerm, setSearchTerm] = useState("");
   const [departmentFilter, setDepartmentFilter] = useState("all");
@@ -72,16 +68,10 @@ export default function ManageAdvisors() {
   const handleAddAdvisor = () => {
     const id = advisorsList.length + 1;
 
-    // Generate password based on email
-    const emailPrefix = newAdvisor.email.split("@")[0];
-    const randomNum = Math.floor(1000 + Math.random() * 9000);
-    const generatedPassword = `${emailPrefix}${randomNum}`;
-
     const advisorData = {
       ...newAdvisor,
       id,
       status: "Active",
-      password: generatedPassword,
     };
 
     setAdvisorsList([...advisorsList, advisorData]);
@@ -93,13 +83,7 @@ export default function ManageAdvisors() {
       department: "",
       email: "",
       phone: "",
-      password: "",
     });
-
-    // Simulate sending email
-    console.log(`Simulated Email Sent to: ${newAdvisor.email}`);
-    console.log(`Generated Password: ${generatedPassword}`);
-    alert(`Password "${generatedPassword}" has been sent to ${newAdvisor.email}`);
   };
 
   const toggleAdvisorStatus = (id: number) => {
@@ -116,7 +100,11 @@ export default function ManageAdvisors() {
   };
 
   return (
-    <div className="mx-auto max-w-7xl p-8">
+    <div
+      className="mx-auto max-w-7xl p-8"
+      data-aos="zoom-in"
+      data-aos-duration="1000"
+    >
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="text-4xl font-bold text-white">Manage Advisors</h1>
@@ -141,7 +129,7 @@ export default function ManageAdvisors() {
 
       <div className="rounded-lg border border-gray-800 bg-gray-900 p-6">
         <div className="mb-6 flex items-center justify-between gap-4">
-          <div className="flex flex-1 items-start md:items-center gap-4 flex-col md:flex-row">
+          <div className="flex flex-1 flex-col items-start gap-4 md:flex-row md:items-center">
             <div className="relative w-64">
               <TextInput
                 type="search"
@@ -159,7 +147,9 @@ export default function ManageAdvisors() {
             >
               <option value="all">All Departments</option>
               <option value="computer science">Computer Science</option>
-              <option value="electrical engineering">Electrical Engineering</option>
+              <option value="electrical engineering">
+                Electrical Engineering
+              </option>
               <option value="civil engineering">Civil Engineering</option>
             </Select>
           </div>
@@ -184,9 +174,7 @@ export default function ManageAdvisors() {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                   Status
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
-                  Password
-                </th>
+
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                   Action
                 </th>
@@ -213,9 +201,7 @@ export default function ManageAdvisors() {
                   <td className="px-6 py-4 whitespace-nowrap text-white">
                     {advisor.status}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-white">
-                    {advisor.password || "-"}
-                  </td>
+
                   <td className="px-6 py-4 whitespace-nowrap">
                     <Button
                       size="xs"
@@ -226,7 +212,9 @@ export default function ManageAdvisors() {
                       }}
                       onClick={() => toggleAdvisorStatus(advisor.id)}
                     >
-                      {advisor.status === "Active" ? "Set Inactive" : "Set Active"}
+                      {advisor.status === "Active"
+                        ? "Set Inactive"
+                        : "Set Active"}
                     </Button>
                   </td>
                 </tr>

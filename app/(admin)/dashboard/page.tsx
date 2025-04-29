@@ -64,14 +64,16 @@ export default function AdvisorDashboard() {
   return (
     <div className="mx-auto max-w-7xl p-8">
       {/* Welcome Section */}
-      <div className="mb-8">
+      <div className="mb-8"  data-aos="fade-down"
+        data-aos-duration="1000">
         <h1 className="text-4xl font-bold text-white">Welcome, Dr. Tajwone Chowdhury</h1>
      
       </div>
 
       {/* Stats Section */}
       
-      <div className="mb-8 grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="mb-8 grid gap-6 sm:grid-cols-2 xl:grid-cols-4"     data-aos="fade-up"
+        data-aos-delay="200">
         <Card className="border-gray-700 bg-gray-800">
           <div className="flex items-center">
             <div className="mr-4 rounded-lg bg-[#92e3a9] p-3">
@@ -130,7 +132,7 @@ export default function AdvisorDashboard() {
       </div>
 
       {/* Urgent Approvals Section */}
-      <div className="mb-8">
+      <div className="mb-8" data-aos="fade-up" data-aos-duration="1000">
         <h2 className="mb-4 text-2xl font-bold text-white">Urgent Approvals</h2>
         <div className="overflow-x-auto rounded-lg border border-gray-700">
           <table className="min-w-full divide-y divide-gray-700">
@@ -179,7 +181,8 @@ export default function AdvisorDashboard() {
       </div>
 
       {/* Important Deadlines Section */}
-      <div>
+      <div data-aos="fade-right"
+          data-aos-delay="400">
         <h2 className="mb-4 text-2xl font-bold text-white">
           Important Deadlines
         </h2>

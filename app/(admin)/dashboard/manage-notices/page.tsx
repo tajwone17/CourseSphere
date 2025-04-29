@@ -76,7 +76,8 @@ export default function ManageNotices() {
   };
 
   return (
-    <div className="mx-auto max-w-7xl p-8">
+    <div className="mx-auto max-w-7xl p-8"      data-aos="zoom-in"
+    data-aos-duration="1000">
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="text-4xl font-bold text-white">Manage Notices</h1>

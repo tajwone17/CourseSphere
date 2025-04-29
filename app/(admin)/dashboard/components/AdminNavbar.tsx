@@ -174,7 +174,7 @@ export default function AdminNavbar() {
           ))}
 
           <Dropdown
-          
+       
             arrowIcon={false}
             inline
             label={
@@ -189,7 +189,8 @@ export default function AdminNavbar() {
              className="w-40"
             dismissOnClick={false}
           >
-            <DropdownItem style={{ backgroundColor: "gray-100",color:"#92E3A9 "}} onClick={() => setOpenModal(!openModal)}>
+            <DropdownItem    data-aos="zoom-in"
+          data-aos-delay="400" style={{ backgroundColor: "gray-100",color:"#92E3A9 "}} onClick={() => setOpenModal(!openModal)}>
               Profile
             </DropdownItem>
             <DropdownItem
@@ -253,7 +254,7 @@ export default function AdminNavbar() {
           </div>
         </div>
       )}
-      {openModal && <ProfileModal onClose={() => setOpenModal(false)} />}
+      {openModal && <ProfileModal    onClose={() => setOpenModal(false)} />}
     </>
   );
 }

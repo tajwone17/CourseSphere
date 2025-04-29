@@ -2,13 +2,22 @@
 
 import React, { useState } from "react";
 import { Modal, Button } from "flowbite-react";
-import { HiUser, HiMail, HiOfficeBuilding, HiIdentification } from "react-icons/hi";
+import {
+  HiUser,
+  HiMail,
+  HiOfficeBuilding,
+  HiIdentification,
+} from "react-icons/hi";
 import { HiLockClosed } from "react-icons/hi2";
 import Image from "next/image";
 
 import { useAuth } from "../context/AuthContext";
 
-export default function ProfileModal({ onClose: handleClose }: { onClose: () => void }) {
+export default function ProfileModal({
+  onClose: handleClose,
+}: {
+  onClose: () => void;
+}) {
   const { userEmail, isAuthenticated } = useAuth();
 
   // Mocked user data for demo
@@ -50,9 +59,15 @@ export default function ProfileModal({ onClose: handleClose }: { onClose: () => 
   };
 
   return (
-    <Modal show={true} onClose={handleClose} size="xl">
-      <div className="rounded-2xl w-full bg-gray-900 p-12 shadow-2xl">
-        <div className="flex flex-col items-center gap-4 mb-8">
+    <Modal
+      show={true}
+      onClose={handleClose}
+      size="xl"
+  className="overflow-hidden"
+    >
+      <div className="w-full rounded-2xl bg-gray-900 p-12 shadow-2xl"     data-aos="zoom-in"
+      data-aos-delay="400">
+        <div className="mb-8 flex flex-col items-center gap-4">
           <Image
             src={userProfile.avatar}
             alt="Avatar"
@@ -60,92 +75,104 @@ export default function ProfileModal({ onClose: handleClose }: { onClose: () => 
             height={120}
             className="h-32 w-32 rounded-full border-4 border-[#92e3a9] shadow-lg"
           />
-          <div className="text-2xl font-bold text-white flex items-center gap-2">
+          <div className="flex items-center gap-2 text-2xl font-bold text-white">
             <HiUser className="text-[#92e3a9]" /> {userProfile.name}
           </div>
           <div className="flex items-center gap-2 text-lg text-gray-400">
-            <HiOfficeBuilding className="text-[#92e3a9]" /> {userProfile.department}
+            <HiOfficeBuilding className="text-[#92e3a9]" />{" "}
+            {userProfile.department}
           </div>
-          <div className="flex items-center gap-2 text-gray-400 text-base">
+          <div className="flex items-center gap-2 text-base text-gray-400">
             <HiIdentification className="text-[#92e3a9]" /> ID: {userProfile.id}
           </div>
         </div>
         {isAuthenticated ? (
           <form className="space-y-7">
-            <div className={`w-full space-y-7 ${editMode ? "opacity-100" : "opacity-50 cursor-not-allowed"}`}>
-            <div>
-              <label className="block text-gray-400 mb-1" htmlFor="email">
-                Email
-              </label>
-              <div className="flex items-center gap-2">
-                <HiMail className="text-[#92e3a9]" />
-                <input
-                  id="email"
-                  type="email"
-                  className="w-full rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 text-white focus:border-[#92e3a9] focus:ring-[#92e3a9]"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  disabled={!editMode}
-                />
+            <div
+              className={`w-full space-y-7 ${editMode ? "opacity-100" : "cursor-not-allowed opacity-50"}`}
+            >
+              <div>
+                <label className="mb-1 block text-gray-400" htmlFor="email">
+                  Email
+                </label>
+                <div className="flex items-center gap-2">
+                  <HiMail className="text-[#92e3a9]" />
+                  <input
+                    id="email"
+                    type="email"
+                    className="w-full rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 text-white focus:border-[#92e3a9] focus:ring-[#92e3a9]"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    disabled={!editMode}
+                  />
+                </div>
               </div>
-            </div>
-            <div>
-              <label className="block text-gray-400 mb-1" htmlFor="current-password">
-                Current Password
-              </label>
-              <div className="flex items-center gap-2">
-                <HiLockClosed className="text-[#92e3a9]" />
-                <input
-                  id="current-password"
-                  type="password"
-                  className="w-full rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 text-white focus:border-[#92e3a9] focus:ring-[#92e3a9]"
-                  value={currentPassword}
-                  onChange={e => setCurrentPassword(e.target.value)}
-                  placeholder="Current password"
-                  disabled={!editMode}
-                />
+              <div>
+                <label
+                  className="mb-1 block text-gray-400"
+                  htmlFor="current-password"
+                >
+                  Current Password
+                </label>
+                <div className="flex items-center gap-2">
+                  <HiLockClosed className="text-[#92e3a9]" />
+                  <input
+                    id="current-password"
+                    type="password"
+                    className="w-full rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 text-white focus:border-[#92e3a9] focus:ring-[#92e3a9]"
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    placeholder="Current password"
+                    disabled={!editMode}
+                  />
+                </div>
               </div>
-            </div>
-            <div>
-              <label className="block text-gray-400 mb-1" htmlFor="new-password">
-                New Password
-              </label>
-              <div className="flex items-center gap-2">
-                <HiLockClosed className="text-[#92e3a9]" />
-                <input
-                  id="new-password"
-                  type="password"
-                  className="w-full rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 text-white focus:border-[#92e3a9] focus:ring-[#92e3a9]"
-                  value={newPassword}
-                  onChange={e => setNewPassword(e.target.value)}
-                  placeholder="New password"
-                  disabled={!editMode}
-                />
+              <div>
+                <label
+                  className="mb-1 block text-gray-400"
+                  htmlFor="new-password"
+                >
+                  New Password
+                </label>
+                <div className="flex items-center gap-2">
+                  <HiLockClosed className="text-[#92e3a9]" />
+                  <input
+                    id="new-password"
+                    type="password"
+                    className="w-full rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 text-white focus:border-[#92e3a9] focus:ring-[#92e3a9]"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="New password"
+                    disabled={!editMode}
+                  />
+                </div>
               </div>
-            </div>
-            <div>
-              <label className="block text-gray-400 mb-1" htmlFor="confirm-password">
-                Confirm Password
-              </label>
-              <div className="flex items-center gap-2">
-                <HiLockClosed className="text-[#92e3a9]" />
-                <input
-                  id="confirm-password"
-                  type="password"
-                  className="w-full rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 text-white focus:border-[#92e3a9] focus:ring-[#92e3a9]"
-                  value={confirmPassword}
-                  onChange={e => setConfirmPassword(e.target.value)}
-                  placeholder="Confirm new password"
-                  disabled={!editMode}
-                />
+              <div>
+                <label
+                  className="mb-1 block text-gray-400"
+                  htmlFor="confirm-password"
+                >
+                  Confirm Password
+                </label>
+                <div className="flex items-center gap-2">
+                  <HiLockClosed className="text-[#92e3a9]" />
+                  <input
+                    id="confirm-password"
+                    type="password"
+                    className="w-full rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 text-white focus:border-[#92e3a9] focus:ring-[#92e3a9]"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="Confirm new password"
+                    disabled={!editMode}
+                  />
+                </div>
               </div>
-            </div>
             </div>
 
             {passwordError && (
-              <div className="text-red-500 text-sm mt-1">{passwordError}</div>
+              <div className="mt-1 text-sm text-red-500">{passwordError}</div>
             )}
-            <div className="flex justify-end gap-4 mt-8">
+            <div className="mt-8 flex justify-end gap-4">
               {editMode ? (
                 <>
                   <Button
@@ -173,7 +200,7 @@ export default function ProfileModal({ onClose: handleClose }: { onClose: () => 
             </div>
           </form>
         ) : (
-          <div className="mb-4 text-red-500 text-center">Not signed in</div>
+          <div className="mb-4 text-center text-red-500">Not signed in</div>
         )}
       </div>
     </Modal>

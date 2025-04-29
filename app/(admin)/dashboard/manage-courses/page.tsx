@@ -106,7 +106,11 @@ export default function ManageCourse() {
   );
 
   return (
-    <div className="mx-auto max-w-5xl p-8">
+    <div
+      className="mx-auto max-w-5xl p-8"
+      data-aos="zoom-in"
+      data-aos-duration="1000"
+    >
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="text-4xl font-bold text-white">Manage Courses</h1>
@@ -139,7 +143,7 @@ export default function ManageCourse() {
           <HiSearch className="absolute top-2.5 left-3 h-5 w-5 text-gray-400" />
         </div>
       </div>
-      <div className="overflow-x-auto lg:overflow-hidden rounded-lg border border-gray-700">
+      <div className="overflow-x-auto rounded-lg border border-gray-700 lg:overflow-hidden">
         <table className="min-w-full divide-y divide-gray-800">
           <thead className="bg-gray-800">
             <tr>
