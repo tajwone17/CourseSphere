@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Select, TextInput } from "flowbite-react";
+import { Button, Select, Textarea, TextInput } from "flowbite-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FaArrowLeft, FaCheckCircle, FaTimesCircle, FaSave } from "react-icons/fa";
@@ -204,6 +204,28 @@ export default function RegistrationApproval() {
           </table>
         </div>
       </div>
+
+       {/* Students Comments */}
+       <div className="mb-8">
+         <h2 className="mb-4 text-2xl font-semibold text-white">
+           Students Comments
+         </h2>
+         <div className="rounded-lg bg-gray-900 p-10">
+           lorerm ipsum dolor sit amet, consectetur adipiscing elit. Integer nec
+           odio. Praesent libero. Sed cursus ante dapibus diam.
+         </div>
+       </div>
+            {/* Admin Comments */}
+            <div className="mb-8">
+         <h2 className="mb-4 text-2xl font-semibold text-white">
+           Admin Comments
+         </h2>
+         <Textarea
+           className="p-10"
+           placeholder="Enter any comments or feedback for student"
+           name="Admin comment"
+         />
+       </div>
 
       {/* Accounts Office Financial Form */}
       {adminRole === "accounts" && (
