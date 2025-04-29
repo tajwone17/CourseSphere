@@ -204,7 +204,8 @@ export default function RegistrationApproval() {
           </table>
         </div>
       </div>
-
+      
+<>
        {/* Students Comments */}
        <div className="mb-8">
          <h2 className="mb-4 text-2xl font-semibold text-white">
@@ -226,7 +227,7 @@ export default function RegistrationApproval() {
            name="Admin comment"
          />
        </div>
-
+       </>
       {/* Accounts Office Financial Form */}
       {adminRole === "accounts" && (
         <div className="mb-10 rounded-lg border border-gray-700 bg-gray-800 p-6">
@@ -255,17 +256,18 @@ export default function RegistrationApproval() {
       {/* Action Buttons */}
       <div className="mt-8 flex flex-wrap items-center justify-between">
         <Link href="/dashboard/student-management">
-          <Button className="flex items-center gap-2 bg-white text-black hover:bg-gray-300">
+          <Button className="flex items-center gap-2 bg-white text-black hover:bg-gray-300 mb-5" style={{backgroundColor:"white"}}>
+
             <FaArrowLeft />
             Back
           </Button>
         </Link>
         <div className="flex flex-wrap gap-4">
-          <Button className="flex items-center gap-2 bg-green-600 hover:bg-green-700" onClick={handleApproveAll}>
+          <Button className="flex items-center gap-2 bg-green-600 hover:bg-green-700" onClick={handleApproveAll} style={{ backgroundColor: "green" }}>
             <FaCheckCircle />
             Approve All
           </Button>
-          <Button className="flex items-center gap-2 bg-red-600 hover:bg-red-700" onClick={handleRejectAll}>
+          <Button className="flex items-center gap-2 bg-red-600 hover:bg-red-700" style={{ backgroundColor: "#DC3545" }} onClick={handleRejectAll}>
             <FaTimesCircle />
             Reject All
           </Button>

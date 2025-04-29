@@ -1,6 +1,12 @@
 "use client";
 
-import { Avatar, Button, Dropdown, DropdownItem, Navbar } from "flowbite-react";
+import {
+  Avatar,
+  Button,
+  Dropdown,
+  DropdownItem,
+  Navbar,
+} from "flowbite-react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import {
@@ -12,34 +18,34 @@ import {
   HiMenu,
 } from "react-icons/hi";
 import { useEffect, useState } from "react";
-import { useAuth } from "@/app/context/AuthContext";
-import { FaRocket } from "react-icons/fa";
+
 import ProfileModal from "@/app/components/ProfileModal";
 
 export default function AdminNavbar() {
   const router = useRouter();
   const pathname = usePathname();
   const [role, setRole] = useState<string>("");
-
   const [openModal, setOpenModal] = useState(false);
-  const { isAuthenticated, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     const adminRole = localStorage.getItem("adminRole");
-    if (!adminRole) {
+    const token = localStorage.getItem("adminToken");
+
+    if (!adminRole || !token) {
       router.push("/login");
       return;
     }
+
     setRole(adminRole);
   }, [router]);
 
   const handleLogout = () => {
-    logout();
-    router.push("/");
+    localStorage.removeItem("adminToken");
+    localStorage.removeItem("adminRole");
+    router.push("/login");
   };
 
-  // Define menu items for each role
   const getMenuItems = () => {
     switch (role) {
       case "superadmin":
@@ -167,55 +173,36 @@ export default function AdminNavbar() {
             </Link>
           ))}
 
-          {isAuthenticated ? (
-            <Dropdown
-              arrowIcon={false}
-              inline
-              label={
-                <Avatar
-                  alt="User settings"
-                  img="https://scontent.fzyl6-1.fna.fbcdn.net/v/t39.30808-6/372624737_3640915932896748_4744980592238643195_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=a5f93a&_nc_eui2=AeGUvmZnTEIB81Zzlg7HWNr50lPTtsFdLpzSU9O2wV0unKpLICPXB36mmKbTqmMDKwj2H2Wvy3HoZgbvSztt3mLD&_nc_ohc=je1Q2Zu5XIMQ7kNvwEHpa_b&_nc_oc=Adlx8h4yz_M36L65UGkdvIopzNIyLtRaLb4hSzRNKyO1NHR_jbPw9LHSHzN99WNpHUA&_nc_zt=23&_nc_ht=scontent.fzyl6-1.fna&_nc_gid=2SMSTQw7H8gehkRiZHT0xg&oh=00_AfEdhQHt-MbK7tjuhZLPFzM_wpDl1M9LhaOKfwCYQ5lUDQ&oe=6816E171"
-                  bordered
-                  rounded
-                  className="w-8 h-8"
-                />
-              }
-              dismissOnClick={false}
+          <Dropdown
+          
+            arrowIcon={false}
+            inline
+            label={
+              <Avatar
+                alt="User settings"
+                img="https://scontent.fzyl6-1.fna.fbcdn.net/v/t39.30808-6/372624737_3640915932896748_4744980592238643195_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=a5f93a&_nc_eui2=AeGUvmZnTEIB81Zzlg7HWNr50lPTtsFdLpzSU9O2wV0unKpLICPXB36mmKbTqmMDKwj2H2Wvy3HoZgbvSztt3mLD&_nc_ohc=je1Q2Zu5XIMQ7kNvwEHpa_b&_nc_oc=Adlx8h4yz_M36L65UGkdvIopzNIyLtRaLb4hSzRNKyO1NHR_jbPw9LHSHzN99WNpHUA&_nc_zt=23&_nc_ht=scontent.fzyl6-1.fna&_nc_gid=2SMSTQw7H8gehkRiZHT0xg&oh=00_AfEdhQHt-MbK7tjuhZLPFzM_wpDl1M9LhaOKfwCYQ5lUDQ&oe=6816E171"
+                bordered
+                rounded
+               className=" cursor-pointer"
+              />
+            }
+             className="w-40"
+            dismissOnClick={false}
+          >
+            <DropdownItem style={{ backgroundColor: "gray-100",color:"#92E3A9 "}} onClick={() => setOpenModal(!openModal)}>
+              Profile
+            </DropdownItem>
+            <DropdownItem
+               style={{ backgroundColor: "#DC3545" }}
+              onClick={handleLogout}
             >
-              <DropdownItem
-                onClick={() => {
-                  setOpenModal(!openModal);
-                }}
-              >
-                Profile
-              </DropdownItem>
-              <DropdownItem
-                style={{ color: "#DC3545" }}
-                onClick={handleLogout}
-              >
-                Sign out
-              </DropdownItem>
-            </Dropdown>
-          ) : (
-            <Link href="/signin">
-              <Button
-                style={{
-                  backgroundColor: "#000000",
-                  color: "#ffffff",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                }}
-                className="transition-all hover:scale-105 hover:bg-gray-900 px-2 py-1 sm:px-4 sm:py-2 text-sm sm:text-base"
-              >
-                <span className="hidden sm:inline">Get Started</span> <FaRocket />
-              </Button>
-            </Link>
-          )}
+              Sign out
+            </DropdownItem>
+          </Dropdown>
         </div>
       </Navbar>
-      {/* Mobile menu dropdown */}
+
+      {/* Mobile menu */}
       {menuOpen && (
         <div className="md:hidden bg-gray-900 border-b border-gray-800 px-4 py-2 z-50">
           <div className="flex flex-col gap-2">
@@ -234,47 +221,35 @@ export default function AdminNavbar() {
                 <span>{item.name}</span>
               </Link>
             ))}
-            {isAuthenticated ? (
-              <div className="flex items-center gap-2 mt-2">
-                <Avatar
-                  alt="User settings"
-                  img="https://scontent.fzyl6-1.fna.fbcdn.net/v/t39.30808-6/372624737_3640915932896748_4744980592238643195_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=a5f93a&_nc_eui2=AeGUvmZnTEIB81Zzlg7HWNr50lPTtsFdLpzSU9O2wV0unKpLICPXB36mmKbTqmMDKwj2H2Wvy3HoZgbvSztt3mLD&_nc_ohc=je1Q2Zu5XIMQ7kNvwEHpa_b&_nc_oc=Adlx8h4yz_M36L65UGkdvIopzNIyLtRaLb4hSzRNKyO1NHR_jbPw9LHSHzN99WNpHUA&_nc_zt=23&_nc_ht=scontent.fzyl6-1.fna&_nc_gid=2SMSTQw7H8gehkRiZHT0xg&oh=00_AfEdhQHt-MbK7tjuhZLPFzM_wpDl1M9LhaOKfwCYQ5lUDQ&oe=6816E171"
-                  bordered
-                  rounded
-                  className="w-8 h-8"
-                />
-                <Button
-                  color="gray"
-                  size="xs"
-                  onClick={() => {
-                    setOpenModal(!openModal);
-                    setMenuOpen(false);
-                  }}
-                >
-                  Profile
-                </Button>
-                <Button
-                  color="failure"
-                  size="xs"
-                  onClick={() => {
-                    handleLogout();
-                    setMenuOpen(false);
-                  }}
-                >
-                  Sign out
-                </Button>
-              </div>
-            ) : (
-              <Link href="/signin">
-                <Button
-                  style={{ backgroundColor: "#000000", color: "#ffffff", cursor: "pointer" }}
-                  className="w-full mt-2"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  Get Started
-                </Button>
-              </Link>
-            )}
+            <div className="flex items-center gap-2 mt-2">
+              <Avatar
+                alt="User settings"
+                img="https://scontent.fzyl6-1.fna.fbcdn.net/v/t39.30808-6/372624737_3640915932896748_4744980592238643195_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=a5f93a&_nc_eui2=AeGUvmZnTEIB81Zzlg7HWNr50lPTtsFdLpzSU9O2wV0unKpLICPXB36mmKbTqmMDKwj2H2Wvy3HoZgbvSztt3mLD&_nc_ohc=je1Q2Zu5XIMQ7kNvwEHpa_b&_nc_oc=Adlx8h4yz_M36L65UGkdvIopzNIyLtRaLb4hSzRNKyO1NHR_jbPw9LHSHzN99WNpHUA&_nc_zt=23&_nc_ht=scontent.fzyl6-1.fna&_nc_gid=2SMSTQw7H8gehkRiZHT0xg&oh=00_AfEdhQHt-MbK7tjuhZLPFzM_wpDl1M9LhaOKfwCYQ5lUDQ&oe=6816E171"
+                bordered
+                rounded
+                className="w-8 h-8"
+              />
+              <Button
+                color="gray"
+                size="xs"
+                onClick={() => {
+                  setOpenModal(!openModal);
+                  setMenuOpen(false);
+                }}
+              >
+                Profile
+              </Button>
+              <Button
+                color="failure"
+                size="xs"
+                onClick={() => {
+                  handleLogout();
+                  setMenuOpen(false);
+                }}
+              >
+                Sign out
+              </Button>
+            </div>
           </div>
         </div>
       )}

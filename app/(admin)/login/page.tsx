@@ -20,7 +20,7 @@ export default function AdminLogin() {
     // Store role and email in localStorage (temporary until backend is connected)
     localStorage.setItem("adminRole", formData.role);
     localStorage.setItem("adminEmail", formData.email);
-
+    localStorage.setItem("adminToken", "abcd");
     // Navigate based on role
     switch (formData.role) {
       case "superadmin":
