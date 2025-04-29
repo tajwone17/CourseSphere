@@ -12,6 +12,7 @@ import {
 } from "react-icons/hi";
 import {
   Avatar,
+  Badge,
   Button,
   Dropdown,
   DropdownItem,
@@ -102,6 +103,16 @@ export function MyNavbar() {
               <span className="text-m hidden font-bold sm:inline">
                 Course Selection
               </span>
+              <Badge
+                style={{
+                  border: "1px solid #92e3a9",
+                  backgroundColor: "black",
+                  color: "#92e3a9",
+                }}
+                className="ms-2 rounded-full px-1.5"
+              >
+                2
+              </Badge>
             </Link>
           )}
 
@@ -115,14 +126,14 @@ export function MyNavbar() {
                   img="https://scontent.fzyl6-1.fna.fbcdn.net/v/t39.30808-6/372624737_3640915932896748_4744980592238643195_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=a5f93a&_nc_eui2=AeGUvmZnTEIB81Zzlg7HWNr50lPTtsFdLpzSU9O2wV0unKpLICPXB36mmKbTqmMDKwj2H2Wvy3HoZgbvSztt3mLD&_nc_ohc=je1Q2Zu5XIMQ7kNvwEHpa_b&_nc_oc=Adlx8h4yz_M36L65UGkdvIopzNIyLtRaLb4hSzRNKyO1NHR_jbPw9LHSHzN99WNpHUA&_nc_zt=23&_nc_ht=scontent.fzyl6-1.fna&_nc_gid=2SMSTQw7H8gehkRiZHT0xg&oh=00_AfEdhQHt-MbK7tjuhZLPFzM_wpDl1M9LhaOKfwCYQ5lUDQ&oe=6816E171"
                   bordered
                   rounded
-                   className=" cursor-pointer"
-
+                  className="cursor-pointer"
                 />
               }
-              className="w-40 " 
+              className="w-40"
               dismissOnClick={false}
             >
-              <DropdownItem   style={{ backgroundColor: "gray-100",color:"#92E3A9 "}}
+              <DropdownItem
+                style={{ backgroundColor: "gray-100", color: "#92E3A9 " }}
                 onClick={() => {
                   setOpenModal(!openModal);
                 }}
