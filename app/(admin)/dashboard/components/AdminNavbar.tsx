@@ -67,6 +67,11 @@ export default function AdminNavbar() {
             href: "/dashboard/account-approval",
             icon: HiUserGroup,
           },
+          {
+            name: "Manage Courses",
+            href: "/dashboard/manage-courses",
+            icon: HiAcademicCap,
+          },
         ];
       case "advisor":
         return [
