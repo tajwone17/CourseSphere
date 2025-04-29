@@ -1,22 +1,28 @@
 "use client";
 
-import { Button, Navbar } from "flowbite-react";
+import { Avatar, Button, Dropdown, DropdownItem, Navbar } from "flowbite-react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import {
   HiHome,
   HiUserGroup,
   HiUsers,
-  HiLogout,
   HiAcademicCap,
   HiSpeakerphone,
 } from "react-icons/hi";
 import { useEffect, useState } from "react";
+import { useAuth } from "@/app/context/AuthContext";
+import { FaRocket } from "react-icons/fa";
+import ProfileModal from "@/app/components/ProfileModal";
 
 export default function AdminNavbar() {
   const router = useRouter();
   const pathname = usePathname();
   const [role, setRole] = useState<string>("");
+
+    const [openModal, setOpenModal] = useState(false);
+    const { isAuthenticated, logout } = useAuth();
+
 
   useEffect(() => {
     const adminRole = localStorage.getItem("adminRole");
@@ -28,9 +34,8 @@ export default function AdminNavbar() {
   }, [router]);
 
   const handleLogout = () => {
-    localStorage.removeItem("adminRole");
-    localStorage.removeItem("adminEmail");
-    router.push("/login");
+    logout();
+    router.push("/");
   };
 
   // Define menu items for each role
@@ -113,6 +118,7 @@ export default function AdminNavbar() {
   const menuItems = getMenuItems();
 
   return (
+    <>
     <Navbar fluid className="border-b border-gray-800 bg-gray-900">
       <div className="flex-1">
         <Link
@@ -148,21 +154,55 @@ export default function AdminNavbar() {
           </Link>
         ))}
 
-        <Button
-          style={{
-            backgroundColor: "#b23b3b",
-            color: "white",
+            {isAuthenticated ? (
+              <Dropdown
+                arrowIcon={false}
+                inline
+                label={
+                  <Avatar
+                    alt="User settings"
+                    img="https://scontent.fzyl6-1.fna.fbcdn.net/v/t39.30808-6/372624737_3640915932896748_4744980592238643195_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=a5f93a&_nc_eui2=AeGUvmZnTEIB81Zzlg7HWNr50lPTtsFdLpzSU9O2wV0unKpLICPXB36mmKbTqmMDKwj2H2Wvy3HoZgbvSztt3mLD&_nc_ohc=je1Q2Zu5XIMQ7kNvwEHpa_b&_nc_oc=Adlx8h4yz_M36L65UGkdvIopzNIyLtRaLb4hSzRNKyO1NHR_jbPw9LHSHzN99WNpHUA&_nc_zt=23&_nc_ht=scontent.fzyl6-1.fna&_nc_gid=2SMSTQw7H8gehkRiZHT0xg&oh=00_AfEdhQHt-MbK7tjuhZLPFzM_wpDl1M9LhaOKfwCYQ5lUDQ&oe=6816E171"
+                    bordered
+                    rounded
+                  />
+                }
+                dismissOnClick={false}
+              >
+                <DropdownItem
+                  onClick={() => {
+                    setOpenModal(!openModal);
+                  }}
+                >
+                  Profile
+                </DropdownItem>
+                <DropdownItem
+                  style={{ color: "#DC3545" }}
+                  onClick={handleLogout}
+                >
+                  Sign out
+                </DropdownItem>
+              </Dropdown>
+            ) : (
+              <Link href="/signin">
+                <Button
+                  style={{
+                    backgroundColor: "#000000",
+                    color: "#ffffff",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                  }}
+                  className="transition-all hover:scale-105 hover:bg-gray-900"
+                >
+                  Get Started <FaRocket />
+                </Button>
+              </Link>
+            )}
 
-            width: "fit-content",
-            cursor: "pointer",
-          }}
-          onClick={handleLogout}
-          className="flex items-center gap-2 text-gray-900 transition-all duration-200 hover:bg-[#7ac892]"
-        >
-          <HiLogout className="h-5 w-5" />
-          Sign Out
-        </Button>
       </div>
     </Navbar>
+    {openModal && <ProfileModal onClose={() => setOpenModal(false)} />}
+    </>
   );
 }
