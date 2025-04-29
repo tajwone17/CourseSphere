@@ -65,24 +65,26 @@ export default function AdminNavbar() {
             icon: HiUsers,
           },
           {
-            name: "Manage Advisors",
-            href: "/dashboard/manage-advisors",
-            icon: HiUserGroup,
-          },
-          {
-            name: "Manage Notices",
-            href: "/dashboard/manage-notices",
-            icon: HiSpeakerphone,
-          },
-          {
             name: "Account Approval",
             href: "/dashboard/account-approval",
             icon: HiUserGroup,
           },
           {
+            name: "Manage Advisors",
+            href: "/dashboard/manage-advisors",
+            icon: HiUserGroup,
+          },
+      
+       
+          {
             name: "Manage Courses",
             href: "/dashboard/manage-courses",
             icon: HiAcademicCap,
+          },
+          {
+            name: "Manage Notices",
+            href: "/dashboard/manage-notices",
+            icon: HiSpeakerphone,
           },
         ];
       case "advisor":
@@ -110,7 +112,7 @@ export default function AdminNavbar() {
         ];
       case "exam-controller":
         return [
-          { name: "Dashboard", href: "/dashboard", icon: HiHome },
+          // { name: "Dashboard", href: "/dashboard", icon: HiHome },
           {
             name: "Manage Results",
             href: "/dashboard/manage-results",

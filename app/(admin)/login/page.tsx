@@ -35,7 +35,7 @@ export default function AdminLogin() {
         break;
 
       case "accounts":
-        router.push("/dashboard/student-management");
+        router.push("/dashboard");
         break;
 
       default:
