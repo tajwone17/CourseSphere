@@ -62,6 +62,11 @@ export default function AdminNavbar() {
             href: "/dashboard/manage-notices",
             icon: HiSpeakerphone,
           },
+          {
+            name: "Account Approval",
+            href: "/dashboard/account-approval",
+            icon: HiUserGroup,
+          },
         ];
       case "advisor":
         return [
