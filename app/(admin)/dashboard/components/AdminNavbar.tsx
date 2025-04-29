@@ -112,8 +112,8 @@ export default function AdminNavbar() {
         return [
           { name: "Dashboard", href: "/dashboard", icon: HiHome },
           {
-            name: "Student Management",
-            href: "/dashboard/student-management",
+            name: "Manage Results",
+            href: "/dashboard/manage-results",
             icon: HiUsers,
           },
         ];

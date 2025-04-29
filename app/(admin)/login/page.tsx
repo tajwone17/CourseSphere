@@ -31,7 +31,7 @@ export default function AdminLogin() {
         router.push("/dashboard");
         break;
       case "exam-controller":
-        router.push("/dashboard/manage-students");
+        router.push("/dashboard/manage-results");
         break;
 
       case "accounts":

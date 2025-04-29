@@ -204,7 +204,7 @@ export default function RegistrationApproval() {
           </table>
         </div>
       </div>
-      
+      {adminRole === "accounts" &&(  
 <>
        {/* Students Comments */}
        <div className="mb-8">
@@ -227,7 +227,7 @@ export default function RegistrationApproval() {
            name="Admin comment"
          />
        </div>
-       </>
+       </>)}
       {/* Accounts Office Financial Form */}
       {adminRole === "accounts" && (
         <div className="mb-10 rounded-lg border border-gray-700 bg-gray-800 p-6">
