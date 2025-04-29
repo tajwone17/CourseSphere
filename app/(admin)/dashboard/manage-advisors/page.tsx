@@ -141,7 +141,7 @@ export default function ManageAdvisors() {
 
       <div className="rounded-lg border border-gray-800 bg-gray-900 p-6">
         <div className="mb-6 flex items-center justify-between gap-4">
-          <div className="flex flex-1 items-center gap-4">
+          <div className="flex flex-1 items-start md:items-center gap-4 flex-col md:flex-row">
             <div className="relative w-64">
               <TextInput
                 type="search"
