@@ -9,10 +9,12 @@ import {
   HiSpeakerphone,
   HiInformationCircle,
   HiMail,
-  HiLogout,
 } from "react-icons/hi";
 import {
+  Avatar,
   Button,
+  Dropdown,
+  DropdownItem,
   Navbar,
   NavbarBrand,
   NavbarCollapse,
@@ -22,13 +24,17 @@ import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import Logo from "@/public/assets/icon";
 import { useAuth } from "../context/AuthContext";
+import { useState } from "react";
+import ProfileModal from "./ProfileModal";
+
+interface navlinks {
+  name: string;
+  href: string;
+  icon: React.ElementType;
+}
 
 export function MyNavbar() {
-  interface navlinks {
-    name: string;
-    href: string;
-    icon: React.ElementType;
-  }
+  const [openModal, setOpenModal] = useState(false);
 
   const pathname = usePathname();
   const router = useRouter();
@@ -59,79 +65,95 @@ export function MyNavbar() {
   };
 
   return (
-    <Navbar fluid style={{ backgroundColor: "#92e3a9" }}>
-      <NavbarBrand as={Link} href="/">
-        <Logo className="mx-2 h-8 w-8 text-black" />
-        <span className="self-center text-xl font-semibold text-black text-shadow-initial">
-          CourseSphere
-        </span>
-      </NavbarBrand>
+    <>
+      <Navbar fluid style={{ backgroundColor: "#92e3a9" }}>
+        <NavbarBrand as={Link} href="/">
+          <Logo className="mx-2 h-8 w-8 text-black" />
+          <span className="self-center text-xl font-semibold text-black text-shadow-initial">
+            CourseSphere
+          </span>
+        </NavbarBrand>
 
-      <NavbarToggle />
-      <NavbarCollapse>
-        {navLinks.map((link) => (
-          <Link
-            key={link.name}
-            style={{
-              color: pathname === link.href ? "#4B5563" : "#000",
-              fontWeight: pathname === link.href ? "bold" : "normal",
-            }}
-            href={link.href}
-            className="flex items-center gap-1 py-2 transition-colors hover:text-gray-700"
-          >
-            <link.icon className="h-5 w-5" />
-            {link.name}
-          </Link>
-        ))}
-      </NavbarCollapse>
-
-      <div className="flex items-center gap-4">
-        {isAuthenticated && (
-          <Link
-            href="/course-selection"
-            className="flex items-center gap-2 rounded-lg bg-black px-4 py-2 text-[#92e3a9] transition-all hover:scale-105 hover:bg-gray-900"
-          >
-            <HiAcademicCap className="text-2xl" />
-            <span className="text-m hidden font-bold sm:inline">
-              Course Selection
-            </span>
-          </Link>
-        )}
-
-        {isAuthenticated ? (
-          <Button
-            onClick={handleSignOut}
-            style={{
-              backgroundColor: "#000000",
-              color: "#ffffff",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-            }}
-            className="transition-all hover:scale-105 hover:bg-gray-900"
-          >
-            Sign Out
-            <HiLogout className="h-5 w-5" />
-          </Button>
-        ) : (
-          <Link href="/signin">
-            <Button
+        <NavbarToggle />
+        <NavbarCollapse>
+          {navLinks.map((link) => (
+            <Link
+              key={link.name}
               style={{
-                backgroundColor: "#000000",
-                color: "#ffffff",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
+                color: pathname === link.href ? "#4B5563" : "#000",
+                fontWeight: pathname === link.href ? "bold" : "normal",
               }}
-              className="transition-all hover:scale-105 hover:bg-gray-900"
+              href={link.href}
+              className="flex items-center gap-1 py-2 transition-colors hover:text-gray-700"
             >
-              Get Started <FaRocket />
-            </Button>
-          </Link>
-        )}
-      </div>
-    </Navbar>
+              <link.icon className="h-5 w-5" />
+              {link.name}
+            </Link>
+          ))}
+        </NavbarCollapse>
+
+        <div className="flex items-center gap-4">
+          {isAuthenticated && (
+            <Link
+              href="/course-selection"
+              className="flex items-center gap-2 rounded-lg bg-black px-4 py-2 text-[#92e3a9] transition-all hover:scale-105 hover:bg-gray-900"
+            >
+              <HiAcademicCap className="text-2xl" />
+              <span className="text-m hidden font-bold sm:inline">
+                Course Selection
+              </span>
+            </Link>
+          )}
+
+          {isAuthenticated ? (
+            <Dropdown
+              arrowIcon={false}
+              inline
+              label={
+                <Avatar
+                  alt="User settings"
+                  img="https://scontent.fzyl6-1.fna.fbcdn.net/v/t39.30808-6/372624737_3640915932896748_4744980592238643195_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=a5f93a&_nc_eui2=AeGUvmZnTEIB81Zzlg7HWNr50lPTtsFdLpzSU9O2wV0unKpLICPXB36mmKbTqmMDKwj2H2Wvy3HoZgbvSztt3mLD&_nc_ohc=je1Q2Zu5XIMQ7kNvwEHpa_b&_nc_oc=Adlx8h4yz_M36L65UGkdvIopzNIyLtRaLb4hSzRNKyO1NHR_jbPw9LHSHzN99WNpHUA&_nc_zt=23&_nc_ht=scontent.fzyl6-1.fna&_nc_gid=2SMSTQw7H8gehkRiZHT0xg&oh=00_AfEdhQHt-MbK7tjuhZLPFzM_wpDl1M9LhaOKfwCYQ5lUDQ&oe=6816E171"
+                  bordered
+                  rounded
+                />
+              }
+              dismissOnClick={false}
+            >
+              <DropdownItem
+                onClick={() => {
+                  setOpenModal(!openModal);
+                }}
+              >
+                Profile
+              </DropdownItem>
+              <DropdownItem
+                style={{ color: "#DC3545" }}
+                onClick={handleSignOut}
+              >
+                Sign out
+              </DropdownItem>
+            </Dropdown>
+          ) : (
+            <Link href="/signin">
+              <Button
+                style={{
+                  backgroundColor: "#000000",
+                  color: "#ffffff",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                }}
+                className="transition-all hover:scale-105 hover:bg-gray-900"
+              >
+                Get Started <FaRocket />
+              </Button>
+            </Link>
+          )}
+        </div>
+      </Navbar>
+
+      {openModal && <ProfileModal onClose={() => setOpenModal(false)} />}
+    </>
   );
 }
