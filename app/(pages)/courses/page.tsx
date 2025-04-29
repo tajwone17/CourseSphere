@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Select, TextInput } from "flowbite-react";
-import { HiSearch, HiBookOpen, HiUser, HiOfficeBuilding } from "react-icons/hi";
+import { Select } from "flowbite-react";
+import { HiBookOpen, HiUser, HiOfficeBuilding, HiSearch } from "react-icons/hi";
+import ReactSelect from "react-select";
 
-// ✅ Updated with more departments
+// Department names
 const departmentNames: Record<number, string> = {
   1: "Computer Science",
   2: "Electrical Engineering",
@@ -13,13 +14,14 @@ const departmentNames: Record<number, string> = {
   5: "Business Administration",
 };
 
+// Courses list
 const courses = [
   {
     id: 1,
     name: "Database Management Systems",
     code: "CSE301",
     credit: 3,
-    instructor: " Dr. Tajwone Chowdhury",
+    instructor: "Dr. Tajwone Chowdhury",
     department_id: 1,
     prerequisites: ["Data Structures", "Computer Architecture"],
   },
@@ -71,43 +73,58 @@ const courses = [
 ];
 
 export default function CourseCatalogTable() {
-  const [search, setSearch] = useState("");
   const [department, setDepartment] = useState("all");
+  const [searchCode, setSearchCode] = useState("");
+  const [searchTitle, setSearchTitle] = useState("");
+  const [searchInstructor, setSearchInstructor] = useState("");
   const [selectedCourses, setSelectedCourses] = useState<number[]>([]);
 
-  // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5; // Set the number of items per page
+  const itemsPerPage = 5;
 
   const filtered = courses.filter((course) => {
-    const matchesSearch =
-      course.name.toLowerCase().includes(search.toLowerCase()) ||
-      course.code.toLowerCase().includes(search.toLowerCase()) ||
-      course.instructor.toLowerCase().includes(search.toLowerCase());
+    const matchesCode = !searchCode || course.code === searchCode;
+    const matchesTitle = !searchTitle || course.name === searchTitle;
+    const matchesInstructor =
+      !searchInstructor || course.instructor === searchInstructor;
     const matchesDept =
       department === "all" || course.department_id.toString() === department;
-    return matchesSearch && matchesDept;
+    return matchesCode && matchesTitle && matchesInstructor && matchesDept;
   });
 
-  // Calculate the total pages
   const totalPages = Math.ceil(filtered.length / itemsPerPage);
-
-  // Get the current page data
   const currentCourses = filtered.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage,
   );
 
-  // Handle page change
   const handlePageChange = (page: number) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
-    }
+    if (page >= 1 && page <= totalPages) setCurrentPage(page);
   };
+
+  const courseCodeOptions = Array.from(new Set(courses.map((c) => c.code))).map(
+    (code) => ({
+      value: code,
+      label: code,
+    }),
+  );
+
+  const courseTitleOptions = Array.from(
+    new Set(courses.map((c) => c.name)),
+  ).map((title) => ({
+    value: title,
+    label: title,
+  }));
+
+  const instructorOptions = Array.from(
+    new Set(courses.map((c) => c.instructor)),
+  ).map((instructor) => ({
+    value: instructor,
+    label: instructor,
+  }));
 
   return (
     <div className="mx-auto max-w-7xl space-y-8 px-4 py-8">
-      {/* Heading */}
       <div
         className="mb-8 text-center"
         data-aos="fade-down"
@@ -121,7 +138,6 @@ export default function CourseCatalogTable() {
         </p>
       </div>
 
-      {/* Search and Filter Section */}
       <div
         className="rounded-lg border border-gray-800 bg-gray-900 p-6 shadow-xl"
         data-aos="fade-up"
@@ -130,11 +146,11 @@ export default function CourseCatalogTable() {
         <h2 className="mb-4 text-xl font-semibold text-white">
           Search & Filter
         </h2>
-        <div className="flex flex-col gap-4 sm:flex-row">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <Select
             value={department}
             onChange={(e) => setDepartment(e.target.value)}
-            className="w-full sm:w-60"
+            className="w-full"
           >
             <option value="all">All Departments</option>
             {Object.entries(departmentNames).map(([id, name]) => (
@@ -144,22 +160,135 @@ export default function CourseCatalogTable() {
             ))}
           </Select>
 
-          <TextInput
-            icon={HiSearch}
-            placeholder="Search by course, code or instructor"
-            className="w-full sm:max-w-md"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
+          <div className="relative">
+            <HiSearch className="absolute top-3.5 left-3 text-gray-500" />
+            <ReactSelect
+              options={courseCodeOptions}
+              placeholder="Search by code"
+              isClearable
+              onChange={(option) => setSearchCode(option?.value || "")}
+              className="pl-8"
+              styles={{
+                control: (base) => ({
+                  ...base,
+                  backgroundColor: "#1f2937", // dark background
+                  borderColor: "#374151",
+                  color: "white",
+                }),
+                singleValue: (base) => ({
+                  ...base,
+                  color: "white", // selected value
+                }),
+                input: (base) => ({
+                  ...base,
+                  color: "white", // input text
+                }),
+                placeholder: (base) => ({
+                  ...base,
+                  color: "#9ca3af", // placeholder text (gray-400)
+                }),
+                menu: (base) => ({
+                  ...base,
+                  backgroundColor: "#1f2937", // dropdown menu background
+                }),
+                option: (base, state) => ({
+                  ...base,
+                  backgroundColor: state.isFocused ? "#374151" : "#1f2937",
+                  color: "white", // <-- suggestion text color
+                  cursor: "pointer",
+                }),
+              }}
+            />
+          </div>
+
+          <div className="relative">
+            <ReactSelect
+              options={courseTitleOptions}
+              placeholder="Search by title"
+              isClearable
+              onChange={(option) => setSearchTitle(option?.value || "")}
+              className="pl-8"
+              styles={{
+                control: (base) => ({
+                  ...base,
+                  backgroundColor: "#1f2937", // dark background
+                  borderColor: "#374151",
+                  color: "white",
+                }),
+                singleValue: (base) => ({
+                  ...base,
+                  color: "white", // selected value
+                }),
+                input: (base) => ({
+                  ...base,
+                  color: "white", // input text
+                }),
+                placeholder: (base) => ({
+                  ...base,
+                  color: "#9ca3af", // placeholder text (gray-400)
+                }),
+                menu: (base) => ({
+                  ...base,
+                  backgroundColor: "#1f2937", // dropdown menu background
+                }),
+                option: (base, state) => ({
+                  ...base,
+                  backgroundColor: state.isFocused ? "#374151" : "#1f2937",
+                  color: "white", // <-- suggestion text color
+                  cursor: "pointer",
+                }),
+              }}
+            />
+          </div>
+
+          <div className="relative">
+            <HiSearch className="absolute top-3.5 left-3 text-gray-500" />
+            <ReactSelect
+              options={instructorOptions}
+              placeholder="Search by Instructor"
+              isClearable
+              onChange={(option) => setSearchInstructor(option?.value || "")}
+              className="pl-8"
+              styles={{
+                control: (base) => ({
+                  ...base,
+                  backgroundColor: "#1f2937", // dark background
+                  borderColor: "#374151",
+                  color: "white",
+                }),
+                singleValue: (base) => ({
+                  ...base,
+                  color: "white", // selected value
+                }),
+                input: (base) => ({
+                  ...base,
+                  color: "white", // input text
+                }),
+                placeholder: (base) => ({
+                  ...base,
+                  color: "#9ca3af", // placeholder text (gray-400)
+                }),
+                menu: (base) => ({
+                  ...base,
+                  backgroundColor: "#1f2937", // dropdown menu background
+                }),
+                option: (base, state) => ({
+                  ...base,
+                  backgroundColor: state.isFocused ? "#374151" : "#1f2937",
+                  color: "white", // <-- suggestion text color
+                  cursor: "pointer",
+                }),
+              }}
+            />
+          </div>
         </div>
       </div>
 
-      {/* Course List Section */}
       <div
         className="rounded-lg border border-gray-800 bg-gray-900 p-6 shadow-xl"
         data-aos="fade-up"
         data-aos-delay="200"
-        style={{ maxWidth: '100%' }}
+        style={{ maxWidth: "100%" }}
       >
         <h2 className="mb-4 text-xl font-semibold text-white">
           Available Courses
@@ -170,25 +299,25 @@ export default function CourseCatalogTable() {
               <table className="w-full table-auto text-left text-sm">
                 <thead>
                   <tr>
-                    <th className="w-[120px] px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+                    <th className="px-4 py-3 text-xs font-medium text-gray-400 uppercase">
                       Code
                     </th>
-                    <th className="w-[250px] px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+                    <th className="px-4 py-3 text-xs font-medium text-gray-400 uppercase">
                       Course Title
                     </th>
-                    <th className="w-[100px] px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+                    <th className="px-4 py-3 text-xs font-medium text-gray-400 uppercase">
                       Credits
                     </th>
-                    <th className="w-[180px] px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+                    <th className="px-4 py-3 text-xs font-medium text-gray-400 uppercase">
                       Instructor
                     </th>
-                    <th className="w-[200px] px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+                    <th className="px-4 py-3 text-xs font-medium text-gray-400 uppercase">
                       Department
                     </th>
-                    <th className="w-[200px] px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+                    <th className="px-4 py-3 text-xs font-medium text-gray-400 uppercase">
                       Prerequisites
                     </th>
-                    <th className="w-[150px] px-4 py-3 text-center text-xs font-medium text-gray-400 uppercase">
+                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-400 uppercase">
                       Selection
                     </th>
                   </tr>
@@ -205,7 +334,7 @@ export default function CourseCatalogTable() {
                           {course.code}
                         </div>
                       </td>
-                      <td className="px-4 py-4 whitespace-nowrap text-white transition-colors hover:text-[#92e3a9]">
+                      <td className="px-4 py-4 whitespace-nowrap text-white hover:text-[#92e3a9]">
                         {course.name}
                       </td>
                       <td className="px-4 py-4 whitespace-nowrap text-white">
@@ -280,10 +409,10 @@ export default function CourseCatalogTable() {
         </div>
       </div>
 
-      {/* Simple Pagination Controls */}
+      {/* Pagination */}
       <div className="mt-6 flex items-center justify-center gap-4">
         <button
-          className="rounded-md bg-[#92e3a9] px-4 py-2 text-black transition-all hover:bg-[#7acc91] hover:shadow-lg disabled:opacity-50 disabled:hover:bg-[#92e3a9] disabled:hover:shadow-none"
+          className="rounded-md bg-[#92e3a9] px-4 py-2 text-black transition-all hover:bg-[#7acc91] hover:shadow-lg disabled:opacity-50"
           disabled={currentPage === 1}
           onClick={() => handlePageChange(currentPage - 1)}
         >
@@ -293,7 +422,7 @@ export default function CourseCatalogTable() {
           Page {currentPage} of {totalPages}
         </span>
         <button
-          className="rounded-md bg-[#92e3a9] px-4 py-2 text-black transition-all hover:bg-[#7acc91] hover:shadow-lg disabled:opacity-50 disabled:hover:bg-[#92e3a9] disabled:hover:shadow-none"
+          className="rounded-md bg-[#92e3a9] px-4 py-2 text-black transition-all hover:bg-[#7acc91] hover:shadow-lg disabled:opacity-50"
           disabled={currentPage === totalPages}
           onClick={() => handlePageChange(currentPage + 1)}
         >
