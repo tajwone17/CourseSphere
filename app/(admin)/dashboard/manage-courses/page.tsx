@@ -139,7 +139,7 @@ export default function ManageCourse() {
           <HiSearch className="absolute top-2.5 left-3 h-5 w-5 text-gray-400" />
         </div>
       </div>
-      <div className="rounded-lg border border-gray-700">
+      <div className="overflow-x-auto lg:overflow-hidden rounded-lg border border-gray-700">
         <table className="min-w-full divide-y divide-gray-800">
           <thead className="bg-gray-800">
             <tr>
