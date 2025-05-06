@@ -5,7 +5,7 @@ USE CourseSphere;
 -- Department table
 CREATE TABLE department (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
+    department_name VARCHAR(100) NOT NULL,
     amount_per_credit DECIMAL(10,2) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -36,16 +36,14 @@ CREATE TABLE advisor (
 CREATE TABLE student (
     id INT AUTO_INCREMENT PRIMARY KEY,
     registration_number VARCHAR(50) NOT NULL UNIQUE,
-    `name` VARCHAR(100) NOT NULL,
+    name VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
-    `password` VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
     department_id INT NOT NULL,
-  
-    `session` VARCHAR(10),
+    session VARCHAR(10),
     mobile VARCHAR(20),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (department_id) REFERENCES department(id),
-    FOREIGN KEY (advisor_id) REFERENCES advisor(id)
+    FOREIGN KEY (department_id) REFERENCES department(id)
 );
 
 -- Admin table
@@ -56,28 +54,35 @@ CREATE TABLE admin (
     password VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-CREATE TABLE instructor (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
 
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
--- Course table
+-- Course table (without instructor_id initially to avoid circular reference)
 CREATE TABLE course (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     code VARCHAR(20) NOT NULL UNIQUE,
     credit DECIMAL(3,1) NOT NULL,
     department_id INT NOT NULL,
-    instructor_id INT NOT NULL,
-
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (department_id) REFERENCES department(id)
-    FOREIGN KEY (instructor_id) REFERENCES instructor(id)
-
 );
 
--- Prerequisites table
+-- Instructor table (now course table already exists)
+CREATE TABLE instructor (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    department_id INT NOT NULL,
+    course_id INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (department_id) REFERENCES department(id),
+    FOREIGN KEY (course_id) REFERENCES course(id)
+);
+
+-- Add instructor_id column to course table after instructor is created
+ALTER TABLE course
+ADD COLUMN instructor_id INT NOT NULL,
+ADD FOREIGN KEY (instructor_id) REFERENCES instructor(id);
+
+-- Prerequisite table
 CREATE TABLE prerequisite (
     id INT AUTO_INCREMENT PRIMARY KEY,
     course_id INT NOT NULL,
@@ -88,7 +93,7 @@ CREATE TABLE prerequisite (
     UNIQUE (course_id, prereq_course_id)
 );
 
--- Cart table (for temporary course selections)
+-- Course cart table
 CREATE TABLE course_cart (
     id INT AUTO_INCREMENT PRIMARY KEY,
     student_id INT NOT NULL,
@@ -108,11 +113,11 @@ CREATE TABLE registration_deadline (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Registration bundle (represents a single enrollment transaction with multiple courses)
+-- Registration bundle table
 CREATE TABLE registration_bundle (
     id INT AUTO_INCREMENT PRIMARY KEY,
     student_id INT NOT NULL,
-
+    semester VARCHAR(50) NOT NULL,
     status ENUM('pending', 'partially_approved', 'approved', 'rejected', 'completed') DEFAULT 'pending',
     hod_approval BOOLEAN DEFAULT FALSE,
     advisor_approval BOOLEAN DEFAULT FALSE,
@@ -124,22 +129,22 @@ CREATE TABLE registration_bundle (
     UNIQUE (student_id, semester)
 );
 
--- Course registration table (linked to registration bundle)
+-- Course registration table
 CREATE TABLE course_registration (
     id INT AUTO_INCREMENT PRIMARY KEY,
     bundle_id INT NOT NULL,
     course_id INT NOT NULL,
-    advisor_id INT ,
+    advisor_id INT,
     status ENUM('pending', 'approved', 'rejected', 'completed') DEFAULT 'pending',
     rejection_reason TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (bundle_id) REFERENCES registration_bundle(id),
     FOREIGN KEY (course_id) REFERENCES course(id),
-    UNIQUE (bundle_id, course_id),
-        FOREIGN KEY ( advisor_id) REFERENCES advisor(id),
+    FOREIGN KEY (advisor_id) REFERENCES advisor(id),
+    UNIQUE (bundle_id, course_id)
 );
 
--- Payment table (now linked to registration bundle)
+-- Payment table
 CREATE TABLE payment (
     id INT AUTO_INCREMENT PRIMARY KEY,
     bundle_id INT NOT NULL,
@@ -159,17 +164,21 @@ CREATE TABLE notice (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (creator_id) REFERENCES hod(id)
 );
-CREATE TABLE registered_courses(
+
+-- Registered courses table
+CREATE TABLE registered_courses (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    course_id INT not null,
+    course_id INT NOT NULL,
     student_id INT NOT NULL,
     FOREIGN KEY (course_id) REFERENCES course(id),
-      FOREIGN KEY (student_id) REFERENCES student(id)
+    FOREIGN KEY (student_id) REFERENCES student(id)
 );
-CREATE TABLE deadlines(
+
+-- Deadlines table
+CREATE TABLE deadlines (
     id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(100),
-    priority ENUM (urgent),
-    description varchar(255),
+    priority ENUM('urgent'),
+    description VARCHAR(255),
     deadline_date DATE
-)
+);
