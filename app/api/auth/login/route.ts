@@ -9,6 +9,7 @@ interface UserResult {
   password: string;
   name?: string;
   userType?: string;
+  status?: string; // Add status for student account status
   [key: string]: unknown; // For other properties that may vary between user types
 }
 
@@ -173,6 +174,25 @@ export async function POST(request: Request) {
       return NextResponse.json(
         { error: "Invalid email or password" },
         { status: 401 },
+      );
+    }
+
+    // Check account status for students
+    if (user.userType === "student" && user.status !== "active") {
+      let message =
+        "Your account is pending activation by the Head of Department.";
+      if (user.status === "inactive") {
+        message =
+          "Your account has been deactivated. Please contact administration.";
+      }
+      return NextResponse.json(
+        {
+          error: "Account not activated",
+          message,
+          redirectTo: "/registration-status",
+          status: user.status,
+        },
+        { status: 403 },
       );
     }
 

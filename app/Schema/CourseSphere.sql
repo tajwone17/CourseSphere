@@ -42,6 +42,7 @@ CREATE TABLE student (
     department_id INT NOT NULL,
     session VARCHAR(10),
     mobile VARCHAR(20),
+    status ENUM('pending', 'active', 'inactive') DEFAULT 'pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (department_id) REFERENCES department(id)
 );

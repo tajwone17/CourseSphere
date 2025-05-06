@@ -12,6 +12,7 @@ interface StudentRecord {
   department_id: number;
   mobile: string | null;
   session: string;
+  status: string;
 }
 
 // Helper functions for validation
@@ -112,10 +113,14 @@ export async function POST(request: Request) {
 
     // Check if session is valid (if provided)
     if (session) {
-      const sessionRegex = /^\d{4}-\d{4}$|^\d{4}$/;
+      // Updated regex to accept both YYYY, YYYY-YYYY and Spring/Fall-YYYY formats
+      const sessionRegex = /^\d{4}$|^\d{4}-\d{4}$|^(Spring|Fall)-\d{4}$/;
       if (!sessionRegex.test(session)) {
         return NextResponse.json(
-          { error: "Invalid session format. Use YYYY or YYYY-YYYY format" },
+          {
+            error:
+              "Invalid session format. Use YYYY, YYYY-YYYY, Spring-YYYY, or Fall-YYYY format",
+          },
           { status: 400 },
         );
       }
@@ -161,6 +166,7 @@ export async function POST(request: Request) {
       department_id: department_id || 1, // Default to department ID 1 if not provided
       mobile: mobile || null,
       session: session || new Date().getFullYear().toString(), // Use provided session or fall back to current year
+      status: "pending", // Set default status to pending
     };
 
     // Insert the user into the database
@@ -179,7 +185,9 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         status: "success",
-        message: "Student registered successfully",
+        message:
+          "Student registered successfully. Your account is awaiting activation by the Head of Department.",
+        redirectTo: "/registration-status",
       },
       { status: 201 },
     );

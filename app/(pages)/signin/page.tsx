@@ -27,6 +27,14 @@ export default function Component() {
       setSuccess(
         "Registration successful! Please sign in with your credentials.",
       );
+
+      // Set timeout to clear success message after 2 seconds
+      const timer = setTimeout(() => {
+        setSuccess(null);
+      }, 2000);
+
+      // Clean up the timer when component unmounts
+      return () => clearTimeout(timer);
     }
   }, [searchParams]);
 
@@ -46,7 +54,34 @@ export default function Component() {
       const result = await login(formData.email, formData.password);
 
       if (result.success) {
-        router.push("/student-dashboard");
+        // Get current user from context to get userType
+        const storedUser = localStorage.getItem("user");
+        if (storedUser) {
+          try {
+            const user = JSON.parse(storedUser);
+            // Redirect based on user type
+            switch (user.userType) {
+              case "admin":
+                router.push("/admin/dashboard");
+                break;
+              case "advisor":
+                router.push("/advisor/dashboard");
+                break;
+              case "hod":
+                router.push("/hod/dashboard");
+                break;
+              case "student":
+              default:
+                router.push("/student-dashboard");
+                break;
+            }
+          } catch (error) {
+            console.error("Failed to parse user data:", error);
+            router.push("/student-dashboard"); // Fallback
+          }
+        } else {
+          router.push("/student-dashboard"); // Fallback
+        }
       } else {
         setError(result.error || "Invalid email or password");
       }
@@ -121,7 +156,7 @@ export default function Component() {
         <div className="flex items-center justify-center">
           <Button
             type="submit"
-            className="mt-4 font-medium"
+            className="mt-4 w-full font-medium"
             style={{ backgroundColor: "#92e3a9", color: "#000000" }}
             disabled={loading}
           >

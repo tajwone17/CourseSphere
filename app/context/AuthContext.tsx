@@ -10,6 +10,7 @@ interface User {
   department_id: number;
   mobile?: string;
   session?: string;
+  userType?: "student" | "admin" | "advisor" | "hod"; // Adding userType field
 }
 
 interface AuthContextType {
