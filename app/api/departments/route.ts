@@ -3,33 +3,29 @@ import db from "@/lib/db";
 
 export async function GET() {
   try {
-    // Wrap the DB query in a Promise to make it async/await compatible
-    const result = await new Promise((resolve, reject) => {
-      db.query("SELECT 1 + 1 AS solution", (err, results) => {
+    // Fetch departments from database
+    const departments: any = await new Promise((resolve, reject) => {
+      db.query("SELECT id, department_name FROM department", (err, results) => {
         if (err) {
-          console.error("Database test query failed:", err.stack);
           reject(err);
           return;
         }
-        console.log("Database test query successful:", results);
         resolve(results);
       });
     });
 
-    // Return success response
     return NextResponse.json({
       status: "success",
-      message: "Database connection successful",
-      result,
+      departments,
     });
   } catch (error) {
-    console.error("Database connection test error:", error);
+    console.error("Error fetching departments:", error);
 
     // Return error response
     return NextResponse.json(
       {
         status: "error",
-        message: "Database connection failed",
+        message: "Failed to fetch departments",
         error: error instanceof Error ? error.message : String(error),
       },
       { status: 500 },

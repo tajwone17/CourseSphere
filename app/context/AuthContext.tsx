@@ -2,56 +2,154 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  registration_number: string;
+  department_id: number;
+  mobile?: string;
+  session?: string;
+}
+
 interface AuthContextType {
   isAuthenticated: boolean;
-  userEmail: string | null;
-  login: (email: string) => void;
+  user: User | null;
+  login: (
+    email: string,
+    password: string,
+  ) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
+  register: (
+    userData: RegisterData,
+  ) => Promise<{ success: boolean; error?: string }>;
+}
+
+interface RegisterData {
+  name: string;
+  email: string;
+  password: string;
+  registration_number: string;
+  department_id?: number;
+  mobile?: string;
+  session?: string; // Add session field
 }
 
 const AuthContext = createContext<AuthContextType>({
   isAuthenticated: false,
-  userEmail: null,
-  login: () => {},
+  user: null,
+  login: async () => ({ success: false }),
   logout: () => {},
+  register: async () => ({ success: false }),
 });
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     // Check authentication status on mount
     const checkAuth = () => {
-      const isAuth = localStorage.getItem("isAuthenticated") === "true";
-      const email = localStorage.getItem("userEmail");
-      setIsAuthenticated(isAuth);
-      setUserEmail(email);
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        try {
+          const parsedUser = JSON.parse(storedUser);
+          setUser(parsedUser);
+          setIsAuthenticated(true);
+        } catch (error) {
+          console.error("Failed to parse user data:", error);
+          // Clear invalid data
+          localStorage.removeItem("user");
+          setIsAuthenticated(false);
+          setUser(null);
+        }
+      }
     };
 
     checkAuth();
-
-    // Listen for storage changes
-    window.addEventListener("storage", checkAuth);
-    return () => window.removeEventListener("storage", checkAuth);
   }, []);
 
-  const login = (email: string) => {
-    localStorage.setItem("isAuthenticated", "true");
-    localStorage.setItem("userEmail", email);
-    setIsAuthenticated(true);
-    setUserEmail(email);
+  const login = async (email: string, password: string) => {
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        return {
+          success: false,
+          error: data.error || "Login failed",
+        };
+      }
+
+      // Store user data in local storage
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      // Update state
+      setUser(data.user);
+      setIsAuthenticated(true);
+
+      return { success: true };
+    } catch (error) {
+      console.error("Login error:", error);
+      return {
+        success: false,
+        error:
+          error instanceof Error
+            ? error.message
+            : "An unexpected error occurred",
+      };
+    }
+  };
+
+  const register = async (userData: RegisterData) => {
+    try {
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        return {
+          success: false,
+          error: data.error || "Registration failed",
+        };
+      }
+
+      return { success: true };
+    } catch (error) {
+      console.error("Registration error:", error);
+      return {
+        success: false,
+        error:
+          error instanceof Error
+            ? error.message
+            : "An unexpected error occurred",
+      };
+    }
   };
 
   const logout = () => {
-    localStorage.removeItem("isAuthenticated");
-    localStorage.removeItem("userEmail");
+    localStorage.removeItem("user");
     setIsAuthenticated(false);
-    setUserEmail(null);
+    setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, userEmail, login, logout }}>
+    <AuthContext.Provider
+      value={{ isAuthenticated, user, login, logout, register }}
+    >
       {children}
     </AuthContext.Provider>
   );
