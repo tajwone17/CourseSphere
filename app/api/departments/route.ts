@@ -4,7 +4,7 @@ import db from "@/lib/db";
 export async function GET() {
   try {
     // Fetch departments from database
-    const departments: any = await new Promise((resolve, reject) => {
+    const departments = await new Promise((resolve, reject) => {
       db.query("SELECT id, department_name FROM department", (err, results) => {
         if (err) {
           reject(err);
@@ -13,6 +13,8 @@ export async function GET() {
         resolve(results);
       });
     });
+    
+    
 
     return NextResponse.json({
       status: "success",
