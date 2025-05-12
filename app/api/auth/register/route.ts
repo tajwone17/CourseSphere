@@ -29,15 +29,13 @@ function isStrongPassword(password: string): boolean {
 }
 
 function isValidRegistrationNumber(regNum: string): boolean {
-  // Assuming registration numbers follow a specific format
-  // Modify this regex based on your institution's registration number format
+
   const regNumRegex = /^[A-Za-z0-9-]{5,20}$/;
   return regNumRegex.test(regNum);
 }
 
 function isValidMobileNumber(mobile: string | null): boolean {
-  if (!mobile) return true; // Mobile is optional
-  // Adjust the regex based on your country's mobile number format
+  if (!mobile) return true;
   const mobileRegex = /^[0-9]{10,15}$/;
   return mobileRegex.test(mobile);
 }

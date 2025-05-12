@@ -17,6 +17,8 @@ CREATE TABLE hod (
     email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     department_id INT NOT NULL,
+    status  bool DEFAULT 1,
+    phone VARCHAR(20),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (department_id) REFERENCES department(id)
 );

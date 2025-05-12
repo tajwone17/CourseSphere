@@ -76,6 +76,7 @@ export default function Component() {
     for (let year = currentYear; year >= currentYear - 5; year--) {
       sessions.push(`Spring-${year}`);
       sessions.push(`Fall-${year - 1}`);
+      sessions.push(`Summer-${year - 1}`);
     }
 
     return sessions;
@@ -172,7 +173,7 @@ export default function Component() {
               placeholder="Your full name"
               value={formData.name}
               onChange={handleChange}
-              required
+             
               shadow
             />
           </div>
@@ -191,7 +192,7 @@ export default function Component() {
               placeholder="Your registration ID"
               value={formData.registration_number}
               onChange={handleChange}
-              required
+             
               shadow
             />
           </div>
@@ -210,7 +211,7 @@ export default function Component() {
               placeholder="name@coursesphere.com"
               value={formData.email}
               onChange={handleChange}
-              required
+             
               shadow
             />
           </div>
@@ -227,7 +228,7 @@ export default function Component() {
               id="session"
               value={formData.session}
               onChange={handleChange}
-              required
+             
             >
               <option value="">Select your session</option>
               {sessionOptions.map((session) => (
@@ -252,7 +253,7 @@ export default function Component() {
               placeholder="••••••••"
               value={formData.password}
               onChange={handleChange}
-              required
+             
               shadow
             />
           </div>
@@ -271,7 +272,7 @@ export default function Component() {
               placeholder="••••••••"
               value={formData.repeatPassword}
               onChange={handleChange}
-              required
+             
               shadow
             />
           </div>
@@ -288,7 +289,7 @@ export default function Component() {
               id="department_id"
               value={formData.department_id}
               onChange={handleChange}
-              required
+             
             >
               <option value="">Select your department</option>
               {departments.map((dept) => (
