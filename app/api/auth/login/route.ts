@@ -19,8 +19,6 @@ function isValidEmail(email: string): boolean {
   return emailRegex.test(email);
 }
 
-// Simple in-memory storage for rate limiting
-// In production, use Redis or another persistent store
 const loginAttempts: Record<string, { count: number; lastAttempt: number }> =
   {};
 
