@@ -4,12 +4,24 @@ import bcrypt from "bcrypt";
 
 // Define types for database results
 interface UserResult {
-  id: number;
-  email: string;
-  password: string;
+  // Define both lowercase and uppercase variants since MySQL might return uppercase keys
+  id?: number;
+  ID?: number;
+  email?: string;
+  EMAIL?: string;
+  password?: string;
+  PASSWORD?: string;
   name?: string;
+  NAME?: string;
   userType?: string;
-  status?: string; // Add status for student account status
+  status?: number;
+  STATUS?:number;
+  // Add any other fields that might be relevant
+  REGISTRATION_NUMBER?: string;
+  DEPARTMENT_ID?: number;
+  SESSION?: string;
+  MOBILE?: string;
+  CREATED_AT?: string;
   [key: string]: unknown; // For other properties that may vary between user types
 }
 
@@ -60,6 +72,15 @@ function checkRateLimit(email: string): { allowed: boolean; message?: string } {
 
 export async function POST(request: Request) {
   try {
+    // Test that bcrypt is working properly
+    try {
+      const testHash = await bcrypt.hash("test", 10);
+      const testVerify = await bcrypt.compare("test", testHash);
+      console.log("Bcrypt self-test:", testVerify ? "PASSED" : "FAILED");
+    } catch (bcryptErr) {
+      console.error("Bcrypt self-test error:", bcryptErr);
+    }
+
     const { email, password } = await request.json();
 
     // Validate required fields
@@ -97,9 +118,7 @@ export async function POST(request: Request) {
 
     // Determine which table to query based on the role or default to checking all tables
     let user: UserResult | null = null;
-    let userTable = "";
-
-    // First check in student table
+    let userTable = ""; // First check in student table
     const studentQuery =
       "SELECT *, 'student' as userType FROM student WHERE email = ?";
     const students: UserResult[] = await new Promise((resolve, reject) => {
@@ -108,6 +127,21 @@ export async function POST(request: Request) {
           reject(err);
           return;
         }
+        console.log(
+          "Student query results:",
+          Array.isArray(results)
+            ? `Found ${results.length} results`
+            : "No results found",
+        );
+
+        if (Array.isArray(results) && results.length > 0) {
+          // Log the structure (but not the actual values) to debug
+          console.log(
+            "User data structure:",
+            Object.keys(results[0]).join(", "),
+          );
+        }
+
         resolve(results as UserResult[]);
       });
     });
@@ -155,31 +189,100 @@ export async function POST(request: Request) {
         user = advisors[0];
         userTable = "advisor";
       }
-    }
-
-    // Check if user exists in any table
+    } // Check if user exists in any table
     if (!user) {
       return NextResponse.json(
         { error: "Invalid email or password" },
         { status: 401 },
       );
-    }
+    } // Log user object keys to see what we're working with
+    console.log("User object keys:", Object.keys(user));
 
-    // Compare passwords
-    const passwordMatch = await bcrypt.compare(password, user.password);
+    // Check for password field case-insensitively
+    const passwordField = Object.keys(user).find(
+      (key) => key.toLowerCase() === "password",
+    );
 
-    if (!passwordMatch) {
+    if (!passwordField) {
+      console.error("Missing password field in user record");
       return NextResponse.json(
-        { error: "Invalid email or password" },
-        { status: 401 },
+        { error: "Authentication error" },
+        { status: 500 },
       );
     }
 
-    // Check account status for students
-    if (user.userType === "student" && user.status !== "active") {
+    if (!user[passwordField]) {
+      console.error("Missing password hash value in user record");
+      return NextResponse.json(
+        { error: "Authentication error" },
+        { status: 500 },
+      );
+    }
+
+    // Log for debugging (remove in production)    console.log("Found password field:", passwordField);
+    console.log("Attempting password verification");
+    try {
+      // We already have the password field from above, no need to find it again
+
+      // Add more detailed debugging      console.log("Input password length:", password ? password.length : 0);
+      const storedPwd = user[passwordField];
+      console.log(
+        "Stored hash length:",
+        storedPwd ? String(storedPwd).length : 0,
+      );
+
+      // Ensure we're working with proper string values
+      const inputPassword = String(password);
+      const storedHash = String(user[passwordField]);
+
+      // Compare passwords with proper error handling
+      const passwordMatch = await bcrypt.compare(inputPassword, storedHash);
+      console.log("Password match result:", passwordMatch);
+
+      if (!passwordMatch) {
+        return NextResponse.json(
+          { error: "Invalid email or password" },
+          { status: 401 },
+        );
+      }
+    } catch (err) {
+      console.error("Password comparison error:", err);
+
+      // Provide more specific error messages based on type of error
+      if (err instanceof Error) {
+        // Check for common bcrypt errors
+        if (err.message.includes("data and hash")) {
+          console.error("Bcrypt error: data or hash arguments invalid");
+          return NextResponse.json(
+            { error: "Invalid credentials format" },
+            { status: 500 },
+          );
+        } else if (err.message.includes("hash")) {
+          console.error("Bcrypt error: hash format issue");
+          return NextResponse.json(
+            { error: "Password verification failed" },
+            { status: 500 },
+          );
+        }
+      }
+
+      return NextResponse.json(
+        { error: "Authentication error" },
+        { status: 500 },
+      );
+    } // Check account status for students
+    // Find the status field case-insensitively
+
+    // Find the status field case-insensitively
+    const statusField = Object.keys(user).find(
+      (key) => key.toLowerCase() === "status"
+    );
+    const userStatus = statusField ? user[statusField] : null;
+
+    if (userTable === "student" && userStatus !== 1 && userStatus !== "1") {
       let message =
         "Your account is pending activation by the Head of Department.";
-      if (user.status === "inactive") {
+      if (userStatus === 0 || userStatus === "0") {
         message =
           "Your account has been deactivated. Please contact administration.";
       }
@@ -188,15 +291,21 @@ export async function POST(request: Request) {
           error: "Account not activated",
           message,
           redirectTo: "/registration-status",
-          status: user.status,
+          status: userStatus,
         },
         { status: 403 },
       );
-    }
+    } // Return user data without sensitive information
+    // Find password field and create a new object without it
+    const passwordKey = Object.keys(user).find(
+      (key) => key.toLowerCase() === "password",
+    );
+    const userData = { ...user };
 
-    // Return user data without sensitive information
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password: passwordField, ...userData } = user;
+    // Remove the password field (whatever its case is)
+    if (passwordKey) {
+      delete userData[passwordKey];
+    }
 
     return NextResponse.json({
       status: "success",
