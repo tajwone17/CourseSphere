@@ -1,127 +1,67 @@
-"use client";
-
 import React from "react";
-import { MdCheckCircle, MdPerson } from "react-icons/md";
-import { FaUserClock, FaUserCheck, FaUserTimes } from "react-icons/fa";
+import {
+  MdCheckCircle,
+  MdPayment,
+  MdDescription,
+  MdPerson,
+} from "react-icons/md";
+import { HiCheck, HiClock as HiPending } from "react-icons/hi";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 
-export default function AccountActivationStatus() {
-  const searchParams = useSearchParams();
-  const status = searchParams?.get("status") || "pending"; // default to pending
-
-  // Define account status display information
-  const statusInfo = {
-    pending: {
-      title: "Account Pending Activation",
-      description:
-        "Your account has been registered successfully and is awaiting activation from the Head of Department.",
-      icon: FaUserClock,
-      color: "text-yellow-300",
-      bgColor: "bg-yellow-900/30",
-      borderColor: "border-yellow-800",
-    },
-    active: {
-      title: "Account Active",
-      description:
-        "Your account has been activated successfully. You can now log in to the system.",
-      icon: FaUserCheck,
-      color: "text-green-300",
-      bgColor: "bg-green-900/30",
-      borderColor: "border-green-800",
-    },
-    inactive: {
-      title: "Account Inactive",
-      description:
-        "Your account is currently inactive. Please contact the administration for assistance.",
-      icon: FaUserTimes,
-      color: "text-red-300",
-      bgColor: "bg-red-900/30",
-      borderColor: "border-red-800",
-    },
-  };
-
-  const currentStatus =
-    statusInfo[status as keyof typeof statusInfo] || statusInfo.pending;
-  const StatusIcon = currentStatus.icon;
-
-  // Account activation steps
-  const steps = [
-    { name: "Registration", icon: MdPerson, status: "completed" },
+export default function page() {
+  const registrationDetails = [
+    { label: "Student Name", value: "John Doe" },
+    { label: "Student ID", value: "2024001" },
+    { label: "Semester", value: "Fall 2024" },
+    { label: "Program", value: "Computer Science" },
+    { label: "Registration Date", value: "April 21, 2025" },
+    { label: "Status", value: "Pending" },
+  ];
+  const courseApprovalData = [
     {
-      name: "HOD Review",
-      icon: MdPerson,
-      status: status === "active" ? "completed" : "pending",
+      courseCode: "CS101",
+      courseTitle: "Introduction to Programming",
+      credits: 3,
+      advisorApproval: "Approved",
+      hodApproval: "Pending",
+      accountsOfficeApproval: "Pending",
+      comments: "Prerequisites met",
     },
     {
-      name: "Account Activation",
-      icon: MdCheckCircle,
-      status: status === "active" ? "completed" : "pending",
+      courseCode: "CS102",
+      courseTitle: "Data Structures",
+      credits: 4,
+      advisorApproval: "Pending",
+      hodApproval: "Pending",
+      accountsOfficeApproval: "Pending",
+      comments: "Waiting for advisor review",
     },
   ];
 
+  const steps = [
+    { name: "Form Submission", icon: MdDescription, status: "completed" },
+    { name: "Advisor Review", icon: MdPerson, status: "current" },
+    { name: "HOD Approval", icon: MdCheckCircle, status: "pending" },
+    { name: "Accounts Office", icon: MdCheckCircle, status: "pending" },
+    { name: "Payment", icon: MdPayment, status: "pending" },
+    { name: "Confirmation", icon: MdCheckCircle, status: "pending" },
+  ];
+
   return (
-    <div className="mx-auto max-w-5xl space-y-8 px-4 py-12">
+    <div className="mx-auto max-w-7xl space-y-8 px-4 py-8">
       {/* Heading */}
       <div
         className="mb-8 text-center"
         data-aos="fade-down"
         data-aos-duration="1000"
       >
-        <h1 className="mb-2 text-3xl font-bold tracking-tight text-gray-200 lg:text-5xl">
-          Account Status
+        <h1 className="mb-2 text-3xl font-extrabold tracking-tight text-white lg:text-5xl">
+          Registration Status
         </h1>
         <p className="mt-4 text-lg text-gray-400">
-          View your account activation status
+          Monitor your course registration approval process
         </p>
       </div>
-
-      {/* Status Card */}
-      <div
-        className={`mx-auto max-w-3xl rounded-lg border ${currentStatus.borderColor} ${currentStatus.bgColor} p-8 shadow-xl`}
-        data-aos="fade-up"
-        data-aos-duration="800"
-      >
-        <div className="flex flex-col items-center justify-center space-y-6 text-center">
-          <div
-            className={`flex h-24 w-24 items-center justify-center rounded-full border ${currentStatus.borderColor} ${currentStatus.bgColor}`}
-          >
-            <StatusIcon className={`h-12 w-12 ${currentStatus.color}`} />
-          </div>
-
-          <h2 className="text-2xl font-bold text-white">
-            {currentStatus.title}
-          </h2>
-          <p className="max-w-lg text-gray-300">{currentStatus.description}</p>
-
-          {status === "pending" && (
-            <div className="mt-2 text-gray-400">
-              <p>
-                Please check back later or contact your department office for
-                updates.
-              </p>
-            </div>
-          )}
-
-          {status === "active" && (
-            <Link href="/signin">
-              <button className="hover:bg-opacity-90 mt-4 rounded-md bg-[#92e3a9] px-6 py-3 font-medium text-black transition-all">
-                Proceed to Login
-              </button>
-            </Link>
-          )}
-
-          {status === "inactive" && (
-            <div className="mt-2 text-gray-400">
-              <p>
-                Please contact your department administrator for assistance.
-              </p>
-              <p className="mt-2">Contact: admin@coursesphere.edu</p>
-            </div>
-          )}
-        </div>
-      </div>
-
       {/* Registration Progress */}
       <div
         className="rounded-lg border border-gray-800 bg-gray-900 p-6 shadow-xl"
@@ -129,9 +69,9 @@ export default function AccountActivationStatus() {
         data-aos-duration="800"
       >
         <h2 className="mb-8 text-center text-xl font-semibold text-white">
-          Account Activation Process
+          Registration Progress
         </h2>
-        <div className="relative mx-auto max-w-3xl overflow-x-auto px-8">
+        <div className="relative mx-auto max-w-4xl px-8">
           {/* Progress Line */}
           <div className="absolute top-6 left-0 h-0.5 w-full bg-gray-800"></div>
 
@@ -143,7 +83,7 @@ export default function AccountActivationStatus() {
                 <div
                   key={index}
                   className="z-10 flex flex-col items-center"
-                  style={{ minWidth: "120px" }}
+                  style={{ width: "120px" }}
                 >
                   <div
                     className={`mb-3 flex h-12 w-12 items-center justify-center rounded-full transition-colors ${
@@ -165,61 +105,194 @@ export default function AccountActivationStatus() {
           </div>
         </div>
       </div>
-
-      {/* FAQ Section */}
+      {/* Registration Details */}
       <div
         className="rounded-lg border border-gray-800 bg-gray-900 p-6 shadow-xl"
         data-aos="fade-up"
         data-aos-delay="400"
       >
-        <h2 className="mb-6 text-xl font-semibold text-white">
-          Frequently Asked Questions
+        <h2 className="mb-4 text-xl font-semibold text-white">
+          Registration Details
         </h2>
-        <div className="space-y-4">
-          <div className="rounded-md bg-gray-800 p-4">
-            <h3 className="font-medium text-white">
-              How long does account activation take?
-            </h3>
-            <p className="mt-1 text-gray-400">
-              Account activation is typically completed within 1-2 business days
-              after registration.
-            </p>
+        <div
+          className="grid grid-cols-1 gap-4 md:grid-cols-3"
+          data-aos="fade-up"
+          data-aos-delay="600"
+        >
+          {registrationDetails.map((detail, index) => (
+            <div key={index} className="rounded-md bg-gray-800 p-4">
+              <p className="text-sm text-gray-400">{detail.label}</p>
+              <p className="font-medium text-white">{detail.value}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+      {/* Course Approval Status */}
+      <div
+        className="rounded-lg border border-gray-800 bg-gray-900 p-6 shadow-xl"
+        data-aos="fade-up"
+        data-aos-delay="800"
+      >
+        <h2 className="mb-4 text-xl font-semibold text-white">
+          Course Approval Status
+        </h2>
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-800">
+            <thead className="bg-gray-800">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+                  Course Code
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+                  Course Title
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+                  Credits
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+                  Advisor Approval
+                </th>{" "}
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+                  HOD Approval
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+                  Accounts Office Approval
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+                  Comments
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-800">
+              {courseApprovalData.map((course, index) => (
+                <tr key={index} className="bg-gray-900">
+                  <td className="px-6 py-4 whitespace-nowrap text-white">
+                    {course.courseCode}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-white">
+                    {course.courseTitle}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-white">
+                    {course.credits}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span
+                      className={`flex w-fit items-center gap-1 rounded-full px-3 py-1 text-xs ${
+                        course.advisorApproval === "Approved"
+                          ? "bg-opacity-20 bg-[#92e3a9] text-black"
+                          : "bg-yellow-900 text-yellow-300"
+                      }`}
+                    >
+                      {course.advisorApproval === "Approved" ? (
+                        <HiCheck className="h-4 w-4" />
+                      ) : (
+                        <HiPending className="h-4 w-4" />
+                      )}
+                      {course.advisorApproval}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span
+                      className={`flex w-fit items-center gap-1 rounded-full px-3 py-1 text-xs ${
+                        course.hodApproval === "Approved"
+                          ? "bg-opacity-20 bg-[#92e3a9] text-black"
+                          : "bg-yellow-900 text-yellow-300"
+                      }`}
+                    >
+                      {course.hodApproval === "Approved" ? (
+                        <HiCheck className="h-4 w-4" />
+                      ) : (
+                        <HiPending className="h-4 w-4" />
+                      )}
+                      {course.hodApproval}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span
+                      className={`flex w-fit items-center gap-1 rounded-full px-3 py-1 text-xs ${
+                        course.accountsOfficeApproval === "Approved"
+                          ? "bg-opacity-20 bg-[#92e3a9] text-black"
+                          : "bg-yellow-900 text-yellow-300"
+                      }`}
+                    >
+                      {course.accountsOfficeApproval === "Approved" ? (
+                        <HiCheck className="h-4 w-4" />
+                      ) : (
+                        <HiPending className="h-4 w-4" />
+                      )}
+                      {course.accountsOfficeApproval}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-gray-400">
+                    {course.comments}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>{" "}
+      {/* Payment Information - Only shown when Accounts Office has approved */}
+      {courseApprovalData.some(
+        (course) => course.accountsOfficeApproval === "Approved",
+      ) ? (
+        <div
+          className="rounded-lg border border-gray-800 bg-gray-900 p-6 shadow-xl"
+          data-aos="fade-up"
+          data-aos-delay="1000"
+        >
+          <h2 className="mb-4 text-xl font-semibold text-white">
+            Payment Information
+          </h2>
+          <div className="space-y-4">
+            <div>
+              <p className="font-medium text-white">Total Fee: $5,000</p>
+              <p className="mt-1 text-gray-400">
+                Payment is required to complete the registration process.
+              </p>
+            </div>
+
+            <div>
+              <p className="mb-2 font-medium text-white">Payment Methods:</p>
+              <ul className="list-inside list-disc text-gray-400">
+                <li>Credit/Debit Card</li>
+                <li>Bank Transfer</li>
+                <li>Online Banking</li>
+              </ul>
+            </div>
+
+            <div className="mt-6 flex gap-4">
+              <button className="rounded-md border border-gray-700 px-4 py-2 text-white transition-colors hover:bg-gray-800">
+                Cancel
+              </button>
+              <Link href="/payment">
+                <button className="hover:bg-opacity-90 cursor-pointer rounded-md bg-[#92e3a9] px-4 py-2 text-black transition-colors">
+                  Proceed to Payment
+                </button>
+              </Link>
+            </div>
           </div>
-          <div className="rounded-md bg-gray-800 p-4">
-            <h3 className="font-medium text-white">
-              What if my account remains pending?
-            </h3>
-            <p className="mt-1 text-gray-400">
-              If your account remains pending for more than 2 business days,
-              please contact your department office or send an email to
-              support@coursesphere.edu.
-            </p>
-          </div>
-          <div className="rounded-md bg-gray-800 p-4">
-            <h3 className="font-medium text-white">
-              Will I be notified when my account is activated?
-            </h3>
-            <p className="mt-1 text-gray-400">
-              Yes, you will receive an email notification when your account has
-              been activated by the Head of Department.
+        </div>
+      ) : (
+        <div
+          className="rounded-lg border border-gray-800 bg-gray-900 p-6 text-center shadow-xl"
+          data-aos="fade-up"
+          data-aos-delay="1000"
+        >
+          <h2 className="mb-4 text-xl font-semibold text-white">
+            Payment Information
+          </h2>
+          <p className="mb-4 text-gray-400">
+            The payment option will be available after Accounts Office approval.
+          </p>
+          <div className="inline-block rounded-md bg-gray-800 p-4">
+            <p className="flex items-center gap-2 text-yellow-300">
+              <HiPending className="h-5 w-5" />
+              Waiting for Accounts Office approval
             </p>
           </div>
         </div>
-      </div>
-
-      {/* Footer Actions */}
-      <div className="flex justify-center space-x-4 pt-4">
-        <Link href="/">
-          <button className="rounded-md border border-gray-700 px-4 py-2 text-white transition-colors hover:bg-gray-800">
-            Back to Home
-          </button>
-        </Link>
-        <Link href="/contact">
-          <button className="rounded-md border border-[#92e3a9] px-4 py-2 text-[#92e3a9] transition-colors hover:bg-[#92e3a9]/10">
-            Contact Support
-          </button>
-        </Link>
-      </div>
+      )}
     </div>
   );
 }

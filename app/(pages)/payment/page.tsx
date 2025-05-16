@@ -153,7 +153,7 @@ export default function PaymentPage() {
           <div className="rounded-lg border border-gray-800 bg-gray-900 p-6 shadow-xl">
             <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold">
               <HiCurrencyDollar className="text-[#92e3a9]" />
-              <span className="text-white">Order Summary</span>
+              <span className="text-white">Summary</span>
             </h2>
 
             {/* Course List */}
