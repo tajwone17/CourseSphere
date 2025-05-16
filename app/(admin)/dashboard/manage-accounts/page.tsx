@@ -3,7 +3,7 @@
 import { Button, TextInput, Modal, Label } from "flowbite-react";
 import {
   HiPlus,
-  HiSearch,
+  HiSearch, 
   HiUser,
   HiMail,
   HiPhone,

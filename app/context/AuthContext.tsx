@@ -13,6 +13,11 @@ interface User {
   userType?: "student" | "admin" | "advisor" | "hod"; // Adding userType field
 }
 
+// Define field errors interface
+interface FieldErrors {
+  [key: string]: string | undefined;
+}
+
 interface AuthContextType {
   isAuthenticated: boolean;
   user: User | null;
@@ -23,7 +28,7 @@ interface AuthContextType {
   logout: () => void;
   register: (
     userData: RegisterData,
-  ) => Promise<{ success: boolean; error?: string }>;
+  ) => Promise<{ success: boolean; error?: string; fieldErrors?: FieldErrors }>;
 }
 
 interface RegisterData {
@@ -57,8 +62,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           const parsedUser = JSON.parse(storedUser);
           setUser(parsedUser);
           setIsAuthenticated(true);
-        } catch (error) {
-          console.error("Failed to parse user data:", error);
+        } catch {
           // Clear invalid data
           localStorage.removeItem("user");
           setIsAuthenticated(false);
@@ -98,7 +102,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       return { success: true };
     } catch (error) {
-      console.error("Login error:", error);
       return {
         success: false,
         error:
@@ -108,7 +111,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       };
     }
   };
-
   const register = async (userData: RegisterData) => {
     try {
       const response = await fetch("/api/auth/register", {
@@ -120,17 +122,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
 
       const data = await response.json();
-
       if (!response.ok) {
         return {
           success: false,
           error: data.error || "Registration failed",
+          fieldErrors: data.fieldErrors || {},
         };
       }
 
       return { success: true };
     } catch (error) {
-      console.error("Registration error:", error);
       return {
         success: false,
         error:

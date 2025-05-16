@@ -10,7 +10,7 @@ interface StudentRecord {
   password: string;
   registration_number: string;
   department_id: number;
-  mobile: string | null;
+  mobile: string; // Changed from string | null to make it required
   session: string;
   status: string;
 }
@@ -29,13 +29,12 @@ function isStrongPassword(password: string): boolean {
 }
 
 function isValidRegistrationNumber(regNum: string): boolean {
-
   const regNumRegex = /^[A-Za-z0-9-]{5,20}$/;
   return regNumRegex.test(regNum);
 }
 
 function isValidMobileNumber(mobile: string | null): boolean {
-  if (!mobile) return true;
+  if (!mobile) return false; // Mobile is now required
   const mobileRegex = /^[0-9]{10,15}$/;
   return mobileRegex.test(mobile);
 }
@@ -50,74 +49,82 @@ export async function POST(request: Request) {
       department_id,
       mobile,
       session,
-    } = await request.json();
+    } = await request.json(); // Field-specific error collection
+    const fieldErrors: Record<string, string> = {}; // Validate required fields
+    if (!name) fieldErrors.name = "Name is required";
+    if (!email) fieldErrors.email = "Email is required";
+    if (!password) fieldErrors.password = "Password is required";
+    if (!registration_number)
+      fieldErrors.registration_number = "Registration number is required";
+    if (!session) fieldErrors.session = "Session is required";
+    if (!mobile) fieldErrors.mobile = "Mobile number is required";
 
-    // Validate required fields
-    if (!name || !email || !password || !registration_number) {
+    // Return all required field errors at once
+    if (Object.keys(fieldErrors).length > 0) {
       return NextResponse.json(
-        { error: "Missing required fields" },
+        {
+          error: "Please fix the following errors",
+          fieldErrors,
+        },
         { status: 400 },
       );
-    }
-
-    // Enhanced validations
+    } // Enhanced validations
     if (name.length < 2 || name.length > 100) {
-      return NextResponse.json(
-        { error: "Name must be between 2 and 100 characters" },
-        { status: 400 },
-      );
+      fieldErrors.name = "Name must be between 2 and 100 characters";
     }
 
     if (!isValidEmail(email)) {
-      return NextResponse.json(
-        { error: "Invalid email format" },
-        { status: 400 },
-      );
+      fieldErrors.email = "Invalid email format";
     }
 
     if (!isStrongPassword(password)) {
+      fieldErrors.password =
+        "Password must be at least 8 characters and include uppercase, lowercase, numbers, and special characters";
+    }
+
+    if (!isValidRegistrationNumber(registration_number)) {
+      fieldErrors.registration_number =
+        "Registration number must be 5-20 characters and can contain letters, numbers and hyphens";
+    }
+
+    if (mobile && !isValidMobileNumber(mobile)) {
+      fieldErrors.mobile = "Mobile number must be 10-15 digits";
+    }
+    // Return validation errors if any
+    if (Object.keys(fieldErrors).length > 0) {
       return NextResponse.json(
         {
-          error:
-            "Password must be at least 8 characters and include uppercase, lowercase, numbers, and special characters",
+          error: "Please fix the following errors",
+          fieldErrors,
         },
         { status: 400 },
       );
     }
-
-    if (!isValidRegistrationNumber(registration_number)) {
-      return NextResponse.json(
-        { error: "Invalid registration number format" },
-        { status: 400 },
-      );
-    }
-
-    if (mobile && !isValidMobileNumber(mobile)) {
-      return NextResponse.json(
-        { error: "Invalid mobile number format" },
-        { status: 400 },
-      );
-    }
-
     if (
       department_id &&
       (isNaN(Number(department_id)) || Number(department_id) <= 0)
     ) {
+      fieldErrors.department_id = "Please select a valid department";
       return NextResponse.json(
-        { error: "Invalid department ID" },
+        {
+          error: "Please fix the following errors",
+          fieldErrors,
+        },
         { status: 400 },
       );
-    }
-
-    // Check if session is valid (if provided)
+    } // Check if session is valid (if provided)
     if (session) {
       // Updated regex to accept both YYYY, YYYY-YYYY and Spring/Fall-YYYY formats
-      const sessionRegex = /^\d{4}$|^\d{4}-\d{4}$|^(Spring|Fall)-\d{4}$/;
+      const sessionRegex = /^\d{4}$|^\d{4}-\d{4}$|^(Spring|Fall|Summer)-\d{4}$/;
       if (!sessionRegex.test(session)) {
+        const fieldErrors: Record<string, string> = {
+          session:
+            "Invalid session format. Use YYYY, YYYY-YYYY, Spring-YYYY, Fall-YYYY, or Summer-YYYY format",
+        };
         return NextResponse.json(
           {
-            error:
-              "Invalid session format. Use YYYY, YYYY-YYYY, Spring-YYYY, or Fall-YYYY format",
+            error: "Please fix the following errors",
+            fieldErrors,
           },
           { status: 400 },
         );
@@ -143,26 +150,40 @@ export async function POST(request: Request) {
         );
       },
     );
-
     if (existingUser && existingUser.length > 0) {
+      // Check which field is duplicated
+      const fieldErrors: Record<string, string> = {};
+
+      // Determine whether email or registration number is duplicate
+      existingUser.forEach((user) => {
+        if (user.email === email) {
+          fieldErrors.email = "This email is already registered";
+        }
+        if (user.registration_number === registration_number) {
+          fieldErrors.registration_number =
+            "This registration number is already registered";
+        }
+      });
+
       return NextResponse.json(
-        { error: "Email or registration number already in use" },
+        {
+          error: "Account already exists",
+          fieldErrors,
+        },
         { status: 409 },
       );
     }
 
     // Hash the password
     const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-    // Prepare user data for insertion
+    const hashedPassword = await bcrypt.hash(password, saltRounds); // Prepare user data for insertion
     const userData: StudentRecord = {
       name,
       email,
       password: hashedPassword,
       registration_number,
       department_id: department_id || 1, // Default to department ID 1 if not provided
-      mobile: mobile || null,
+      mobile: mobile, // Mobile is now required, not null
       session: session || new Date().getFullYear().toString(), // Use provided session or fall back to current year
       status: "pending", // Set default status to pending
     };
@@ -190,7 +211,10 @@ export async function POST(request: Request) {
       { status: 201 },
     );
   } catch (error) {
-    console.error("Registration error:", error);
+    // Log error in development environment only
+    if (process.env.NODE_ENV !== "production") {
+      console.error("Registration error:", error);
+    }
 
     return NextResponse.json(
       {

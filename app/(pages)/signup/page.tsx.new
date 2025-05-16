@@ -29,8 +29,7 @@ interface FieldErrors {
 }
 
 // Helper function to silence unused variable warnings
-// eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
-const noop = (_: any) => {};
+const noop = (..._: any[]) => {};
 
 export default function Component() {
   const router = useRouter();
@@ -50,25 +49,21 @@ export default function Component() {
     agreeToTerms: false,
     session: "", // Add session field
   });
+
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
-  const [passwordsMatch, setPasswordsMatch] = useState<boolean | null>(null);
-  // Helper function to render field-specific errors with animation
-  const renderFieldError = (error?: string, fieldId?: string) => {
-    if (!error) return null;
-    const errorId = fieldId ? `${fieldId}-error` : undefined;
 
+  // Helper function to render field-specific errors with animation
+  const renderFieldError = (error?: string) => {
+    if (!error) return null;
     return (
-      <div
-        id={errorId}
-        role="alert"
-        aria-live="polite"
+      <div 
         className="mt-1 text-sm text-red-600 transition-all duration-300 ease-in-out"
-        style={{
+        style={{ 
           opacity: error ? 1 : 0,
-          height: error ? "auto" : 0,
-          overflow: "hidden",
+          height: error ? 'auto' : 0,
+          overflow: 'hidden'
         }}
       >
         {error}
@@ -88,7 +83,7 @@ export default function Component() {
       } catch (error) {
         // Silence the lint warning
         noop(error);
-
+        
         // Use sample departments as fallback
         setDepartments([
           { id: 1, department_name: "Computer Science Engineering" },
@@ -116,76 +111,47 @@ export default function Component() {
   };
 
   const sessionOptions = generateSessionOptions();
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { id, value } = e.target;
-    const updatedFormData = { ...formData, [id]: value };
-    setFormData(updatedFormData);
-
-    // Check password match when either password or repeatPassword changes
-    if (id === "password" || id === "repeatPassword") {
-      const match =
-        id === "password"
-          ? value === formData.repeatPassword && value !== ""
-          : formData.password === value && formData.password !== "";
-
-      setPasswordsMatch(match);
-
-      // Clear repeat password error if they match
-      if (match && fieldErrors.repeatPassword) {
-        setFieldErrors((prev) => {
-          const newErrors = { ...prev };
-          delete newErrors.repeatPassword;
-          return newErrors;
-        });
-      }
-    }
+    setFormData((prev) => ({ ...prev, [id]: value }));
   };
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, checked } = e.target;
     setFormData((prev) => ({ ...prev, [id]: checked }));
-
+    
     // Clear error for checkbox when changed
     if (fieldErrors[id]) {
-      setFieldErrors((prev) => {
+      setFieldErrors(prev => {
         const newErrors = { ...prev };
         delete newErrors[id];
         return newErrors;
       });
     }
   };
+
   // Add focus handler to clear field errors
-  const handleFocus = (
-    e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>,
-  ) => {
+  const handleFocus = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { id } = e.target;
-
+    
     if (fieldErrors[id]) {
-      setFieldErrors((prev) => {
+      setFieldErrors(prev => {
         const newErrors = { ...prev };
         delete newErrors[id];
         return newErrors;
       });
     }
-
-    // If focusing on repeat password field, check match state
-    if (
-      id === "repeatPassword" &&
-      formData.password &&
-      formData.repeatPassword
-    ) {
-      setPasswordsMatch(formData.password === formData.repeatPassword);
-    }
   };
-
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setFieldErrors({});
     setLoading(true);
-
+    
     // Client-side validation with field-specific errors
     const localFieldErrors: FieldErrors = {};
 
@@ -194,8 +160,7 @@ export default function Component() {
     }
 
     if (!formData.agreeToTerms) {
-      localFieldErrors.agreeToTerms =
-        "You must agree to the terms and conditions";
+      localFieldErrors.agreeToTerms = "You must agree to the terms and conditions";
     }
 
     if (!formData.name) {
@@ -205,7 +170,7 @@ export default function Component() {
     if (!formData.email) {
       localFieldErrors.email = "Email is required";
     }
-
+    
     if (!formData.password) {
       localFieldErrors.password = "Password is required";
     }
@@ -213,34 +178,15 @@ export default function Component() {
     if (!formData.registration_number) {
       localFieldErrors.registration_number = "Registration number is required";
     }
+
     if (!formData.session) {
       localFieldErrors.session = "Session is required";
     }
-    if (!formData.department_id) {
-      localFieldErrors.department_id = "Department is required";
-    }
-
-    if (!formData.mobile) {
-      localFieldErrors.mobile = "Mobile number is required";
-    }
+    
     // If there are client-side validation errors, don't submit
     if (Object.keys(localFieldErrors).length > 0) {
       setFieldErrors(localFieldErrors);
       setLoading(false);
-
-      // Scroll to the first field with an error after a small delay to allow the DOM to update
-      setTimeout(() => {
-        const firstErrorField = Object.keys(localFieldErrors)[0];
-        const firstErrorElement = document.getElementById(firstErrorField);
-        if (firstErrorElement) {
-          firstErrorElement.scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-          });
-          firstErrorElement.focus();
-        }
-      }, 100);
-
       return;
     }
 
@@ -252,45 +198,29 @@ export default function Component() {
         registration_number: formData.registration_number,
         department_id: parseInt(formData.department_id) || 1,
         mobile: formData.mobile,
-        session: formData.session, // Include session in registration data
+        session: formData.session // Include session in registration data
       };
-
+      
       const result = await register(userData);
-
+      
       if (result.success) {
         router.push("/signin?registered=true");
       } else {
         // Handle both general error and field-specific errors
         // Always reset field errors first to ensure we start fresh
         const newFieldErrors = result.fieldErrors || {};
-
+        
         // Show field-specific errors
         if (Object.keys(newFieldErrors).length > 0) {
           setFieldErrors(newFieldErrors);
-
+          
           // If we have field errors, don't show the general error at the top
-          if (
-            result.error &&
-            result.error !== "Please fix the following errors" &&
-            result.error !== "Account already exists"
-          ) {
+          if (result.error && result.error !== "Please fix the following errors" && 
+              result.error !== "Account already exists") {
             setError(result.error);
           } else {
             setError(null);
           }
-
-          // Scroll to the first field with an error after a small delay to allow the DOM to update
-          setTimeout(() => {
-            const firstErrorField = Object.keys(newFieldErrors)[0];
-            const firstErrorElement = document.getElementById(firstErrorField);
-            if (firstErrorElement) {
-              firstErrorElement.scrollIntoView({
-                behavior: "smooth",
-                block: "center",
-              });
-              firstErrorElement.focus();
-            }
-          }, 100);
         } else {
           // If no field errors, show general error
           setError(result.error || "Registration failed");
@@ -299,7 +229,7 @@ export default function Component() {
     } catch (error) {
       // Silence the lint warning
       noop(error);
-
+      
       // Error is handled with user-friendly message
       setError("An unexpected error occurred");
     } finally {
@@ -312,14 +242,9 @@ export default function Component() {
       <div className="mt-6 mb-6 text-2xl font-extrabold">
         <h1>Register Your Account</h1>
       </div>
+      
       {error && Object.keys(fieldErrors).length === 0 && (
-        <Alert
-          color="failure"
-          icon={MdInfo}
-          className="mb-4"
-          role="alert"
-          aria-live="assertive"
-        >
+        <Alert color="failure" icon={MdInfo} className="mb-4">
           {error}
         </Alert>
       )}
@@ -344,12 +269,11 @@ export default function Component() {
               onFocus={handleFocus}
               color={fieldErrors.name ? "failure" : undefined}
               shadow
-              aria-describedby={fieldErrors.name ? "name-error" : undefined}
-              aria-invalid={fieldErrors.name ? "true" : "false"}
             />
-            {renderFieldError(fieldErrors.name, "name")}
+            {renderFieldError(fieldErrors.name)}
           </div>
-        </div>{" "}
+        </div>
+
         {/* Registration ID */}
         <div className="flex items-center gap-2">
           <MdSchool size={20} color="#92e3a9" />
@@ -366,19 +290,11 @@ export default function Component() {
               onFocus={handleFocus}
               color={fieldErrors.registration_number ? "failure" : undefined}
               shadow
-              aria-describedby={
-                fieldErrors.registration_number
-                  ? "registration_number-error"
-                  : undefined
-              }
-              aria-invalid={fieldErrors.registration_number ? "true" : "false"}
             />
-            {renderFieldError(
-              fieldErrors.registration_number,
-              "registration_number",
-            )}
+            {renderFieldError(fieldErrors.registration_number)}
           </div>
         </div>
+
         {/* Email */}
         <div className="flex items-center gap-2">
           <MdEmail size={20} color="#92e3a9" />
@@ -395,21 +311,17 @@ export default function Component() {
               onFocus={handleFocus}
               color={fieldErrors.email ? "failure" : undefined}
               shadow
-              aria-describedby={fieldErrors.email ? "email-error" : undefined}
-              aria-invalid={fieldErrors.email ? "true" : "false"}
             />
-            {renderFieldError(fieldErrors.email, "email")}
+            {renderFieldError(fieldErrors.email)}
           </div>
-        </div>{" "}
+        </div>
+
         {/* Session Selection */}
         <div className="flex items-center gap-2">
           <MdCalendarToday size={20} color="#92e3a9" />
           <div className="w-full">
             <div className="mb-2 block">
               <Label htmlFor="session">Academic Session</Label>
-              <span className="ml-2 text-xs text-gray-400">
-                (e.g., Spring-2025, Fall-2024)
-              </span>
             </div>
             <Select
               id="session"
@@ -417,10 +329,6 @@ export default function Component() {
               onChange={handleChange}
               onFocus={handleFocus}
               color={fieldErrors.session ? "failure" : undefined}
-              aria-describedby={
-                fieldErrors.session ? "session-error" : undefined
-              }
-              aria-invalid={fieldErrors.session ? "true" : "false"}
             >
               <option value="">Select your session</option>
               {sessionOptions.map((session) => (
@@ -429,9 +337,10 @@ export default function Component() {
                 </option>
               ))}
             </Select>
-            {renderFieldError(fieldErrors.session, "session")}
+            {renderFieldError(fieldErrors.session)}
           </div>
         </div>
+
         {/* Password */}
         <div className="flex items-center gap-2">
           <MdLock size={20} color="#92e3a9" />
@@ -448,18 +357,11 @@ export default function Component() {
               onFocus={handleFocus}
               color={fieldErrors.password ? "failure" : undefined}
               shadow
-              aria-describedby={
-                fieldErrors.password ? "password-error" : undefined
-              }
-              aria-invalid={fieldErrors.password ? "true" : "false"}
             />
-            <div className="mt-1 text-xs text-gray-500">
-              Password must include at least 8 characters with uppercase,
-              lowercase, numbers, and special characters
-            </div>
-            {renderFieldError(fieldErrors.password, "password")}
+            {renderFieldError(fieldErrors.password)}
           </div>
-        </div>{" "}
+        </div>
+
         {/* Repeat Password */}
         <div className="flex items-center gap-2">
           <MdLockOpen size={20} color="#92e3a9" />
@@ -467,59 +369,20 @@ export default function Component() {
             <div className="mb-2 block">
               <Label htmlFor="repeatPassword">Repeat password</Label>
             </div>
-            <div className="relative">
-              <TextInput
-                id="repeatPassword"
-                type="password"
-                placeholder="••••••••"
-                value={formData.repeatPassword}
-                onChange={handleChange}
-                onFocus={handleFocus}
-                color={
-                  fieldErrors.repeatPassword
-                    ? "failure"
-                    : passwordsMatch === true
-                      ? "success"
-                      : undefined
-                }
-                shadow
-                aria-describedby={
-                  fieldErrors.repeatPassword
-                    ? "repeatPassword-error"
-                    : undefined
-                }
-                aria-invalid={fieldErrors.repeatPassword ? "true" : "false"}
-              />
-              {passwordsMatch === true && formData.repeatPassword && (
-                <div
-                  className="absolute top-3 right-3 text-green-500"
-                  aria-hidden="true"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </div>
-              )}
-            </div>
-            {renderFieldError(fieldErrors.repeatPassword, "repeatPassword")}
-            {!fieldErrors.repeatPassword &&
-              passwordsMatch === true &&
-              formData.repeatPassword && (
-                <div className="mt-1 text-sm text-green-600">
-                  Passwords match
-                </div>
-              )}
+            <TextInput
+              id="repeatPassword"
+              type="password"
+              placeholder="••••••••"
+              value={formData.repeatPassword}
+              onChange={handleChange}
+              onFocus={handleFocus}
+              color={fieldErrors.repeatPassword ? "failure" : undefined}
+              shadow
+            />
+            {renderFieldError(fieldErrors.repeatPassword)}
           </div>
         </div>
+
         {/* Department */}
         <div className="flex items-center gap-2">
           <MdSchool size={20} color="#92e3a9" />
@@ -533,10 +396,6 @@ export default function Component() {
               onChange={handleChange}
               onFocus={handleFocus}
               color={fieldErrors.department_id ? "failure" : undefined}
-              aria-describedby={
-                fieldErrors.department_id ? "department_id-error" : undefined
-              }
-              aria-invalid={fieldErrors.department_id ? "true" : "false"}
             >
               <option value="">Select your department</option>
               {departments.map((dept) => (
@@ -545,14 +404,14 @@ export default function Component() {
                 </option>
               ))}
             </Select>
-            {renderFieldError(fieldErrors.department_id, "department_id")}
+            {renderFieldError(fieldErrors.department_id)}
           </div>
-        </div>{" "}
+        </div>
+
         {/* Mobile */}
         <div className="flex items-center gap-2">
           <MdPhone size={20} color="#92e3a9" />
           <div className="w-full">
-            {" "}
             <div className="mb-2 block">
               <Label htmlFor="mobile">Mobile Number</Label>
             </div>
@@ -565,25 +424,18 @@ export default function Component() {
               onFocus={handleFocus}
               color={fieldErrors.mobile ? "failure" : undefined}
               shadow
-              aria-describedby={fieldErrors.mobile ? "mobile-error" : undefined}
-              aria-invalid={fieldErrors.mobile ? "true" : "false"}
-            />{" "}
-         
-            {renderFieldError(fieldErrors.mobile, "mobile")}
+            />
+            {renderFieldError(fieldErrors.mobile)}
           </div>
         </div>
+
         {/* Checkbox for Terms and Conditions */}
         <div className="flex items-center gap-2">
-          {" "}
           <Checkbox
             id="agreeToTerms"
             checked={formData.agreeToTerms}
             onChange={handleCheckboxChange}
             color={fieldErrors.agreeToTerms ? "failure" : undefined}
-            aria-describedby={
-              fieldErrors.agreeToTerms ? "agreeToTerms-error" : undefined
-            }
-            aria-invalid={fieldErrors.agreeToTerms ? "true" : "false"}
           />
           <Label htmlFor="agreeToTerms" className="flex">
             I agree with the&nbsp;
@@ -594,8 +446,9 @@ export default function Component() {
               terms and conditions
             </Link>
           </Label>
-          {renderFieldError(fieldErrors.agreeToTerms, "agreeToTerms")}
+          {renderFieldError(fieldErrors.agreeToTerms)}
         </div>
+
         {/* Submit Button */}
         <Button
           type="submit"
@@ -605,6 +458,7 @@ export default function Component() {
         >
           {loading ? "Registering..." : "Register new account"}
         </Button>
+
         {/* Link to Login */}
         <p className="text-center text-xs text-gray-400">
           Already have an account?{" "}
