@@ -18,7 +18,8 @@ export default function ProfileModal({
 }: {
   onClose: () => void;
 }) {
-  const { userEmail, isAuthenticated } = useAuth();
+  const { user, isAuthenticated } = useAuth();
+  const userEmail = user?.email || "";
 
   // Mocked user data for demo
   const userProfile = {
