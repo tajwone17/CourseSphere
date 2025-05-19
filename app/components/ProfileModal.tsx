@@ -64,17 +64,21 @@ export default function ProfileModal({
       show={true}
       onClose={handleClose}
       size="xl"
-  className="overflow-hidden"
+      className="overflow-hidden"
     >
-      <div className="w-full rounded-2xl bg-gray-900 p-12 shadow-2xl"     data-aos="zoom-in"
-      data-aos-delay="400">
+      <div
+        className="w-full rounded-2xl bg-gray-900 p-12 shadow-2xl"
+        data-aos="zoom-in"
+        data-aos-delay="400"
+      >
         <div className="mb-8 flex flex-col items-center gap-4">
           <Image
             src={userProfile.avatar}
             alt="Avatar"
             width={120}
             height={120}
-            className="h-32 w-32 rounded-full border-4 border-[#92e3a9] shadow-lg"
+            className="h-32 w-32 rounded-full border-4 border-[#92e3a9] object-cover shadow-lg"
+            unoptimized
           />
           <div className="flex items-center gap-2 text-2xl font-bold text-white">
             <HiUser className="text-[#92e3a9]" /> {userProfile.name}
