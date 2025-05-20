@@ -4,7 +4,7 @@ import { NextRequest } from "next/server";
 import crypto from "crypto";
 import { sendMail } from "@/app/lib/mail";
 import db from "@/app/lib/db";
-
+import bcrypt from "bcrypt";
 export async function POST(request: NextRequest) {
   const { name, email, department, phone } = await request.json();
 
@@ -14,8 +14,8 @@ export async function POST(request: NextRequest) {
   }
 
   // Generate a random password
-  const password = crypto.randomBytes(8).toString("hex");
-
+  const Password = crypto.randomBytes(8).toString("hex");
+ const password = await bcrypt.hash(Password, 10);
   //eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [user]: any = await db.query("SELECT * FROM hod WHERE email = ?", [
     email,
@@ -35,8 +35,8 @@ export async function POST(request: NextRequest) {
   const mailoptions = {
     receiver: email,
     subject: "Welcome to Coursesphere",
-    text: `Hello ${name},\n\nYour account has been created successfully.\n\nEmail: ${email}\nPassword: ${password}\n\nBest regards,\nCoursesphere Team`,
-    html: `<p>Hello ${name},</p><p>Your account has been created successfully.</p><p>Email: ${email}</p><p>Password: ${password}</p><p>Best regards,<br>Coursesphere Team</p>`,
+    text: `Hello ${name},\n\nYour account has been created successfully.\n\nEmail: ${email}\nPassword: ${Password}\n\nBest regards,\nCoursesphere Team`,
+    html: `<p>Hello ${name},</p><p>Your account has been created successfully.</p><p>Email: ${email}</p><p>Password: ${Password}</p><p>Best regards,<br>Coursesphere Team</p>`,
   };
 
   // Send the email

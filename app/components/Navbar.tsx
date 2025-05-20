@@ -39,13 +39,16 @@ export function MyNavbar() {
 
   const pathname = usePathname();
   const router = useRouter();
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, logout, user } = useAuth();
+
+  // Check if the user is authenticated and their role is 'student'
+  const isStudent = isAuthenticated && user.role === "student";
 
   const navLinks: navlinks[] = [
-    ...(isAuthenticated
+    ...(isStudent
       ? [{ name: "Dashboard", href: "/student-dashboard", icon: HiHome }]
       : [{ name: "Home", href: "/", icon: HiHome }]),
-    ...(isAuthenticated
+    ...(isStudent
       ? [
           { name: "Courses", href: "/courses", icon: HiBookOpen },
           {

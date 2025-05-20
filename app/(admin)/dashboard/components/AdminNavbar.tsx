@@ -15,31 +15,31 @@ import {
 import { useEffect, useState } from "react";
 
 import ProfileModal from "@/app/components/ProfileModal";
+// import { useAuth } from "@/app/context/AuthContext";
 import { useAuth } from "@/app/context/AuthContext";
-
 export default function AdminNavbar() {
   const router = useRouter();
   const pathname = usePathname();
+   const { logout } = useAuth();
   const { user } = useAuth();
   const [role, setRole] = useState<string | null>(null);
   const [openModal, setOpenModal] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
-    const adminRole = localStorage.getItem("adminRole");
-    const token = localStorage.getItem("adminToken");
+    // const adminRole = localStorage.getItem("adminRole");
+    // const token = localStorage.getItem("adminToken");
 
-    if (!adminRole || !token) {
-      router.push("/login");
-      return;
-    }
-    console.log(user);
+    // if (!adminRole || !token) {
+    //   router.push("/login");
+    //   return;
+    // }
+    // console.log(user);
     setRole(user.role);
   }, [router]);
 
   const handleLogout = () => {
-    localStorage.removeItem("adminToken");
-    localStorage.removeItem("adminRole");
+    logout();
     router.push("/login");
   };
 

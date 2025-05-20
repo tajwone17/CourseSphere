@@ -2,13 +2,13 @@
 
 import { Button, Label, TextInput, Select, Checkbox } from "flowbite-react";
 import { MdEmail, MdLock, MdSupervisorAccount } from "react-icons/md";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useAuth } from "@/app/context/AuthContext";
 
 export default function AdminLogin() {
-  const { login } = useAuth();
-  const router = useRouter();
+  const { login, user } = useAuth();
+ 
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -20,16 +20,16 @@ export default function AdminLogin() {
     e.preventDefault();
 
     // Store role and email in localStorage (temporary until backend is connected)
-    localStorage.setItem("adminRole", formData.role);
-    localStorage.setItem("adminEmail", formData.email);
-    localStorage.setItem("adminToken", "abcd");
+    // localStorage.setItem("adminRole", formData.role);
+    // localStorage.setItem("adminEmail", formData.email);
+    // localStorage.setItem("adminToken", "abcd");
     // Navigate based on role
 
     try {
       const res = login(formData.email, formData.password, formData.role);
 
       if (res.success) {
-        router.push("dashboard");
+        user.role = formData.role;
       }
     } catch (error) {
       console.log("Login error:", error);
