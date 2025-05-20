@@ -2,11 +2,13 @@
 
 import { Button, Label, TextInput, Select, Checkbox } from "flowbite-react";
 import { MdEmail, MdLock, MdSupervisorAccount } from "react-icons/md";
-// import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useAuth } from "@/app/context/AuthContext";
+import { useRouter } from "next/navigation";
+import { navigateAfterLogin } from "@/app/utils/auth-navigation";
 
 export default function AdminLogin() {
+  const router = useRouter();
   const { login } = useAuth();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -30,11 +32,10 @@ export default function AdminLogin() {
 
       // Await the login function since it returns a promise
       const res = await login(formData.email, formData.password, formData.role);
-      console.log("Login response:", res);
-
-      // Handle the response
+      console.log("Login response:", res);      // Handle the response
       if (res && res.success) {
-        // Success - no need to set user.role as it should be handled in AuthContext
+        // Use the centralized navigation utility
+        navigateAfterLogin(router, formData.role);
         console.log("Login successful");
       } else {
         // Display the error message from response

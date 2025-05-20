@@ -3,12 +3,13 @@
 import { Button, Label, TextInput, Alert } from "flowbite-react";
 import { MdEmail, MdLock, MdInfo } from "react-icons/md";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/app/context/AuthContext";
+import { navigateAfterLogin } from "@/app/utils/auth-navigation";
 
 export default function Component() {
-  // const router = useRouter();
+  const router = useRouter();
   const searchParams = useSearchParams();
   const { login } = useAuth();
 
@@ -44,15 +45,37 @@ export default function Component() {
       [e.target.id]: e.target.value,
     });
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setLoading(true);
 
     try {
-      await login(formData.email, formData.password, "student");
-      // router.push("student-dashboard");
+      console.log("Submitting login with:", {
+        email: formData.email,
+        password: "***", // Don't log passwords
+        role: "student",
+      });
+
+      // Await the login function since it returns a promise
+      const res = await login(formData.email, formData.password, "student");
+
+      console.log("Login response:", res);      // Handle the response
+      if (res && res.success) {
+        // Use the centralized navigation utility
+        navigateAfterLogin(router, "student");
+        console.log("Login successful");
+      } else {
+        // Display the error message from response
+        setError(res?.error || "Login failed. Please try again.");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      setError(
+        error instanceof Error
+          ? error.message
+          : "An unexpected error occurred. Please try again.",
+      );
     } finally {
       setLoading(false);
     }
