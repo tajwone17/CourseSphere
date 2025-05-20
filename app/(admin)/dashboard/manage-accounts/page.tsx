@@ -3,13 +3,12 @@
 import { Button, TextInput, Modal, Label } from "flowbite-react";
 import {
   HiPlus,
-  HiSearch, 
+  HiSearch,
   HiUser,
   HiMail,
   HiPhone,
   HiStatusOnline,
   HiStatusOffline,
-  //   HiCash,
 } from "react-icons/hi";
 import { useState } from "react";
 import Select, { SingleValue } from "react-select";
@@ -17,6 +16,7 @@ import Select, { SingleValue } from "react-select";
 interface AccountsAdmin {
   id: number;
   name: string;
+
   email: string;
   phone: string;
   status: string;
@@ -26,22 +26,25 @@ export default function ManageAccountsAdmin() {
   const [accountsAdminList, setAccountsAdminList] = useState<AccountsAdmin[]>([
     {
       id: 1,
-      name: "Alan Walker",
-      email: "alan.walker@neub.edu.bd",
+      name: "Dr. Tajwone",
+      
+      email: "tajwone.doe@neub.edu.bd",
       phone: "+880 1712345678",
       status: "Active",
     },
     {
       id: 2,
-      name: "Emily Rodriguez",
-      email: "emily.rodriguez@neub.edu.bd",
+      name: "Dr. Chowdhury",
+    
+      email: "chowdhry.@neub.edu.bd",
       phone: "+880 1812345678",
       status: "Active",
     },
     {
       id: 3,
-      name: "David Anderson",
-      email: "david.anderson@neub.edu.bd",
+      name: "Dr. Jakaria",
+     
+      email: "jakaria.j@neub.edu.bd",
       phone: "+880 1912345678",
       status: "Inactive",
     },
@@ -50,28 +53,51 @@ export default function ManageAccountsAdmin() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [newAccountsAdmin, setNewAccountsAdmin] = useState({
     name: "",
+  
     email: "",
     phone: "",
   });
 
+
+
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
 
-  const handleAddAccountsAdmin = () => {
-    const id = accountsAdminList.length + 1;
-    const accountsAdminData = { ...newAccountsAdmin, id, status: "Active" };
-    setAccountsAdminList([...accountsAdminList, accountsAdminData]);
+  const handleAddAccountsAdmin = async () => {
+
     setShowAddModal(false);
-    setNewAccountsAdmin({ name: "", email: "", phone: "" });
+    try {
+      const res = await fetch("/api/accounts-admin/add-accounts-admins", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(newAccountsAdmin),
+      });
+      if (!res.ok) {
+        const errorText = await res.text();
+        const errorMsg = errorText.split("\n")[0];
+        console.log("Error response:", errorText);
+        throw new Error(errorMsg);
+      }
+      console.log("New Accounts Admin added successfully");
+    } catch (error) {
+      console.error("Error adding Accounts Admin:", error);
+    }
+    //reset form field
+       // Reset the form
+    setNewAccountsAdmin({
+      name: "",
+      
+      email: "",
+      phone: "",
+    });
+
   };
 
   const handleToggleStatus = (id: number) => {
     const updatedList = accountsAdminList.map((admin) =>
       admin.id === id
-        ? {
-            ...admin,
-            status: admin.status === "Active" ? "Inactive" : "Active",
-          }
+        ? { ...admin, status: admin.status === "Active" ? "Inactive" : "Active" }
         : admin,
     );
     setAccountsAdminList(updatedList);
@@ -80,6 +106,7 @@ export default function ManageAccountsAdmin() {
   const filteredAccountsAdminList = accountsAdminList.filter(
     (admin) =>
       (admin.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+       
         admin.email.toLowerCase().includes(searchQuery.toLowerCase())) &&
       (statusFilter ? admin.status === statusFilter : true),
   );
@@ -92,9 +119,9 @@ export default function ManageAccountsAdmin() {
     selectedOption: SingleValue<{ value: string; label: string }> | null,
   ) => {
     if (selectedOption) {
-      setStatusFilter(selectedOption.value);
+      setStatusFilter(selectedOption.value); // Set the value of the selected option
     } else {
-      setStatusFilter("");
+      setStatusFilter(""); // Clear the filter if nothing is selected
     }
   };
 
@@ -112,12 +139,7 @@ export default function ManageAccountsAdmin() {
     >
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-4xl font-bold text-white">
-            Manage Accounts Office Admins
-          </h1>
-          <p className="mt-2 text-gray-400">
-            Add, manage and monitor accounts office administrators
-          </p>
+          <h1 className="text-4xl font-bold text-white">Manage Account Admins</h1>
         </div>
 
         <Button
@@ -141,19 +163,19 @@ export default function ManageAccountsAdmin() {
           <TextInput
             value={searchQuery}
             onChange={handleSearchChange}
-            placeholder="Search by name, email"
+            placeholder="Search by name,  email"
             icon={HiSearch}
           />
         </div>
         <div className="w-1/3">
           <Select
             options={statusOptions}
-            onChange={handleStatusChange}
+            onChange={handleStatusChange} // Corrected here
             placeholder="Filter by Status"
             isSearchable={false}
             value={statusOptions.find(
               (option) => option.value === statusFilter,
-            )}
+            )} // Corrected here
           />
         </div>
       </div>
@@ -167,6 +189,7 @@ export default function ManageAccountsAdmin() {
                   <HiUser className="mr-2 inline text-[#92e3a9] group-hover:scale-110" />{" "}
                   Name
                 </th>
+             
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                   <HiMail className="mr-2 inline text-[#92e3a9] group-hover:scale-110" />{" "}
                   Email
@@ -193,6 +216,7 @@ export default function ManageAccountsAdmin() {
                   <td className="px-6 py-4 whitespace-nowrap text-white">
                     {admin.name}
                   </td>
+                
                   <td className="px-6 py-4 whitespace-nowrap text-white">
                     {admin.email}
                   </td>
@@ -217,7 +241,7 @@ export default function ManageAccountsAdmin() {
                       size="xs"
                       onClick={() => handleToggleStatus(admin.id)}
                     >
-                      {admin.status === "Active" ? "Deactivate" : "Activate"}
+                      {admin.status === "Active" ? "Inactive" : "Active"}
                     </Button>
                   </td>
                 </tr>
@@ -231,7 +255,7 @@ export default function ManageAccountsAdmin() {
       <Modal show={showAddModal} onClose={() => setShowAddModal(false)}>
         <div className="relative bg-gray-800 p-4">
           <div className="mb-4 text-xl font-semibold text-white">
-            Add New Accounts Office Admin
+            Add New Accounts Admin
           </div>
           <div className="space-y-4">
             <div>
@@ -239,15 +263,11 @@ export default function ManageAccountsAdmin() {
               <TextInput
                 id="name"
                 value={newAccountsAdmin.name}
-                onChange={(e) =>
-                  setNewAccountsAdmin({
-                    ...newAccountsAdmin,
-                    name: e.target.value,
-                  })
-                }
+                onChange={(e) => setNewAccountsAdmin({ ...newAccountsAdmin, name: e.target.value })}
                 placeholder="Enter name"
               />
             </div>
+        
             <div>
               <Label htmlFor="email">Email</Label>
               <TextInput
@@ -255,10 +275,7 @@ export default function ManageAccountsAdmin() {
                 type="email"
                 value={newAccountsAdmin.email}
                 onChange={(e) =>
-                  setNewAccountsAdmin({
-                    ...newAccountsAdmin,
-                    email: e.target.value,
-                  })
+                  setNewAccountsAdmin({ ...newAccountsAdmin, email: e.target.value })
                 }
                 placeholder="Enter email"
               />
@@ -269,10 +286,7 @@ export default function ManageAccountsAdmin() {
                 id="phone"
                 value={newAccountsAdmin.phone}
                 onChange={(e) =>
-                  setNewAccountsAdmin({
-                    ...newAccountsAdmin,
-                    phone: e.target.value,
-                  })
+                  setNewAccountsAdmin({ ...newAccountsAdmin, phone: e.target.value })
                 }
                 placeholder="Enter phone number"
               />
@@ -286,7 +300,7 @@ export default function ManageAccountsAdmin() {
                 width: "fit-content",
                 cursor: "pointer",
               }}
-              onClick={handleAddAccountsAdmin}
+              onClick={handleAddAccountsAdmin }
             >
               Add Accounts Admin
             </Button>
