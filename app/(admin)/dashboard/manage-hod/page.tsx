@@ -86,6 +86,7 @@ export default function ManageHOD() {
   const [statusFilter, setStatusFilter] = useState("");
 
   const handleAddHOD = async () => {
+
     setShowAddModal(false);
     try {
       const res = await fetch("/api/hod/add-hod", {
@@ -104,6 +105,15 @@ export default function ManageHOD() {
     } catch (error) {
       console.error("Error adding HOD:", error);
     }
+    //reset form field
+       // Reset the form
+    setNewHOD({
+      name: "",
+      department: "",
+      email: "",
+      phone: "",
+    });
+
   };
 
   const handleToggleStatus = (id: number) => {

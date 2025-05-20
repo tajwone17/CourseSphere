@@ -104,6 +104,13 @@ export default function ManageAdvisors() {
     } catch (error) {
       console.error("Error adding ADVISOR:", error);
     }
+       // Reset the form
+    setNewADVISOR({
+      name: "",
+      department: "",
+      email: "",
+      phone: "",
+    });
   };
 
   const handleToggleStatus = (id: number) => {
