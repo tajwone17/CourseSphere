@@ -15,11 +15,13 @@ import {
 import { useEffect, useState } from "react";
 
 import ProfileModal from "@/app/components/ProfileModal";
+import { useAuth } from "@/app/context/AuthContext";
 
 export default function AdminNavbar() {
   const router = useRouter();
   const pathname = usePathname();
-  const [role, setRole] = useState<string>("");
+  const { user } = useAuth();
+  const [role, setRole] = useState<string | null>(null);
   const [openModal, setOpenModal] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -31,8 +33,8 @@ export default function AdminNavbar() {
       router.push("/login");
       return;
     }
-
-    setRole(adminRole);
+    console.log(user);
+    setRole(user.role);
   }, [router]);
 
   const handleLogout = () => {
@@ -42,8 +44,9 @@ export default function AdminNavbar() {
   };
 
   const getMenuItems = () => {
+    console.log(role);
     switch (role) {
-      case "superadmin":
+      case "admin":
         return [
           {
             name: "Manage HODs",
@@ -140,7 +143,7 @@ export default function AdminNavbar() {
           >
             <HiAcademicCap className="flex-shrink-0 text-[#92e3a9]" />
             <span className="truncate">
-              {role === "superadmin"
+              {role === "admin"
                 ? "Super Admin"
                 : role === "hod"
                   ? "HOD Portal"

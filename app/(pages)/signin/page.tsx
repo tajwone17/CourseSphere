@@ -51,7 +51,7 @@ export default function Component() {
     setLoading(true);
 
     try {
-      await login(formData.email, formData.password);
+      await login(formData.email, formData.password, "student");
       router.push("student-dashboard");
     } finally {
       setLoading(false);

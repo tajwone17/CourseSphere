@@ -27,14 +27,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
 
   // Login function
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, password: string, role: string) => {
     setLoading(true);
     try {
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, role }),
       });
 
       if (!res.ok) {
@@ -58,6 +58,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         name: user.name,
         email: user.email,
         department: user.department || "",
+        role: user.role || "",
       });
 
       router.push("/dashboard");
@@ -79,7 +80,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } finally {
       localStorage.removeItem("token");
       setUser(null);
-      router.push("/login");
+      router.push("/signin");
       setLoading(false);
     }
   };
@@ -108,14 +109,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           throw new Error("Authentication failed");
         }
 
-        const { user: userData } = await res.json();
-
+        const { user } = await res.json();
+        console.log(user.role);
         setUser({
-          id: userData.id,
-          name: userData.name,
-          email: userData.email,
-          role: userData.role || "",
-          department: userData.department || "",
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role || "",
+          department: user.department || "",
         });
       } catch (error) {
         console.error("Auth check failed:", error);

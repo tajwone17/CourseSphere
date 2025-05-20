@@ -18,12 +18,12 @@ export async function POST(request: NextRequest) {
     // Parse and validate request body
     const body = await request.json();
 
-    const { email, password } = body;
+    const { email, password, role } = body;
 
     // Fetch user with a single query instead of two separate queries
     //eslint-disable-next-line
     const [rows]: Array<any> = await db.query(
-      "SELECT * FROM student WHERE email = ?",
+      `SELECT * FROM ${role} WHERE email = ?`,
       [email],
     );
 
@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check account status
-    if (!user.STATUS) {
+    if (role !== "admin" && !user.STATUS) {
       return Response.json({ error: "Account is not active" }, { status: 403 });
     }
 
@@ -63,6 +63,7 @@ export async function POST(request: NextRequest) {
           name: user.name,
           email: user.email,
           department: user.department,
+          role: role,
         },
       },
       {

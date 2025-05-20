@@ -4,8 +4,10 @@ import { Button, Label, TextInput, Select, Checkbox } from "flowbite-react";
 import { MdEmail, MdLock, MdSupervisorAccount } from "react-icons/md";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useAuth } from "@/app/context/AuthContext";
 
 export default function AdminLogin() {
+  const { login } = useAuth();
   const router = useRouter();
   const [formData, setFormData] = useState({
     email: "",
@@ -22,24 +24,15 @@ export default function AdminLogin() {
     localStorage.setItem("adminEmail", formData.email);
     localStorage.setItem("adminToken", "abcd");
     // Navigate based on role
-    switch (formData.role) {
-      case "superadmin":
-        router.push("/dashboard/manage-hod");
-        break;
-      case "hod":
-      case "advisor":
-        router.push("/dashboard");
-        break;
-      case "exam-controller":
-        router.push("/dashboard/manage-results");
-        break;
 
-      case "accounts":
-        router.push("/dashboard");
-        break;
+    try {
+      const res = login(formData.email, formData.password, formData.role);
 
-      default:
-        router.push("/login");
+      if (res.success) {
+        router.push("dashboard");
+      }
+    } catch (error) {
+      console.log("Login error:", error);
     }
   };
 
@@ -79,7 +72,7 @@ export default function AdminLogin() {
                 required
                 className="w-full rounded-lg border-gray-700 bg-gray-800 text-white focus:border-[#92e3a9] focus:ring-[#92e3a9]"
               >
-                <option value="superadmin">Super Admin</option>
+                <option value="admin">Super Admin</option>
                 <option value="advisor">Advisor</option>
                 <option value="hod">Head of Department</option>
                 <option value="exam-controller">Exam Controller Office</option>
