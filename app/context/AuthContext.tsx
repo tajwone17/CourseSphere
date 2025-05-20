@@ -7,7 +7,7 @@ import React, {
   useEffect,
   ReactNode,
 } from "react";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 
 //eslint-disable-next-line @typescript-eslint/no-explicit-any
 const AuthContext = createContext<any>(null);
@@ -24,30 +24,49 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   //eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
+  // const router = useRouter();
 
   // Login function
   const login = async (email: string, password: string, role: string) => {
     setLoading(true);
     try {
+      // Validation
+      if (!email) return { success: false, error: "Email is required" };
+      if (!email.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/))
+        return { success: false, error: "Invalid email format" };
+      if (!password) return { success: false, error: "Password is required" };
+      if (password.length < 8)
+        return {
+          success: false,
+          error: "Password must be at least 8 characters",
+        };
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({ email, password, role }),
       });
-
       if (!res.ok) {
-        const errorText = await res.text();
-        const errorMsg = errorText.split("\n")[0];
-        console.log("Error response:", errorText);
-        // TODO: Add toast message
-        throw new Error(errorMsg);
+        try {
+          // Try to parse the error as JSON first
+          const errorData = await res.json();
+          console.log("Error response:", errorData);
+          return { success: false, error: errorData.error || "Login failed" };
+        } catch {
+          // If it's not valid JSON, get the text
+          const errorText = await res.text();
+          const errorMsg = errorText.split("\n")[0];
+          console.log("Error response:", errorText);
+          return { success: false, error: errorMsg || "Login failed" };
+        }
       }
 
       const { token, user } = await res.json();
       if (!token) {
-        throw new Error("Login failed");
+        return {
+          success: false,
+          error: "Login failed: No authentication token received",
+        };
       }
 
       // Store token
@@ -60,7 +79,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         department: user.department || "",
         role: user.role || "",
       });
-
       localStorage.setItem(
         "user",
         JSON.stringify({
@@ -72,10 +90,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }),
       );
 
-      router.push("/dashboard");
+      // router.push("/dashboard");
+      return { success: true };
     } catch (error) {
       console.error("Login error:", error);
-      return Promise.reject(error);
+      return {
+        success: false,
+        error:
+          error instanceof Error
+            ? error.message
+            : "An unexpected error occurred",
+      };
     } finally {
       setLoading(false);
     }

@@ -7,32 +7,44 @@ import { useState } from "react";
 import { useAuth } from "@/app/context/AuthContext";
 
 export default function AdminLogin() {
-  const { login, user } = useAuth();
- 
+  const { login } = useAuth();
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
     role: "hod",
     rememberMe: false,
   });
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Store role and email in localStorage (temporary until backend is connected)
-    // localStorage.setItem("adminRole", formData.role);
-    // localStorage.setItem("adminEmail", formData.email);
-    // localStorage.setItem("adminToken", "abcd");
-    // Navigate based on role
+    setError("");
+    setLoading(true);
 
     try {
-      const res = login(formData.email, formData.password, formData.role);
+      console.log("Submitting login with:", {
+        email: formData.email,
+        password: "***", // Don't log passwords
+        role: formData.role,
+      });
 
-      if (res.success) {
-        user.role = formData.role;
+      // Await the login function since it returns a promise
+      const res = await login(formData.email, formData.password, formData.role);
+      console.log("Login response:", res);
+
+      // Handle the response
+      if (res && res.success) {
+        // Success - no need to set user.role as it should be handled in AuthContext
+        console.log("Login successful");
+      } else {
+        // Display the error message from response
+        setError(res?.error || "Login failed. Please try again.");
       }
     } catch (error) {
-      console.log("Login error:", error);
+      console.error("Login error:", error);
+      setError("An unexpected error occurred. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -55,8 +67,12 @@ export default function AdminLogin() {
           <p className="mt-2 text-sm text-gray-400">
             Sign in to access your administrative panel
           </p>
-        </div>
-
+        </div>{" "}
+        {error && (
+          <div className="mt-4 rounded-lg border border-red-400 bg-red-100 p-3 text-red-700">
+            <p className="text-center">{error}</p>
+          </div>
+        )}
         <form onSubmit={handleSubmit} className="mt-8 space-y-6">
           {/* Role Selection */}
           <div className="space-y-2">
@@ -80,7 +96,6 @@ export default function AdminLogin() {
               </Select>
             </div>
           </div>
-
           {/* Email */}
           <div className="space-y-2">
             <Label htmlFor="email" className="text-gray-300">
@@ -99,7 +114,6 @@ export default function AdminLogin() {
               />
             </div>
           </div>
-
           {/* Password */}
           <div className="space-y-2">
             <Label htmlFor="password" className="text-gray-300">
@@ -128,19 +142,19 @@ export default function AdminLogin() {
             <Label htmlFor="rememberMe" className="text-sm text-gray-600">
               Remember Me
             </Label>
-          </div>
+          </div>{" "}
           <Button
             style={{
               backgroundColor: "#92e3a9",
               color: "#000000",
-
               width: "full",
-              cursor: "pointer",
+              cursor: loading ? "wait" : "pointer",
             }}
             type="submit"
+            disabled={loading}
             className="w-full bg-[#92e3a9] text-gray-900 transition-all duration-200 hover:bg-[#7ac892]"
           >
-            Sign In
+            {loading ? "Signing in..." : "Sign In"}
           </Button>
         </form>
       </div>

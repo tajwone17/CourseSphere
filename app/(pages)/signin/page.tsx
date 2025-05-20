@@ -3,12 +3,12 @@
 import { Button, Label, TextInput, Alert } from "flowbite-react";
 import { MdEmail, MdLock, MdInfo } from "react-icons/md";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/app/context/AuthContext";
 
 export default function Component() {
-  const router = useRouter();
+  // const router = useRouter();
   const searchParams = useSearchParams();
   const { login } = useAuth();
 
@@ -52,7 +52,7 @@ export default function Component() {
 
     try {
       await login(formData.email, formData.password, "student");
-      router.push("student-dashboard");
+      // router.push("student-dashboard");
     } finally {
       setLoading(false);
     }
