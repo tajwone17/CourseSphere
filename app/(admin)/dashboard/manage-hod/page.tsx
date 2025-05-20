@@ -10,7 +10,7 @@ import {
   HiStatusOnline,
   HiStatusOffline,
 } from "react-icons/hi";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Select, { SingleValue } from "react-select";
 import { HiBuildingOffice } from "react-icons/hi2";
 
@@ -59,15 +59,50 @@ export default function ManageHOD() {
     phone: "",
   });
 
+  //eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [depts, setDepts] = useState<any>([]);
+
+  useEffect(() => {
+    async function fetchDepartments() {
+      try {
+        const res = await fetch("/api/departments", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await res.json();
+        console.log(typeof data.departments);
+        setDepts(data.departments);
+      } catch (error) {
+        console.error("Failed to fetch departments:", error);
+      }
+    }
+
+    fetchDepartments();
+  }, []);
+
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
 
-  const handleAddHOD = () => {
-    const id = hodList.length + 1;
-    const hodData = { ...newHOD, id, status: "Active" };
-    setHodList([...hodList, hodData]);
-    setShowAddModal(false);
-    setNewHOD({ name: "", department: "", email: "", phone: "" });
+  const handleAddHOD = async () => {
+    try {
+      const res = await fetch("/api/hod/add-hod", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(newHOD),
+      });
+      if (!res.ok) {
+        const errorText = await res.text();
+        const errorMsg = errorText.split("\n")[0];
+        console.log("Error response:", errorText);
+        throw new Error(errorMsg);
+      }
+      console.log("New HOD added successfully");
+    } catch (error) {
+      console.error("Error adding HOD:", error);
+    }
   };
 
   const handleToggleStatus = (id: number) => {
@@ -108,8 +143,11 @@ export default function ManageHOD() {
   ];
 
   return (
-    <div className="mx-auto max-w-7xl p-8 "      data-aos="zoom-in"
-    data-aos-duration="1000">
+    <div
+      className="mx-auto max-w-7xl p-8"
+      data-aos="zoom-in"
+      data-aos-duration="1000"
+    >
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="text-4xl font-bold text-white">Manage HODs</h1>
@@ -245,16 +283,30 @@ export default function ManageHOD() {
                 placeholder="Enter name"
               />
             </div>
-            <div>
-              <Label htmlFor="department">Department</Label>
-              <TextInput
+            <div className="flex flex-col gap-2">
+              <label htmlFor="department" className="font-medium">
+                Department
+              </label>
+              <select
                 id="department"
+                name="department"
                 value={newHOD.department}
                 onChange={(e) =>
                   setNewHOD({ ...newHOD, department: e.target.value })
                 }
-                placeholder="Enter department"
-              />
+                required
+                className="focus:ring-primary rounded-lg border border-gray-700 bg-[#323840] p-3 focus:ring-2 focus:outline-none"
+              >
+                <option value="" disabled>
+                  Select your department
+                </option>
+                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                {depts.map((dept: any) => (
+                  <option key={dept.ID} value={dept.ID}>
+                    {dept.DEPARTMENT_NAME}
+                  </option>
+                ))}
+              </select>
             </div>
             <div>
               <Label htmlFor="email">Email</Label>

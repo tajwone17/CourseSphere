@@ -61,6 +61,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         role: user.role || "",
       });
 
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          department: user.department || "",
+          role: user.role || "",
+        }),
+      );
+
       router.push("/dashboard");
     } catch (error) {
       console.error("Login error:", error);
@@ -87,46 +98,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   // Check authentication on component mount
   useEffect(() => {
-    const checkAuth = async () => {
-      setLoading(true);
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          setLoading(false);
-          return;
-        }
-
-        const res = await fetch("/api/user/getUser/", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ token }),
-        });
-
-        if (!res.ok) {
-          throw new Error("Authentication failed");
-        }
-
-        const { user } = await res.json();
-        console.log(user.role);
-        setUser({
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          role: user.role || "",
-          department: user.department || "",
-        });
-      } catch (error) {
-        console.error("Auth check failed:", error);
-        localStorage.removeItem("token");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    checkAuth();
+    setUser(JSON.parse(localStorage.getItem("user") || "null"));
   }, []);
 
   return (
