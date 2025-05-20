@@ -60,7 +60,7 @@ export default function Component() {
       // Await the login function since it returns a promise
       const res = await login(formData.email, formData.password, "student");
 
-      console.log("Login response:", res);      // Handle the response
+      console.log("Login response:", res); // Handle the response
       if (res && res.success) {
         // Use the centralized navigation utility
         navigateAfterLogin(router, "student");

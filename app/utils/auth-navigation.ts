@@ -9,7 +9,7 @@ const roleRouteMap: Record<string, string> = {
   hod: "/dashboard",
   advisor: "/dashboard",
   "exam-controller": "/dashboard",
-  accounts: "/dashboard"
+  accounts: "/dashboard",
 };
 
 /**
@@ -26,7 +26,10 @@ export const getRouteByRole = (role: string): string => {
  * @param router The Next.js router instance
  * @param role The user's role
  */
-export const navigateAfterLogin = (router: ReturnType<typeof useRouter>, role: string): void => {
+export const navigateAfterLogin = (
+  router: ReturnType<typeof useRouter>,
+  role: string,
+): void => {
   const targetRoute = getRouteByRole(role);
   router.push(targetRoute);
 };

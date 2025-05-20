@@ -32,7 +32,7 @@ export default function AdminLogin() {
 
       // Await the login function since it returns a promise
       const res = await login(formData.email, formData.password, formData.role);
-      console.log("Login response:", res);      // Handle the response
+      console.log("Login response:", res); // Handle the response
       if (res && res.success) {
         // Use the centralized navigation utility
         navigateAfterLogin(router, formData.role);
