@@ -29,14 +29,19 @@ export default function AdminNavbar() {
   useEffect(() => {
     // const adminRole = localStorage.getItem("adminRole");
     // const token = localStorage.getItem("adminToken");
+    
+    if (!user) {
+      router.push("/login");
+      return;
+    }
+    if (user.role === "student") {
+      router.replace("/login");
+      return;
+    }
 
-    // if (!adminRole || !token) {
-    //   router.push("/login");
-    //   return;
-    // }
     // console.log(user);
     setRole(user.role);
-  }, [router]);
+  }, [router, user]);
 
   const handleLogout = () => {
     logout();
@@ -44,7 +49,7 @@ export default function AdminNavbar() {
   };
 
   const getMenuItems = () => {
-    console.log(role);
+    // console.log(role);
     switch (role) {
       case "admin":
         return [
