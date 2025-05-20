@@ -21,7 +21,7 @@ import {
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/app/context/AuthContext";
+// import { useAuth } from "@/app/context/AuthContext";
 
 // Define FieldErrors interface in the component file for clarity
 interface FieldErrors {
@@ -34,7 +34,31 @@ const noop = (_: any) => {};
 
 export default function Component() {
   const router = useRouter();
-  const { register } = useAuth();
+  // const { register } = useAuth();
+  // Mock register function for demonstration purposes
+  //eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const register = async (userData: any) => {
+    try {
+      const response = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        return { success: false, error: errorData.error };
+      }
+
+      return { success: true };
+    } catch (error) {
+      // Silence the lint warning
+      noop(error);
+      return { success: false, error: "An unexpected error occurred" };
+    }
+  };
   const [departments, setDepartments] = useState<
     { id: number; department_name: string }[]
   >([]);
@@ -262,7 +286,8 @@ export default function Component() {
       } else {
         // Handle both general error and field-specific errors
         // Always reset field errors first to ensure we start fresh
-        const newFieldErrors = result.fieldErrors || {};
+        // const newFieldErrors = result.fieldErrors || {};
+        const newFieldErrors: FieldErrors = {};
 
         // Show field-specific errors
         if (Object.keys(newFieldErrors).length > 0) {
