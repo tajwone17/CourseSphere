@@ -86,6 +86,7 @@ export default function ManageHOD() {
   const [statusFilter, setStatusFilter] = useState("");
 
   const handleAddHOD = async () => {
+    setShowAddModal(false);
     try {
       const res = await fetch("/api/hod/add-hod", {
         method: "POST",

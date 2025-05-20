@@ -21,6 +21,7 @@ import {
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+
 // import { useAuth } from "@/app/context/AuthContext";
 
 // Define FieldErrors interface in the component file for clarity
@@ -59,9 +60,6 @@ export default function Component() {
       return { success: false, error: "An unexpected error occurred" };
     }
   };
-  const [departments, setDepartments] = useState<
-    { id: number; department_name: string }[]
-  >([]);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -100,27 +98,25 @@ export default function Component() {
     );
   };
 
-  // Fetch departments list
-  useEffect(() => {
-    const fetchDepartments = async () => {
-      try {
-        const response = await fetch("/api/departments");
-        if (response.ok) {
-          const data = await response.json();
-          setDepartments(data.departments || []);
-        }
-      } catch (error) {
-        // Silence the lint warning
-        noop(error);
+  //eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [depts, setDepts] = useState<any>([]);
 
-        // Use sample departments as fallback
-        setDepartments([
-          { id: 1, department_name: "Computer Science Engineering" },
-          { id: 2, department_name: "Electrical Engineering" },
-          { id: 3, department_name: "Mechanical Engineering" },
-        ]);
+  useEffect(() => {
+    async function fetchDepartments() {
+      try {
+        const res = await fetch("/api/departments", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await res.json();
+        console.log(data.departments);
+        setDepts(data.departments);
+      } catch (error) {
+        console.error("Failed to fetch departments:", error);
       }
-    };
+    }
 
     fetchDepartments();
   }, []);
@@ -564,11 +560,12 @@ export default function Component() {
               aria-invalid={fieldErrors.department_id ? "true" : "false"}
             >
               <option value="">Select your department</option>
-              {departments.map((dept) => (
-                <option key={dept.id} value={dept.id}>
-                  {dept.department_name}
-                </option>
-              ))}
+                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+              {depts.map((dept: any) => (
+                  <option key={dept.ID} value={dept.ID}>
+                    {dept.DEPARTMENT_NAME}
+                  </option>
+                ))}
             </Select>
             {renderFieldError(fieldErrors.department_id, "department_id")}
           </div>
@@ -593,7 +590,6 @@ export default function Component() {
               aria-describedby={fieldErrors.mobile ? "mobile-error" : undefined}
               aria-invalid={fieldErrors.mobile ? "true" : "false"}
             />{" "}
-         
             {renderFieldError(fieldErrors.mobile, "mobile")}
           </div>
         </div>

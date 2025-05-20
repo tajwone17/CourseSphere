@@ -1,103 +1,150 @@
 "use client";
 
-import { Button, TextInput, Modal, Label, Select } from "flowbite-react";
-import { HiSearch, HiPlus } from "react-icons/hi";
-import { useState } from "react";
+import { Button, TextInput, Modal, Label } from "flowbite-react";
+import {
+  HiPlus,
+  HiSearch,
+  HiUser,
+  HiMail,
+  HiPhone,
+  HiStatusOnline,
+  HiStatusOffline,
+} from "react-icons/hi";
+import { useEffect, useState } from "react";
+import Select, { SingleValue } from "react-select";
+import { HiBuildingOffice } from "react-icons/hi2";
 
-interface Advisor {
+interface ADVISOR {
   id: number;
   name: string;
   department: string;
   email: string;
   phone: string;
-
   status: string;
 }
 
 export default function ManageAdvisors() {
-  const [advisorsList, setAdvisorsList] = useState<Advisor[]>([
+  const [advisorList, setAdvisorList] = useState<ADVISOR[]>([
     {
       id: 1,
-      name: "Prof. AB De Villiers",
+      name: "Dr. Tajwone",
       department: "Computer Science",
-      email: "villers.b@neub.edu.bd",
+      email: "tajwone.doe@neub.edu.bd",
       phone: "+880 1712345678",
       status: "Active",
     },
     {
       id: 2,
-      name: "Dr. Tamim Iqbal",
+      name: "Dr. Chowdhury",
       department: "Electrical Engineering",
-      email: "tamim.w@neub.edu.bd",
+      email: "chowdhry.@neub.edu.bd",
       phone: "+880 1812345678",
       status: "Active",
     },
     {
       id: 3,
-      name: "Prof. Joe Root",
+      name: "Dr. Jakaria",
       department: "Civil Engineering",
-      email: "root.l@neub.edu.bd",
+      email: "jakaria.j@neub.edu.bd",
       phone: "+880 1912345678",
       status: "Inactive",
     },
   ]);
 
   const [showAddModal, setShowAddModal] = useState(false);
-  const [newAdvisor, setNewAdvisor] = useState({
+  const [newADVISOR, setNewADVISOR] = useState({
     name: "",
     department: "",
     email: "",
     phone: "",
   });
-  const [searchTerm, setSearchTerm] = useState("");
-  const [departmentFilter, setDepartmentFilter] = useState("all");
 
-  const filteredAdvisors = advisorsList.filter((advisor) => {
-    const matchesSearch =
-      advisor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      advisor.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      advisor.phone.toLowerCase().includes(searchTerm.toLowerCase());
+  //eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [depts, setDepts] = useState<any>([]);
 
-    const matchesDepartment =
-      departmentFilter === "all" ||
-      advisor.department.toLowerCase() === departmentFilter.toLowerCase();
+  useEffect(() => {
+    async function fetchDepartments() {
+      try {
+        const res = await fetch("/api/departments", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await res.json();
+        console.log(typeof data.departments);
+        setDepts(data.departments);
+      } catch (error) {
+        console.error("Failed to fetch departments:", error);
+      }
+    }
 
-    return matchesSearch && matchesDepartment;
-  });
+    fetchDepartments();
+  }, []);
 
-  const handleAddAdvisor = () => {
-    const id = advisorsList.length + 1;
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
 
-    const advisorData = {
-      ...newAdvisor,
-      id,
-      status: "Active",
-    };
-
-    setAdvisorsList([...advisorsList, advisorData]);
+  const handleAddAdvisor = async () => {
     setShowAddModal(false);
-
-    // Reset the form
-    setNewAdvisor({
-      name: "",
-      department: "",
-      email: "",
-      phone: "",
-    });
+    try {
+      const res = await fetch("/api/advisor/add-advisor", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(newADVISOR),
+      });
+      if (!res.ok) {
+        const errorText = await res.text();
+        const errorMsg = errorText.split("\n")[0];
+        console.log("Error response:", errorText);
+        throw new Error(errorMsg);
+      }
+      console.log("New ADVISOR added successfully");
+    } catch (error) {
+      console.error("Error adding ADVISOR:", error);
+    }
   };
 
-  const toggleAdvisorStatus = (id: number) => {
-    setAdvisorsList((prev) =>
-      prev.map((advisor) =>
-        advisor.id === id
-          ? {
-              ...advisor,
-              status: advisor.status === "Active" ? "Inactive" : "Active",
-            }
-          : advisor,
-      ),
+  const handleToggleStatus = (id: number) => {
+    const updatedList = advisorList.map((advisor) =>
+      advisor.id === id
+        ? {
+            ...advisor,
+            status: advisor.status === "Active" ? "Inactive" : "Active",
+          }
+        : advisor,
     );
+    setAdvisorList(updatedList);
   };
+
+  const filteredAdvisorList = advisorList.filter(
+    (advisor) =>
+      (advisor.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        advisor.department.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        advisor.email.toLowerCase().includes(searchQuery.toLowerCase())) &&
+      (statusFilter ? advisor.status === statusFilter : true),
+  );
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const handleStatusChange = (
+    selectedOption: SingleValue<{ value: string; label: string }> | null,
+  ) => {
+    if (selectedOption) {
+      setStatusFilter(selectedOption.value); // Set the value of the selected option
+    } else {
+      setStatusFilter(""); // Clear the filter if nothing is selected
+    }
+  };
+
+  const statusOptions = [
+    { value: " ", label: "All" },
+    { value: "Active", label: "Active" },
+    { value: "Inactive", label: "Inactive" },
+  ];
 
   return (
     <div
@@ -107,8 +154,7 @@ export default function ManageAdvisors() {
     >
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-4xl font-bold text-white">Manage Advisors</h1>
-          <p className="mt-4 text-lg text-gray-400">Manage Academic Advisors</p>
+          <h1 className="text-4xl font-bold text-white">Manage ADVISORs</h1>
         </div>
 
         <Button
@@ -127,61 +173,60 @@ export default function ManageAdvisors() {
         </Button>
       </div>
 
-      <div className="rounded-lg border border-gray-800 bg-gray-900 p-6">
-        <div className="mb-6 flex items-center justify-between gap-4">
-          <div className="flex flex-1 flex-col items-start gap-4 md:flex-row md:items-center">
-            <div className="relative w-64">
-              <TextInput
-                type="search"
-                placeholder="Search Advisors..."
-                className="rounded-lg border-gray-700 bg-gray-800 text-white placeholder-gray-400 focus:border-[#92e3a9] focus:ring-[#92e3a9]"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-              <HiSearch className="absolute top-2.5 right-3 h-5 w-5 text-gray-400" />
-            </div>
-            <Select
-              className="w-48 border-gray-700 bg-gray-800 text-white"
-              value={departmentFilter}
-              onChange={(e) => setDepartmentFilter(e.target.value)}
-            >
-              <option value="all">All Departments</option>
-              <option value="computer science">Computer Science</option>
-              <option value="electrical engineering">
-                Electrical Engineering
-              </option>
-              <option value="civil engineering">Civil Engineering</option>
-            </Select>
-          </div>
+      <div className="mb-6 flex items-center gap-4">
+        <div className="w-1/3">
+          <TextInput
+            value={searchQuery}
+            onChange={handleSearchChange}
+            placeholder="Search by name, department, email"
+            icon={HiSearch}
+          />
         </div>
+        <div className="w-1/3">
+          <Select
+            options={statusOptions}
+            onChange={handleStatusChange} // Corrected here
+            placeholder="Filter by Status"
+            isSearchable={false}
+            value={statusOptions.find(
+              (option) => option.value === statusFilter,
+            )} // Corrected here
+          />
+        </div>
+      </div>
 
+      <div className="rounded-lg border border-gray-800 bg-gray-900 p-6">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-800">
             <thead className="bg-gray-800">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+                  <HiUser className="mr-2 inline text-[#92e3a9] group-hover:scale-110" />{" "}
                   Name
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+                  <HiBuildingOffice className="mr-2 inline text-[#92e3a9] group-hover:scale-110" />{" "}
                   Department
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+                  <HiMail className="mr-2 inline text-[#92e3a9] group-hover:scale-110" />{" "}
                   Email
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+                  <HiPhone className="mr-2 inline text-[#92e3a9] group-hover:scale-110" />{" "}
                   Phone
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+                  <HiStatusOnline className="mr-2 inline text-[#92e3a9] group-hover:scale-110" />{" "}
                   Status
                 </th>
-
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
-                  Action
+                  Actions
                 </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-800">
-              {filteredAdvisors.map((advisor) => (
+              {filteredAdvisorList.map((advisor) => (
                 <tr
                   key={advisor.id}
                   className="bg-gray-900 transition-colors hover:bg-gray-800"
@@ -199,78 +244,84 @@ export default function ManageAdvisors() {
                     {advisor.phone}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-white">
+                    {advisor.status === "Active" ? (
+                      <HiStatusOnline className="mr-2 inline text-green-500" />
+                    ) : (
+                      <HiStatusOffline className="mr-2 inline text-red-500" />
+                    )}
                     {advisor.status}
                   </td>
-
                   <td className="px-6 py-4 whitespace-nowrap">
                     <Button
-                      size="xs"
                       style={{
                         backgroundColor:
-                          advisor.status === "Active" ? "#ef4444" : "#22c55e",
+                          advisor.status === "Active" ? "#ef4444" : "#10b981",
                         color: "#ffffff",
                       }}
-                      onClick={() => toggleAdvisorStatus(advisor.id)}
+                      size="xs"
+                      onClick={() => handleToggleStatus(advisor.id)}
                     >
-                      {advisor.status === "Active"
-                        ? "Set Inactive"
-                        : "Set Active"}
+                      {advisor.status === "Active" ? "Inctive" : "active"}
                     </Button>
                   </td>
                 </tr>
               ))}
-              {filteredAdvisors.length === 0 && (
-                <tr>
-                  <td
-                    colSpan={7}
-                    className="px-6 py-4 text-center text-gray-400"
-                  >
-                    No advisors found matching your search criteria.
-                  </td>
-                </tr>
-              )}
             </tbody>
           </table>
         </div>
       </div>
 
-      {/* Add Advisor Modal */}
+      {/* Add ADVISOR Modal */}
       <Modal show={showAddModal} onClose={() => setShowAddModal(false)}>
         <div className="relative bg-gray-800 p-4">
           <div className="mb-4 text-xl font-semibold text-white">
-            Add New Advisor
+            Add New ADVISOR
           </div>
           <div className="space-y-4">
             <div>
               <Label htmlFor="name">Name</Label>
               <TextInput
                 id="name"
-                value={newAdvisor.name}
+                value={newADVISOR.name}
                 onChange={(e) =>
-                  setNewAdvisor({ ...newAdvisor, name: e.target.value })
+                  setNewADVISOR({ ...newADVISOR, name: e.target.value })
                 }
                 placeholder="Enter name"
               />
             </div>
-            <div>
-              <Label htmlFor="department">Department</Label>
-              <TextInput
+            <div className="flex flex-col gap-2">
+              <label htmlFor="department" className="font-medium">
+                Department
+              </label>
+              <select
                 id="department"
-                value={newAdvisor.department}
+                name="department"
+                value={newADVISOR.department}
                 onChange={(e) =>
-                  setNewAdvisor({ ...newAdvisor, department: e.target.value })
+                  setNewADVISOR({ ...newADVISOR, department: e.target.value })
                 }
-                placeholder="Enter department"
-              />
+                required
+                className="focus:ring-primary rounded-lg border border-gray-700 bg-[#323840] p-3 focus:ring-2 focus:outline-none"
+              >
+                <option value="" disabled>
+                  Select your department
+                </option>
+                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                {depts.map((dept: any) => (
+                  <option key={dept.ID} value={dept.ID}>
+                    {dept.DEPARTMENT_NAME}
+                  </option>
+                ))}
+              </select>
             </div>
             <div>
               <Label htmlFor="email">Email</Label>
               <TextInput
                 id="email"
                 type="email"
-                value={newAdvisor.email}
+                value={newADVISOR.email}
                 onChange={(e) =>
-                  setNewAdvisor({ ...newAdvisor, email: e.target.value })
+                  setNewADVISOR({ ...newADVISOR, email: e.target.value })
                 }
                 placeholder="Enter email"
               />
@@ -279,9 +330,9 @@ export default function ManageAdvisors() {
               <Label htmlFor="phone">Phone</Label>
               <TextInput
                 id="phone"
-                value={newAdvisor.phone}
+                value={newADVISOR.phone}
                 onChange={(e) =>
-                  setNewAdvisor({ ...newAdvisor, phone: e.target.value })
+                  setNewADVISOR({ ...newADVISOR, phone: e.target.value })
                 }
                 placeholder="Enter phone number"
               />
@@ -297,7 +348,7 @@ export default function ManageAdvisors() {
               }}
               onClick={handleAddAdvisor}
             >
-              Add Advisor
+              Add ADVISOR
             </Button>
             <Button color="gray" onClick={() => setShowAddModal(false)}>
               Cancel

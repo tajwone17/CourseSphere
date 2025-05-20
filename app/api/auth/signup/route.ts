@@ -5,12 +5,12 @@ import db from "@/app/lib/db";
 export async function POST(request: NextRequest) {
   const body = await request.json();
 
-  const { name, email, regId, session, password, department, mobile } = body;
+  const { name, email, registration_number, session, password, department_id, mobile } = body;
 
   try {
     //eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [userExists]: any = await db.query(
-      "SELECT email FROM users WHERE email = ?",
+      "SELECT email FROM student WHERE email = ?",
       [email],
     );
 
@@ -21,8 +21,8 @@ export async function POST(request: NextRequest) {
 
     //eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [result]: any = await db.query(
-      "INSERT INTO students (name, email, regId, session, password, department, mobile) VALUES (?, ?, ?, ?, ?, ?, ?)",
-      [name, email, regId, session, hashedPassword, department, mobile],
+      "INSERT INTO student (name, email, registration_number, session, password, department_id, mobile) VALUES (?, ?, ?, ?, ?, ?, ?)",
+      [name, email, registration_number, session, hashedPassword, department_id, mobile],
     );
     if (result.affectedRows === 0) {
       return new Response("Failed to create account", { status: 500 });

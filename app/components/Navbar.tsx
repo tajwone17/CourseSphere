@@ -97,7 +97,7 @@ export function MyNavbar() {
         </NavbarCollapse>
 
         <div className="flex items-center gap-4">
-          {isAuthenticated && (
+          {isAuthenticated && user.role === "student" && (
             <Link
               href="/course-selection"
               className="flex items-center gap-2 rounded-lg bg-black px-4 py-2 text-[#92e3a9] transition-all hover:scale-105 hover:bg-gray-900"
@@ -119,7 +119,7 @@ export function MyNavbar() {
             </Link>
           )}
 
-          {isAuthenticated ? (
+          {isAuthenticated && user.role === "student" ? (
             <Dropdown
               arrowIcon={false}
               inline
