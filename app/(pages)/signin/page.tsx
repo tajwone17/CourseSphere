@@ -51,43 +51,8 @@ export default function Component() {
     setLoading(true);
 
     try {
-      const result = await login(formData.email, formData.password);
-
-      if (result.success) {
-        // Get current user from context to get userType
-        const storedUser = localStorage.getItem("user");
-        if (storedUser) {
-          try {
-            const user = JSON.parse(storedUser);
-            // Redirect based on user type
-            switch (user.userType) {
-              case "admin":
-                router.push("/admin/dashboard");
-                break;
-              case "advisor":
-                router.push("/advisor/dashboard");
-                break;
-              case "hod":
-                router.push("/hod/dashboard");
-                break;
-              case "student":
-              default:
-                router.push("/student-dashboard");
-                break;
-            }
-          } catch (error) {
-            console.error("Failed to parse user data:", error);
-            router.push("/student-dashboard"); // Fallback
-          }
-        } else {
-          router.push("/student-dashboard"); // Fallback
-        }
-      } else {
-        setError(result.error || "Invalid email or password");
-      }
-    } catch (err) {
-      setError("An unexpected error occurred");
-      console.error("Login error:", err);
+      await login(formData.email, formData.password);
+      router.push("student-dashboard");
     } finally {
       setLoading(false);
     }

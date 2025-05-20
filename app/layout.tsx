@@ -3,6 +3,7 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 // import { AuthProvider } from "./context/AuthContext";
 import { AOSInit } from "./utils/AOS";
+import { AuthProvider } from "./context/AuthContext";
 
 const poppins = Poppins({
   variable: "--font-geist-mono",
@@ -25,8 +26,7 @@ export default function RootLayout({
       <AOSInit />
       <head>{/* <ThemeModeScript /> */}</head>
       <body className={`${poppins.variable} antialiased`}>
-        {/* <AuthProvider>{children}</AuthProvider> */}
-        {children}
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );

@@ -22,22 +22,21 @@ export async function POST(request: NextRequest) {
 
     // Fetch user with a single query instead of two separate queries
     //eslint-disable-next-line
-    const [rows]: any = await db.query("SELECT * FROM users WHERE email = ?", [
-      email,
-    ]);
+    const [rows]: Array<any> = await db.query(
+      "SELECT * FROM student WHERE email = ?",
+      [email],
+    );
 
     // Check if user exists
     if (!rows || rows.length === 0) {
-      return Response.json(
-        { error: "Invalid email or password" },
-        { status: 401 },
-      );
+      return Response.json({ error: "User not found" }, { status: 401 });
     }
 
     const user = rows[0];
 
     // Verify password
-    const isMatch = await bcrypt.compare(password, user.password);
+    console.log(password, user.PASSWORD);
+    const isMatch = await bcrypt.compare(password, user.PASSWORD);
     if (!isMatch) {
       return Response.json(
         { error: "Invalid email or password" },
@@ -46,7 +45,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check account status
-    if (!user.status) {
+    if (!user.STATUS) {
       return Response.json({ error: "Account is not active" }, { status: 403 });
     }
 
