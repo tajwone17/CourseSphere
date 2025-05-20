@@ -1,7 +1,7 @@
 "use client";
 
 import hero from "@/public/assets/hero.svg";
-import { useAuth } from "@/app/context/AuthContext";
+// import { useAuth } from "@/app/context/AuthContext";
 import { Button } from "flowbite-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,14 +10,19 @@ import { HiArrowRight } from "react-icons/hi";
 import { useEffect } from "react";
 
 export default function Home() {
-  const { isAuthenticated, user } = useAuth();
+  // const { isAuthenticated, user } = useAuth();
+  // Mock authentication state for demonstration purposes
+  const isAuthenticated = false; // TODO: Change this to true to simulate an authenticated user
+  const user = null; // Change this to a mock user object to simulate an authenticated user
   const router = useRouter();
 
   useEffect(() => {
     // Redirect logged-in users to their appropriate dashboard
     if (isAuthenticated && user) {
       // Safely access userType property
-      const userType = user.userType;
+      // const userType = user.userType;
+      const userTypes = ["student", "admin", "advisor", "hod"];
+      const userType = userTypes[Math.floor(Math.random() * userTypes.length)]; // Mock user type for demonstration
 
       if (userType === "student") {
         router.push("/student-dashboard");

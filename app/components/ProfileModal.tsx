@@ -11,14 +11,19 @@ import {
 import { HiLockClosed } from "react-icons/hi2";
 import Image from "next/image";
 
-import { useAuth } from "../context/AuthContext";
+// import { useAuth } from "../context/AuthContext";
+
 
 export default function ProfileModal({
   onClose: handleClose,
 }: {
   onClose: () => void;
 }) {
-  const { user, isAuthenticated } = useAuth();
+  // const { user, isAuthenticated } = useAuth();
+  const isAuthenticated = true; //TODO: Replace with actual authentication check
+  const user = {
+    email: "tajwone@example.com",
+  };
   const userEmail = user?.email || "";
 
   // Mocked user data for demo

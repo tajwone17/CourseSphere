@@ -24,7 +24,7 @@ import {
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import Logo from "@/public/assets/icon";
-import { useAuth } from "../context/AuthContext";
+// import { useAuth } from "../context/AuthContext";
 import { useState } from "react";
 import ProfileModal from "./ProfileModal";
 
@@ -39,7 +39,12 @@ export function MyNavbar() {
 
   const pathname = usePathname();
   const router = useRouter();
-  const { isAuthenticated, logout } = useAuth();
+  // const { isAuthenticated, logout } = useAuth();
+  const isAuthenticated = true; // TODO:Replace with actual authentication check
+  const logout = () => {
+    // Replace with actual logout function
+    console.log("Logged out");
+  };
 
   const navLinks: navlinks[] = [
     ...(isAuthenticated

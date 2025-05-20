@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
-import { AuthProvider } from "./context/AuthContext";
+// import { AuthProvider } from "./context/AuthContext";
 import { AOSInit } from "./utils/AOS";
 
 const poppins = Poppins({
@@ -25,7 +25,8 @@ export default function RootLayout({
       <AOSInit />
       <head>{/* <ThemeModeScript /> */}</head>
       <body className={`${poppins.variable} antialiased`}>
-        <AuthProvider>{children}</AuthProvider>
+        {/* <AuthProvider>{children}</AuthProvider> */}
+        {children}
       </body>
     </html>
   );
