@@ -156,9 +156,7 @@ export default function ManageCourse() {
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                 Credit
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
-                Department
-              </th>
+            
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                 Instructor
               </th>
@@ -189,9 +187,7 @@ export default function ManageCourse() {
                 <td className="px-6 py-4 whitespace-nowrap text-white">
                   {course.credit}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-white">
-                  {course.department}
-                </td>
+        
                 <td className="px-6 py-4 whitespace-nowrap text-white">
                   {course.instructor}
                 </td>
