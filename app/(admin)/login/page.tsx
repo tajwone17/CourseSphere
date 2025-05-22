@@ -92,8 +92,8 @@ export default function AdminLogin() {
                 <option value="admin">Super Admin</option>
                 <option value="advisor">Advisor</option>
                 <option value="hod">Head of Department</option>
-                <option value="exam-controller">Exam Controller Office</option>
-                <option value="accounts">Accounts Office</option>
+                <option value="exam_controller">Exam Controller Office</option>
+                <option value="accounts_admin">Accounts Office</option>
               </Select>
             </div>
           </div>

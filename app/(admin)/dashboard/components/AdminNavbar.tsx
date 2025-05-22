@@ -113,7 +113,7 @@ export default function AdminNavbar() {
             icon: HiSpeakerphone,
           },
         ];
-      case "accounts":
+      case "accounts_admin":
         return [
           { name: "Dashboard", href: "/dashboard", icon: HiHome },
           {
@@ -122,7 +122,7 @@ export default function AdminNavbar() {
             icon: HiUsers,
           },
         ];
-      case "exam-controller":
+      case "exam_controller":
         return [
           // { name: "Dashboard", href: "/dashboard", icon: HiHome },
           {
@@ -152,9 +152,9 @@ export default function AdminNavbar() {
                 ? "Super Admin"
                 : role === "hod"
                   ? "HOD Portal"
-                  : role === "exam-controller"
+                  : role === "exam_controller"
                     ? "Exam Controller Portal"
-                    : role === "accounts"
+                    : role === "accounts_admin"
                       ? "Accounts Office Portal"
                       : "Advisor Portal"}
             </span>

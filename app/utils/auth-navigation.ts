@@ -8,8 +8,8 @@ const roleRouteMap: Record<string, string> = {
   admin: "/dashboard/manage-hod",
   hod: "/dashboard",
   advisor: "/dashboard",
-  "exam-controller": "/dashboard",
-  accounts: "/dashboard",
+  exam_controller: "/dashboard/manage-results",
+  accounts_admin: "/dashboard",
 };
 
 /**
