@@ -23,8 +23,25 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   //eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [user, setUser] = useState<any>(null);
+  //eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [departmentDetails, setDepartmentDetails] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   // const router = useRouter();
+
+  // Function to fetch department details
+  const fetchDepartmentDetails = async (departmentId: string) => {
+    try {
+      const res = await fetch(`/api/departments/${departmentId}`);
+      if (res.ok) {
+        const data = await res.json();
+        return data.department;
+      }
+      return null;
+    } catch (error) {
+      console.error("Error fetching department details:", error);
+      return null;
+    }
+  };
 
   // Login function
   const login = async (email: string, password: string, role: string) => {
@@ -69,26 +86,29 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         };
       }
 
+      // Fetch department details if departmentId exists
+      console.log(user);
+      let departmentInfo = null;
+      if (user.department) {
+        departmentInfo = await fetchDepartmentDetails(user.department);
+      }
+
       // Store token
       localStorage.setItem("token", token);
 
-      setUser({
+      const userData = {
         id: user.id,
         name: user.name,
         email: user.email,
-        department: user.department || "",
+        departmentId: user.department || "",
+        department: departmentInfo || {}, // Store full department object
         role: user.role || "",
-      });
-      localStorage.setItem(
-        "user",
-        JSON.stringify({
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          department: user.department || "",
-          role: user.role || "",
-        }),
-      );
+      };
+
+      setUser(userData);
+      setDepartmentDetails(departmentInfo);
+      console.log("User data:", userData);
+      localStorage.setItem("user", JSON.stringify(userData));
 
       // router.push("/dashboard");
       return { success: true };
@@ -115,7 +135,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       console.error("Logout error:", error);
     } finally {
       localStorage.removeItem("token");
+      localStorage.removeItem("user");
       setUser(null);
+      setDepartmentDetails(null);
       // router.push("/signin");
       setLoading(false);
     }
@@ -123,12 +145,38 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   // Check authentication on component mount
   useEffect(() => {
-    setUser(JSON.parse(localStorage.getItem("user") || "null"));
+    const storedUser = JSON.parse(localStorage.getItem("user") || "null");
+    setUser(storedUser);
+    
+    // If user exists and has departmentId but no department details
+    if (storedUser && storedUser.departmentId && !storedUser.department?.name) {
+      // Fetch department details
+      fetchDepartmentDetails(storedUser.departmentId).then(dept => {
+        if (dept) {
+          const updatedUser = {
+            ...storedUser,
+            department: dept
+          };
+          setUser(updatedUser);
+          setDepartmentDetails(dept);
+          localStorage.setItem("user", JSON.stringify(updatedUser));
+        }
+      });
+    } else if (storedUser?.department) {
+      setDepartmentDetails(storedUser.department);
+    }
   }, []);
 
   return (
     <AuthContext.Provider
-      value={{ user, isAuthenticated: !!user, login, logout, loading }}
+      value={{ 
+        user, 
+        isAuthenticated: !!user, 
+        department: departmentDetails,
+        login, 
+        logout, 
+        loading 
+      }}
     >
       {children}
     </AuthContext.Provider>

@@ -59,10 +59,10 @@ export async function POST(request: NextRequest) {
       {
         token,
         user: {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          department: user.department,
+          id: user.ID,
+          name: user.NAME,
+          email: user.EMAIL,
+          department: user.DEPARTMENT_ID,
           role: role,
         },
       },
