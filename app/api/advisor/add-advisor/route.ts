@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
     email,
   ]);
   if (user.length > 0) {
-    return new Response("User already exists", { status: 409 });
+    console.log("user exists");
   }
 
   // Insert the new advisor into the database

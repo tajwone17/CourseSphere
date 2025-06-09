@@ -15,7 +15,7 @@ import {
 import { useEffect, useState } from "react";
 import Select, { SingleValue } from "react-select";
 import { HiCheck } from "react-icons/hi2";
-
+import { useAuth } from "@/app/context/AuthContext";
 interface ADVISOR {
   ID: number;
   NAME: string;
@@ -26,6 +26,7 @@ interface ADVISOR {
 }
 
 export default function ManageAdvisors() {
+  const { user } = useAuth();
   const [advisorList, setAdvisorList] = useState<ADVISOR[]>([]);
   const [searchName, setSearchName] = useState("");
   const [searchDepartment, setSearchDepartment] = useState("");
@@ -42,6 +43,17 @@ export default function ManageAdvisors() {
     email: "",
     phone: "",
   });
+  // Set department from user when user is available
+  useEffect(() => {
+    console.log("User data:", user);
+
+    if (user && user.department && user.departmentId) {
+      setNewADVISOR((prev) => ({
+        ...prev,
+        department: user.departmentId,
+      }));
+    }
+  }, [user]);
 
   useEffect(() => {
     async function fetchAdvisors() {
@@ -58,33 +70,56 @@ export default function ManageAdvisors() {
     }
     fetchAdvisors();
   }, []);
-
   const handleAddAdvisor = async () => {
-    setShowAddModal(false);
+    // Validate the form data
+    if (
+      !newADVISOR.name ||
+      !newADVISOR.email ||
+      !newADVISOR.department ||
+      !newADVISOR.phone
+    ) {
+      console.error("All fields are required");
+      alert("All fields are required");
+      return;
+    }
+
     try {
+      console.log("Sending data:", newADVISOR);
       const res = await fetch("/api/advisor/add-advisor", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify(newADVISOR),
       });
+
       if (!res.ok) {
         const errorText = await res.text();
         const errorMsg = errorText.split("\n")[0];
         console.log("Error response:", errorText);
+        alert(`Error: ${errorMsg}`);
         throw new Error(errorMsg);
+      } else {
+        // Fetch updated list after successful addition
+        const response = await fetch("/api/advisors");
+        if (response.ok) {
+          const data = await response.json();
+          setAdvisorList(data.advisors);
+        }
+        alert("Advisor added successfully");
+        console.log("New ADVISOR added successfully");
       }
-      console.log("New ADVISOR added successfully");
     } catch (error) {
       console.error("Error adding ADVISOR:", error);
     }
-    // Reset the form
+
+    // Reset the form and close modal
     setNewADVISOR({
       name: "",
       department: "",
       email: "",
       phone: "",
     });
+    setShowAddModal(false);
   };
 
   const openModal = (acc: ADVISOR, action: "active" | "inactive") => {
@@ -92,17 +127,16 @@ export default function ManageAdvisors() {
     setStatus(action);
     setShowModal(true);
   };
-
   const filteredAdvisorList = advisorList.filter((advisor) => {
     // Name filter
     const nameMatch =
       !searchName ||
       advisor.NAME.toLowerCase().includes(searchName.toLowerCase());
 
-    // Department filter
-    const departmentMatch =
+    // Phone filter
+    const phoneMatch =
       !searchDepartment ||
-      advisor.DEPARTMENT.toLowerCase().includes(searchDepartment.toLowerCase());
+      advisor.PHONE.toLowerCase().includes(searchDepartment.toLowerCase());
 
     // Email filter
     const emailMatch =
@@ -119,7 +153,7 @@ export default function ManageAdvisors() {
             ? 0
             : advisor.STATUS);
 
-    return nameMatch && departmentMatch && emailMatch && statusMatch;
+    return nameMatch && phoneMatch && emailMatch && statusMatch;
   });
 
   const confirmAction = async () => {
@@ -201,8 +235,7 @@ export default function ManageAdvisors() {
           <HiPlus className="h-5 w-5" />
           Add New Advisor
         </Button>
-      </div>
-
+      </div>{" "}
       <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
         <div>
           <TextInput
@@ -214,18 +247,18 @@ export default function ManageAdvisors() {
         </div>
         <div>
           <TextInput
-            value={searchDepartment}
-            onChange={(e) => setSearchDepartment(e.target.value)}
-            placeholder="Search by department"
-            icon={HiSearch}
-          />
-        </div>
-        <div>
-          <TextInput
             value={searchEmail}
             onChange={(e) => setSearchEmail(e.target.value)}
             placeholder="Search by email"
             icon={HiSearch}
+          />
+        </div>{" "}
+        <div>
+          <TextInput
+            value={searchDepartment}
+            onChange={(e) => setSearchDepartment(e.target.value)}
+            placeholder="Search by phone"
+            icon={HiPhone}
           />
         </div>
         <div>
@@ -237,10 +270,60 @@ export default function ManageAdvisors() {
             value={statusOptions.find(
               (option) => option.value === statusFilter,
             )}
+            styles={{
+              control: (baseStyles) => ({
+                ...baseStyles,
+                backgroundColor: "#1f2937", // Dark background
+                borderColor: "#374151",
+                color: "white",
+                "&:hover": {
+                  borderColor: "#4b5563",
+                },
+              }),
+              menu: (baseStyles) => ({
+                ...baseStyles,
+                backgroundColor: "#1f2937", // Dark background for dropdown menu
+              }),
+              option: (baseStyles, { isFocused, isSelected }) => ({
+                ...baseStyles,
+                backgroundColor: isSelected
+                  ? "#92e3a9" // Primary green color for selected item
+                  : isFocused
+                    ? "#374151" // Slightly lighter dark for hover
+                    : "#1f2937", // Dark background
+                color: isSelected ? "black" : "white",
+                cursor: "pointer",
+                ":active": {
+                  backgroundColor: isSelected ? "#92e3a9" : "#374151",
+                },
+              }),
+              singleValue: (baseStyles) => ({
+                ...baseStyles,
+                color: "white", // Text color for selected value
+              }),
+              placeholder: (baseStyles) => ({
+                ...baseStyles,
+                color: "#9ca3af", // Light gray for placeholder
+              }),
+              dropdownIndicator: (baseStyles) => ({
+                ...baseStyles,
+                color: "#9ca3af", // Light gray for dropdown arrow
+                "&:hover": {
+                  color: "white",
+                },
+              }),
+              indicatorSeparator: (baseStyles) => ({
+                ...baseStyles,
+                backgroundColor: "#4b5563",
+              }),
+              input: (baseStyles) => ({
+                ...baseStyles,
+                color: "white",
+              }),
+            }}
           />
         </div>
       </div>
-
       <div className="rounded-lg border border-gray-800 bg-gray-900 p-6">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-800">
@@ -317,8 +400,7 @@ export default function ManageAdvisors() {
           </table>
         </div>
       </div>
-
-      {/* Add ADVISOR Modal */}
+      {/* Add ADVISOR Modal */}{" "}
       <Modal show={showAddModal} onClose={() => setShowAddModal(false)}>
         <div className="relative bg-gray-800 p-4">
           <div className="mb-4 text-xl font-semibold text-white">
@@ -335,8 +417,28 @@ export default function ManageAdvisors() {
                 }
                 placeholder="Enter name"
               />
+            </div>{" "}
+            <div>
+              <Label htmlFor="department">Department</Label>
+              <TextInput
+                id="department"
+                value={
+                  user && user.department ? user.department.name || "" : ""
+                }
+                placeholder="Department"
+                disabled={true}
+              />
+              <input
+                type="hidden"
+                value={newADVISOR.department}
+                id="department_id"
+              />
+              {user && user.department && (
+                <p className="mt-1 text-xs text-gray-400">
+                  Department ID: {user.departmentId || "Unknown"}
+                </p>
+              )}
             </div>
-
             <div>
               <Label htmlFor="email">Email</Label>
               <TextInput
