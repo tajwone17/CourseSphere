@@ -65,19 +65,43 @@ export default function AccountApproval() {
     setShowModal(true);
   };
 
-  const confirmAction = () => {
-    if (selectedAccount) {
+const confirmAction = async () => {
+  if (selectedAccount) {
+    try {
+      // Update local state
       setAccounts((prev) =>
         prev.map((acc) =>
           acc.ID === selectedAccount.ID
-            ? { ...acc, STATUS: status === "active" ? 0 : 1 }
-            : acc,
-        ),
+            ? { ...acc, STATUS: status === "active" ? 1 : 0 }
+            : acc
+        )
       );
-    }
-    setShowModal(false);
-  };
 
+      // Make API call to update status in the database
+      const response = await fetch(
+        `/api/account-status/student/${selectedAccount.ID}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            status: status === "active" ? 1 : 0,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        console.error("Failed to update account status");
+        // You could add error handling UI here
+      }
+    } catch (error) {
+      console.error("Error updating account status:", error);
+      // You could add error handling UI here
+    }
+  }
+  setShowModal(false);
+};
   const filteredAccounts = accounts.filter(
     (acc) =>
       acc.NAME.toLowerCase().includes(search.toLowerCase()) ||
