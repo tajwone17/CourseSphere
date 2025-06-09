@@ -6,6 +6,7 @@ import { HiCheck, HiX, HiSearch, HiExclamation } from "react-icons/hi";
 interface PendingAccount {
   ID: number;
   NAME: string;
+  REGISTRATION_NUMBER: string;
   EMAIL: string;
   ROLE: string;
   CREATED_AT: string;
@@ -15,23 +16,6 @@ interface PendingAccount {
 export default function AccountApproval() {
   const [accounts, setAccounts] = useState<PendingAccount[]>([]);
   const [status, setStatus] = useState<"active" | "inactive">("inactive");
-
-  // Function to format date from ISO string to readable format
-  const formatDate = (dateString: string): string => {
-    if (!dateString) return "N/A";
-
-    const date = new Date(dateString);
-
-    // Format: May 13, 2025, 3:48 PM
-    return date.toLocaleString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "numeric",
-      minute: "2-digit",
-      hour12: true,
-    });
-  };
 
   useEffect(() => {
     async function fetchStudents() {
@@ -136,12 +120,13 @@ const confirmAction = async () => {
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                 Name
               </th>
+               <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+               REGISTRATION NUMBER
+              </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                 Email
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
-                Requested At
-              </th>
+           
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                 Action
               </th>
@@ -160,12 +145,13 @@ const confirmAction = async () => {
                 <td className="px-6 py-4 whitespace-nowrap text-white">
                   {acc.NAME}
                 </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-white">
+                  {acc.REGISTRATION_NUMBER || "N/A"}
+                </td>
                 <td className="px-6 py-4 whitespace-nowrap text-white">
                   {acc.EMAIL}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-white">
-                  {formatDate(acc.CREATED_AT)}
-                </td>
+               
                 <td className="px-6 py-4 whitespace-nowrap">
                   {acc.STATUS === 0 ? (
                     <Button
