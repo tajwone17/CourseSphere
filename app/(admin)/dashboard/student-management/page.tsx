@@ -4,47 +4,54 @@ import { Button, TextInput, Select } from "flowbite-react";
 import Link from "next/link";
 import { HiSearch } from "react-icons/hi";
 import { FaCheckCircle, FaClock, FaTimesCircle } from "react-icons/fa";
+import { useEffect, useState } from "react";
+
+interface Student {
+  ID: number;
+  NAME: string;
+  EMAIL: string;
+  REGISTRATION_NUMBER?: string;
+  DEPARTMENT_ID: number;
+  SESSION?: string;
+  STATUS: boolean;
+  MOBILE?: string;
+}
 
 export default function StudentManagement() {
-  const students = [
-    {
-      id: "1",
-      name: "Tajwone Chowdhury",
-      studentId: "0562310005101031",
-      email: "tajwone.chowdhury@neub.edu.bd",
-      semester: "Spring 2024",
-      department: "CSE",
-      status: "pending",
-    },
-    {
-      id: "2",
-      name: "Jakaria",
-      studentId: "0562310005101032",
-      email: "jakaria@neub.edu.bd",
-      semester: "Spring 2024",
-      department: "CSE",
-      status: "approved",
-    },
-    {
-      id: "3",
-      name: "Oli Ahmed",
-      studentId: "0562310005101033",
-      email: "oli.ahmed@neub.edu.bd",
-      semester: "Spring 2024",
-      department: "CSE",
-      status: "pending",
-    },
-    {
-      id: "4",
-      name: "Masum Pradhania",
-      studentId: "0562310005101034",
-      email: "masum.pradhania@neub.edu.bd",
-      semester: "Spring 2024",
-      department: "CSE",
-      status: "pending",
-    },
-  ];
-  const adminRole = typeof window !== "undefined" ? localStorage.getItem("adminRole") : null;
+  const [students, setStudents] = useState<Student[]>([]);
+  const [filteredStudents, setFilteredStudents] = useState<Student[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchName, setSearchName] = useState("");
+  const [searchId, setSearchId] = useState("");
+  const [searchSession, setSearchSession] = useState("");
+  const [searchStatus, setSearchStatus] = useState("");
+
+  useEffect(() => {
+    async function fetchStudents() {
+      try {
+        setLoading(true);
+        const response = await fetch("/api/students");
+        if (!response.ok) {
+          throw new Error("Failed to fetch students");
+        }
+        const data = await response.json();
+        setStudents(data.students);
+        setFilteredStudents(data.students); // Initialize filteredStudents
+        console.log("Fetched students:", data.students);
+      } catch (error: unknown) {
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
+        console.error("Error fetching students:", errorMessage);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchStudents();
+  }, []);
+
+  const adminRole =
+    typeof window !== "undefined" ? localStorage.getItem("adminRole") : null;
   const getStatus = (status: string) => {
     switch (status) {
       case "approved":
@@ -72,39 +79,97 @@ export default function StudentManagement() {
     }
   };
 
-  return (
-    <div className="mx-auto max-w-7xl p-8"
-    data-aos="fade-right"
-    data-aos-duration="1000">
-      <h1 className="mb-8 text-4xl font-bold text-white">Student Management</h1>
+  // Filter students based on search criteria
+  useEffect(() => {
+    let filtered = students;
 
+    if (searchName) {
+      filtered = filtered.filter((student) =>
+        student.NAME.toLowerCase().includes(searchName.toLowerCase()),
+      );
+    }
+
+    if (searchId) {
+      filtered = filtered.filter((student) =>
+        student.REGISTRATION_NUMBER?.toLowerCase().includes(
+          searchId.toLowerCase(),
+        ),
+      );
+    }
+
+    if (searchSession) {
+      filtered = filtered.filter(
+        (student) => student.SESSION === searchSession,
+      );
+    }
+
+    if (searchStatus) {
+      filtered = filtered.filter((student) => {
+        if (searchStatus === "approved") return student.STATUS === true;
+        if (searchStatus === "pending") return student.STATUS === false;
+        if (searchStatus === "rejected") return student.STATUS === false;
+        return true;
+      });
+    }
+
+    setFilteredStudents(filtered);
+  }, [searchName, searchId, searchSession, searchStatus, students]);
+
+  return (
+    <div
+      className="mx-auto max-w-7xl p-8"
+      data-aos="fade-right"
+      data-aos-duration="1000"
+    >
+      <h1 className="mb-8 text-4xl font-bold text-white">Student Management</h1>
       {/* Filter Section */}
       <div className="mb-8 grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         <div>
           <TextInput
             type="text"
-            placeholder="Search by name or ID"
+            placeholder="Search by name"
             icon={HiSearch}
             className="border-gray-700 bg-gray-800 text-white"
+            value={searchName}
+            onChange={(e) => setSearchName(e.target.value)}
           />
         </div>
         <div>
-          <Select className="border-gray-700 bg-gray-800 text-white">
-            <option value="">All Departments</option>
-            <option value="cse">CSE</option>
-            <option value="ece">ECE</option>
-            <option value="mech">MECH</option>
-          </Select>
+          <TextInput
+            type="text"
+            placeholder="Search by ID"
+            icon={HiSearch}
+            className="border-gray-700 bg-gray-800 text-white"
+            value={searchId}
+            onChange={(e) => setSearchId(e.target.value)}
+          />
         </div>
         <div>
-          <Select className="border-gray-700 bg-gray-800 text-white">
+          <Select
+            className="border-gray-700 bg-gray-800 text-white"
+            value={searchSession}
+            onChange={(e) => setSearchSession(e.target.value)}
+          >
             <option value="">All Semesters</option>
             <option value="spring2024">Spring 2024</option>
             <option value="fall2023">Fall 2023</option>
           </Select>
         </div>
-      </div>
-
+        {adminRole !== "accounts" && (
+          <div>
+            <Select
+              className="border-gray-700 bg-gray-800 text-white"
+              value={searchStatus}
+              onChange={(e) => setSearchStatus(e.target.value)}
+            >
+              <option value="">All Status</option>
+              <option value="approved">Approved</option>
+              <option value="pending">Pending</option>
+              <option value="rejected">Rejected</option>
+            </Select>
+          </div>
+        )}
+      </div>{" "}
       {/* Table Section */}
       <div className="overflow-x-auto rounded-lg border border-gray-700">
         <table className="min-w-full divide-y divide-gray-700">
@@ -116,48 +181,73 @@ export default function StudentManagement() {
               <th className="px-6 py-3 text-left text-sm font-medium">Name</th>
               <th className="px-6 py-3 text-left text-sm font-medium">Email</th>
               <th className="px-6 py-3 text-left text-sm font-medium">
-                Department
-              </th>
-              <th className="px-6 py-3 text-left text-sm font-medium">
-                Semester
+                Session
               </th>
               {adminRole !== "accounts" && (
-              <th className="px-6 py-3 text-left text-sm font-medium">
-                Status
-              </th>)}
+                <th className="px-6 py-3 text-left text-sm font-medium">
+                  Status
+                </th>
+              )}
               <th className="px-6 py-3 text-left text-sm font-medium">
                 Actions
               </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-700 bg-gray-900">
-            {students.map((student) => (
-              <tr key={student.id} className="text-white hover:bg-gray-800">
-                <td className="px-6 py-4">{student.studentId}</td>
-                <td className="px-6 py-4">{student.name}</td>
-                <td className="px-6 py-4">{student.email}</td>
-                <td className="px-6 py-4">{student.department}</td>
-                <td className="px-6 py-4">{student.semester}</td>
-                {adminRole !== "accounts" && ( <td className="px-6 py-4">{getStatus(student.status)}</td>)}
-                <td className="px-6 py-4">
-                  <div className="flex gap-2">
-                    <Link href={`/dashboard/student-management/${student.id}`}>
-                      <Button
-                        style={{
-                          backgroundColor: "#92e3a9",
-                          color: "#000000",
-                          cursor: "pointer",
-                        }}
-                        size="sm"
-                        className="bg-[#92e3a9] text-gray-900 hover:bg-[#7ac892]"
-                      >
-                        Review
-                      </Button>
-                    </Link>
-                  </div>
+            {loading ? (
+              <tr>
+                <td
+                  colSpan={adminRole !== "accounts" ? 7 : 6}
+                  className="px-6 py-4 text-center text-white"
+                >
+                  Loading students data...
                 </td>
               </tr>
-            ))}
+            ) : filteredStudents.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={adminRole !== "accounts" ? 7 : 6}
+                  className="px-6 py-4 text-center text-white"
+                >
+                  No students found.
+                </td>
+              </tr>
+            ) : (
+              filteredStudents.map((student) => (
+                <tr key={student.ID} className="text-white hover:bg-gray-800">
+                  <td className="px-6 py-4">
+                    {student.REGISTRATION_NUMBER || "N/A"}
+                  </td>
+                  <td className="px-6 py-4">{student.NAME}</td>
+                  <td className="px-6 py-4">{student.EMAIL}</td>
+                  <td className="px-6 py-4">{student.SESSION || "N/A"}</td>
+                  {adminRole !== "accounts" && (
+                    <td className="px-6 py-4">
+                      {getStatus(student.STATUS ? "approved" : "pending")}
+                    </td>
+                  )}
+                  <td className="px-6 py-4">
+                    <div className="flex gap-2">
+                      <Link
+                        href={`/dashboard/student-management/${student.ID}`}
+                      >
+                        <Button
+                          style={{
+                            backgroundColor: "#92e3a9",
+                            color: "#000000",
+                            cursor: "pointer",
+                          }}
+                          size="sm"
+                          className="bg-[#92e3a9] text-gray-900 hover:bg-[#7ac892]"
+                        >
+                          Review
+                        </Button>
+                      </Link>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
