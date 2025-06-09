@@ -1,58 +1,67 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Modal } from "flowbite-react";
 import { HiCheck, HiX, HiSearch, HiExclamation } from "react-icons/hi";
 
 interface PendingAccount {
-  id: number;
-  name: string;
-  email: string;
-  role: string;
-  requestedAt: string;
-  status: "active" | "inactive";
+  ID: number;
+  NAME: string;
+  EMAIL: string;
+  ROLE: string;
+  CREATED_AT: string;
+  STATUS: number;
 }
 
-const initialAccounts: PendingAccount[] = [
-  {
-    id: 1,
-    name: "Tajwone Chowdhury",
-    email: "tajwone.chowdhury@neub.edu.bd",
-    role: "Student",
-    requestedAt: "2025-04-25",
-    status: "active",
-  },
-  {
-    id: 2,
-    name: "Jakaria Ahmed",
-    email: "jakaria.ahmed@neub.edu.bd",
-    role: "Advisor",
-    requestedAt: "2025-04-26",
-    status: "active",
-  },
-  {
-    id: 3,
-    name: "Masum Pradhania",
-    email: "masum.pradhania@neub.edu.bd",
-    role: "Student",
-    requestedAt: "2025-04-27",
-    status: "inactive",
-  },
-];
-
 export default function AccountApproval() {
-  const [accounts, setAccounts] = useState(initialAccounts);
+  const [accounts, setAccounts] = useState<PendingAccount[]>([]);
+  const [status, setStatus] = useState<"active" | "inactive">("inactive");
+
+  // Function to format date from ISO string to readable format
+  const formatDate = (dateString: string): string => {
+    if (!dateString) return "N/A";
+
+    const date = new Date(dateString);
+
+    // Format: May 13, 2025, 3:48 PM
+    return date.toLocaleString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
+  };
+
+  useEffect(() => {
+    async function fetchStudents() {
+      try {
+        const response = await fetch("/api/students");
+        if (!response.ok) {
+          throw new Error("Failed to fetch students");
+        }
+        const data = await response.json();
+        setAccounts(data.students);
+        console.log("Fetched students:", data.students);
+      } catch (error: unknown) {
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
+        console.error("Error fetching students:", errorMessage);
+      }
+    }
+
+    fetchStudents();
+  }, []);
+
   const [search, setSearch] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [selectedAccount, setSelectedAccount] = useState<PendingAccount | null>(
     null,
   );
-  const [pendingAction, setPendingAction] = useState<"active" | "inactive">(
-    "active",
-  );
 
   const openModal = (acc: PendingAccount, action: "active" | "inactive") => {
     setSelectedAccount(acc);
-    setPendingAction(action);
+    setStatus(action);
     setShowModal(true);
   };
 
@@ -60,8 +69,8 @@ export default function AccountApproval() {
     if (selectedAccount) {
       setAccounts((prev) =>
         prev.map((acc) =>
-          acc.id === selectedAccount.id
-            ? { ...acc, status: pendingAction }
+          acc.ID === selectedAccount.ID
+            ? { ...acc, STATUS: status === "active" ? 0 : 1 }
             : acc,
         ),
       );
@@ -71,8 +80,8 @@ export default function AccountApproval() {
 
   const filteredAccounts = accounts.filter(
     (acc) =>
-      acc.name.toLowerCase().includes(search.toLowerCase()) ||
-      acc.email.toLowerCase().includes(search.toLowerCase()),
+      acc.NAME.toLowerCase().includes(search.toLowerCase()) ||
+      acc.EMAIL.toLowerCase().includes(search.toLowerCase()),
   );
 
   return (
@@ -123,18 +132,18 @@ export default function AccountApproval() {
               </tr>
             )}
             {filteredAccounts.map((acc) => (
-              <tr key={acc.id} className="hover:bg-gray-800">
+              <tr key={acc.ID} className="hover:bg-gray-800">
                 <td className="px-6 py-4 whitespace-nowrap text-white">
-                  {acc.name}
+                  {acc.NAME}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-white">
-                  {acc.email}
+                  {acc.EMAIL}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-white">
-                  {acc.requestedAt}
+                  {formatDate(acc.CREATED_AT)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  {acc.status === "inactive" ? (
+                  {acc.STATUS === 0 ? (
                     <Button
                       size="xs"
                       style={{ backgroundColor: "#22c55e", color: "#fff" }}
@@ -164,19 +173,19 @@ export default function AccountApproval() {
           <HiExclamation className="mx-auto mb-4 h-14 w-14 text-yellow-400" />
           <h3 className="mb-5 text-lg font-normal text-gray-300">
             Are you sure you want to{" "}
-            <span className="font-semibold text-white">{pendingAction}</span>{" "}
-            the account of{" "}
+            <span className="font-semibold text-white">{status}</span> the
+            account of{" "}
             <span className="font-semibold text-white">
-              {selectedAccount?.name}
+              {selectedAccount?.NAME}
             </span>
             ?
           </h3>
           <div className="flex justify-center gap-4">
             <Button
-              color={pendingAction === "active" ? "success" : "failure"}
+              color={status === "active" ? "success" : "failure"}
               onClick={confirmAction}
             >
-              Yes, {pendingAction}
+              Yes, {status}
             </Button>
             <Button color="gray" onClick={() => setShowModal(false)}>
               Cancel
