@@ -10,47 +10,39 @@ import {
   HiStatusOnline,
   HiStatusOffline,
 } from "react-icons/hi";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Select, { SingleValue } from "react-select";
 // import { useAuth } from "@/app/context/AuthContext";
 
 interface ADVISOR {
-  id: number;
-  name: string;
-  department: string;
-  email: string;
-  phone: string;
-  status: string;
+ ID: number;
+ NAME: string;
+  DEPARTMENT: string;
+  EMAIL: string;
+  PHONE: string;
+  STATUS: number;
 }
 
 export default function ManageAdvisors() {
+  const [advisorList, setAdvisorList] = useState<ADVISOR[]>([]);
+useEffect(() => {
+  async function fetchAdvisors() {
+    try {
+      const response = await fetch("/api/advisors");
+      if (!response.ok) {
+        throw new Error("Failed to fetch advisors");
+      }
+      const data = await response.json();
+      setAdvisorList(data.advisors);
+    } catch (error: unknown) {
+      console.log(error);
+    }
+  }
+  fetchAdvisors();
+}, []);
+
   // const { user } = useAuth();
-  const [advisorList, setAdvisorList] = useState<ADVISOR[]>([
-    {
-      id: 1,
-      name: "Dr. Tajwone",
-      department: "Computer Science",
-      email: "tajwone.doe@neub.edu.bd",
-      phone: "+880 1712345678",
-      status: "Active",
-    },
-    {
-      id: 2,
-      name: "Dr. Chowdhury",
-      department: "Electrical Engineering",
-      email: "chowdhry.@neub.edu.bd",
-      phone: "+880 1812345678",
-      status: "Active",
-    },
-    {
-      id: 3,
-      name: "Dr. Jakaria",
-      department: "Civil Engineering",
-      email: "jakaria.j@neub.edu.bd",
-      phone: "+880 1912345678",
-      status: "Inactive",
-    },
-  ]);
+  
 
   const [showAddModal, setShowAddModal] = useState(false);
   const [newADVISOR, setNewADVISOR] = useState({
@@ -60,7 +52,7 @@ export default function ManageAdvisors() {
     phone: "",
   });
 
-  //eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
   // const [depts, setDepts] = useState<any>([]);
 
   // useEffect(() => {
@@ -116,10 +108,10 @@ export default function ManageAdvisors() {
 
   const handleToggleStatus = (id: number) => {
     const updatedList = advisorList.map((advisor) =>
-      advisor.id === id
+      advisor.ID === id
         ? {
             ...advisor,
-            status: advisor.status === "Active" ? "Inactive" : "Active",
+            STATUS: advisor.STATUS === 1 ? 0 : 1,
           }
         : advisor,
     );
@@ -128,10 +120,12 @@ export default function ManageAdvisors() {
 
   const filteredAdvisorList = advisorList.filter(
     (advisor) =>
-      (advisor.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        advisor.department.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        advisor.email.toLowerCase().includes(searchQuery.toLowerCase())) &&
-      (statusFilter ? advisor.status === statusFilter : true),
+      (advisor.NAME.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        advisor.DEPARTMENT.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        advisor.EMAIL.toLowerCase().includes(searchQuery.toLowerCase())) &&
+      (statusFilter
+        ? advisor.STATUS === (statusFilter === "Active" ? 1 : statusFilter === "Inactive" ? 0 : advisor.STATUS)
+        : true),
   );
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -162,7 +156,7 @@ export default function ManageAdvisors() {
     >
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-4xl font-bold text-white">Manage ADVISORs</h1>
+          <h1 className="text-4xl font-bold text-white">Manage ADVISOR`S</h1>
         </div>
 
         <Button
@@ -233,38 +227,38 @@ export default function ManageAdvisors() {
             <tbody className="divide-y divide-gray-800">
               {filteredAdvisorList.map((advisor) => (
                 <tr
-                  key={advisor.id}
+                  key={advisor.ID}
                   className="bg-gray-900 transition-colors hover:bg-gray-800"
                 >
                   <td className="px-6 py-4 whitespace-nowrap text-white">
-                    {advisor.name}
+                    {advisor.NAME}
                   </td>
 
                   <td className="px-6 py-4 whitespace-nowrap text-white">
-                    {advisor.email}
+                    {advisor.EMAIL}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-white">
-                    {advisor.phone}
+                    {advisor.PHONE}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-white">
-                    {advisor.status === "Active" ? (
+                    {advisor.STATUS ===1 ? (
                       <HiStatusOnline className="mr-2 inline text-green-500" />
                     ) : (
                       <HiStatusOffline className="mr-2 inline text-red-500" />
                     )}
-                    {advisor.status}
+                    {advisor.STATUS===1? "Active" : "Inactive"}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <Button
                       style={{
                         backgroundColor:
-                          advisor.status === "Active" ? "#ef4444" : "#10b981",
+                          advisor.STATUS === 1? "#ef4444" : "#10b981",
                         color: "#ffffff",
                       }}
                       size="xs"
-                      onClick={() => handleToggleStatus(advisor.id)}
+                      onClick={() => handleToggleStatus(advisor.ID)}
                     >
-                      {advisor.status === "Active" ? "Inctive" : "active"}
+                      {advisor.STATUS === 1 ? "Inactive" : "Active"}
                     </Button>
                   </td>
                 </tr>
