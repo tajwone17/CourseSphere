@@ -9,14 +9,16 @@ import {
   HiPhone,
   HiStatusOnline,
   HiStatusOffline,
+  HiExclamation,
+  HiX,
 } from "react-icons/hi";
 import { useEffect, useState } from "react";
 import Select, { SingleValue } from "react-select";
-// import { useAuth } from "@/app/context/AuthContext";
+import { HiCheck } from "react-icons/hi2";
 
 interface ADVISOR {
- ID: number;
- NAME: string;
+  ID: number;
+  NAME: string;
   DEPARTMENT: string;
   EMAIL: string;
   PHONE: string;
@@ -25,26 +27,15 @@ interface ADVISOR {
 
 export default function ManageAdvisors() {
   const [advisorList, setAdvisorList] = useState<ADVISOR[]>([]);
-useEffect(() => {
-  async function fetchAdvisors() {
-    try {
-      const response = await fetch("/api/advisors");
-      if (!response.ok) {
-        throw new Error("Failed to fetch advisors");
-      }
-      const data = await response.json();
-      setAdvisorList(data.advisors);
-    } catch (error: unknown) {
-      console.log(error);
-    }
-  }
-  fetchAdvisors();
-}, []);
-
-  // const { user } = useAuth();
-  
-
+  const [searchName, setSearchName] = useState("");
+  const [searchDepartment, setSearchDepartment] = useState("");
+  const [searchEmail, setSearchEmail] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [showModal, setShowModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [selectedAccount, setSelectedAccount] = useState<ADVISOR | null>(null);
+  const [status, setStatus] = useState<"active" | "inactive">("inactive");
+
   const [newADVISOR, setNewADVISOR] = useState({
     name: "",
     department: "",
@@ -52,31 +43,21 @@ useEffect(() => {
     phone: "",
   });
 
- 
-  // const [depts, setDepts] = useState<any>([]);
-
-  // useEffect(() => {
-  //   async function fetchDepartments() {
-  //     try {
-  //       const res = await fetch("/api/departments", {
-  //         method: "GET",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //       });
-  //       const data = await res.json();
-  //       console.log(typeof data.departments);
-  //       setDepts(data.departments);
-  //     } catch (error) {
-  //       console.error("Failed to fetch departments:", error);
-  //     }
-  //   }
-
-  //   fetchDepartments();
-  // }, []);
-
-  const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState("");
+  useEffect(() => {
+    async function fetchAdvisors() {
+      try {
+        const response = await fetch("/api/advisors");
+        if (!response.ok) {
+          throw new Error("Failed to fetch advisors");
+        }
+        const data = await response.json();
+        setAdvisorList(data.advisors);
+      } catch (error: unknown) {
+        console.log(error);
+      }
+    }
+    fetchAdvisors();
+  }, []);
 
   const handleAddAdvisor = async () => {
     setShowAddModal(false);
@@ -106,30 +87,77 @@ useEffect(() => {
     });
   };
 
-  const handleToggleStatus = (id: number) => {
-    const updatedList = advisorList.map((advisor) =>
-      advisor.ID === id
-        ? {
-            ...advisor,
-            STATUS: advisor.STATUS === 1 ? 0 : 1,
-          }
-        : advisor,
-    );
-    setAdvisorList(updatedList);
+  const openModal = (acc: ADVISOR, action: "active" | "inactive") => {
+    setSelectedAccount(acc);
+    setStatus(action);
+    setShowModal(true);
   };
 
-  const filteredAdvisorList = advisorList.filter(
-    (advisor) =>
-      (advisor.NAME.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        advisor.DEPARTMENT.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        advisor.EMAIL.toLowerCase().includes(searchQuery.toLowerCase())) &&
-      (statusFilter
-        ? advisor.STATUS === (statusFilter === "Active" ? 1 : statusFilter === "Inactive" ? 0 : advisor.STATUS)
-        : true),
-  );
+  const filteredAdvisorList = advisorList.filter((advisor) => {
+    // Name filter
+    const nameMatch =
+      !searchName ||
+      advisor.NAME.toLowerCase().includes(searchName.toLowerCase());
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(event.target.value);
+    // Department filter
+    const departmentMatch =
+      !searchDepartment ||
+      advisor.DEPARTMENT.toLowerCase().includes(searchDepartment.toLowerCase());
+
+    // Email filter
+    const emailMatch =
+      !searchEmail ||
+      advisor.EMAIL.toLowerCase().includes(searchEmail.toLowerCase());
+
+    // Status filter
+    const statusMatch =
+      !statusFilter ||
+      advisor.STATUS ===
+        (statusFilter === "Active"
+          ? 1
+          : statusFilter === "Inactive"
+            ? 0
+            : advisor.STATUS);
+
+    return nameMatch && departmentMatch && emailMatch && statusMatch;
+  });
+
+  const confirmAction = async () => {
+    if (selectedAccount) {
+      try {
+        // Update local state
+        setAdvisorList((prev) =>
+          prev.map((acc) =>
+            acc.ID === selectedAccount.ID
+              ? { ...acc, STATUS: status === "active" ? 1 : 0 }
+              : acc,
+          ),
+        );
+
+        // Make API call to update status in the database
+        const response = await fetch(
+          `/api/account-status/advisor/${selectedAccount.ID}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              status: status === "active" ? 1 : 0,
+            }),
+          },
+        );
+
+        if (!response.ok) {
+          console.error("Failed to update account status");
+          // You could add error handling UI here
+        }
+      } catch (error) {
+        console.error("Error updating account status:", error);
+        // You could add error handling UI here
+      }
+    }
+    setShowModal(false);
   };
 
   const handleStatusChange = (
@@ -175,24 +203,40 @@ useEffect(() => {
         </Button>
       </div>
 
-      <div className="mb-6 flex items-center gap-4">
-        <div className="w-1/3">
+      <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
+        <div>
           <TextInput
-            value={searchQuery}
-            onChange={handleSearchChange}
-            placeholder="Search by name, department, email"
+            value={searchName}
+            onChange={(e) => setSearchName(e.target.value)}
+            placeholder="Search by name"
             icon={HiSearch}
           />
         </div>
-        <div className="w-1/3">
+        <div>
+          <TextInput
+            value={searchDepartment}
+            onChange={(e) => setSearchDepartment(e.target.value)}
+            placeholder="Search by department"
+            icon={HiSearch}
+          />
+        </div>
+        <div>
+          <TextInput
+            value={searchEmail}
+            onChange={(e) => setSearchEmail(e.target.value)}
+            placeholder="Search by email"
+            icon={HiSearch}
+          />
+        </div>
+        <div>
           <Select
             options={statusOptions}
-            onChange={handleStatusChange} // Corrected here
+            onChange={handleStatusChange}
             placeholder="Filter by Status"
             isSearchable={false}
             value={statusOptions.find(
               (option) => option.value === statusFilter,
-            )} // Corrected here
+            )}
           />
         </div>
       </div>
@@ -241,25 +285,31 @@ useEffect(() => {
                     {advisor.PHONE}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-white">
-                    {advisor.STATUS ===1 ? (
+                    {advisor.STATUS === 1 ? (
                       <HiStatusOnline className="mr-2 inline text-green-500" />
                     ) : (
                       <HiStatusOffline className="mr-2 inline text-red-500" />
                     )}
-                    {advisor.STATUS===1? "Active" : "Inactive"}
+                    {advisor.STATUS === 1 ? "Active" : "Inactive"}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <Button
-                      style={{
-                        backgroundColor:
-                          advisor.STATUS === 1? "#ef4444" : "#10b981",
-                        color: "#ffffff",
-                      }}
-                      size="xs"
-                      onClick={() => handleToggleStatus(advisor.ID)}
-                    >
-                      {advisor.STATUS === 1 ? "Inactive" : "Active"}
-                    </Button>
+                    {advisor.STATUS === 0 ? (
+                      <Button
+                        size="xs"
+                        style={{ backgroundColor: "#22c55e", color: "#fff" }}
+                        onClick={() => openModal(advisor, "active")}
+                      >
+                        <HiCheck className="mr-1" /> Activate
+                      </Button>
+                    ) : (
+                      <Button
+                        size="xs"
+                        style={{ backgroundColor: "#ef4444", color: "#fff" }}
+                        onClick={() => openModal(advisor, "inactive")}
+                      >
+                        <HiX className="mr-1" /> Deactivate
+                      </Button>
+                    )}
                   </td>
                 </tr>
               ))}
@@ -324,6 +374,32 @@ useEffect(() => {
               Add ADVISOR
             </Button>
             <Button color="gray" onClick={() => setShowAddModal(false)}>
+              Cancel
+            </Button>
+          </div>
+        </div>
+      </Modal>
+      {/* Confirmation Modal */}
+      <Modal show={showModal} size="md" onClose={() => setShowModal(false)}>
+        <div className="p-6 text-center">
+          <HiExclamation className="mx-auto mb-4 h-14 w-14 text-yellow-400" />
+          <h3 className="mb-5 text-lg font-normal text-gray-300">
+            Are you sure you want to{" "}
+            <span className="font-semibold text-white">{status}</span> the
+            account of{" "}
+            <span className="font-semibold text-white">
+              {selectedAccount?.NAME}
+            </span>
+            ?
+          </h3>
+          <div className="flex justify-center gap-4">
+            <Button
+              color={status === "active" ? "success" : "failure"}
+              onClick={confirmAction}
+            >
+              Yes, {status}
+            </Button>
+            <Button color="gray" onClick={() => setShowModal(false)}>
               Cancel
             </Button>
           </div>
