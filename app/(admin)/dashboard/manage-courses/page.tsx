@@ -269,20 +269,7 @@ export default function ManageCourse() {
                 max={6}
               />
             </div>
-            <div>
-              <Label htmlFor="department" className="text-gray-300">
-                Department
-              </Label>
-              <TextInput
-                id="department"
-                value={newCourse.department}
-                onChange={(e) =>
-                  setNewCourse({ ...newCourse, department: e.target.value })
-                }
-                className="border-gray-700 bg-gray-900 text-white"
-                required
-              />
-            </div>
+         
             <div>
               <Label htmlFor="instructor" className="text-gray-300">
                 Instructor

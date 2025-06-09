@@ -2,14 +2,14 @@
 
 import { Button, TextInput, Label, Modal, Textarea } from "flowbite-react";
 import { useState } from "react";
-import { HiPlus, HiPencil, HiTrash, HiCalendar } from "react-icons/hi";
+import { HiPlus, HiPencil, HiTrash } from "react-icons/hi";
 
 interface Notice {
   id: number;
   title: string;
   description: string;
-  registrationDeadline: string;
-  semester: string;
+
+
   createdBy: string;
   createdAt: string;
 }
@@ -21,8 +21,8 @@ export default function ManageNotices() {
       title: "Fall 2024 Course Registration",
       description:
         "Course registration for Fall 2024 semester is now open. Please complete your registration by the deadline.",
-      registrationDeadline: "2024-07-30",
-      semester: "Fall 2024",
+      
+    
       createdBy: "Dr. Tajwone",
       createdAt: "2024-04-23",
     },
@@ -35,8 +35,7 @@ export default function ManageNotices() {
   const [newNotice, setNewNotice] = useState({
     title: "",
     description: "",
-    registrationDeadline: "",
-    semester: "",
+
   });
 
   const handleAddNotice = () => {
@@ -52,8 +51,8 @@ export default function ManageNotices() {
     setNewNotice({
       title: "",
       description: "",
-      registrationDeadline: "",
-      semester: "",
+     
+    
     });
   };
 
@@ -111,12 +110,8 @@ export default function ManageNotices() {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                   Title
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
-                  Semester
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
-                  Registration Deadline
-                </th>
+             
+             
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                   Created By
                 </th>
@@ -137,15 +132,8 @@ export default function ManageNotices() {
                   <td className="px-6 py-4 whitespace-nowrap text-white">
                     {notice.title}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-white">
-                    {notice.semester}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center gap-2 text-white">
-                      <HiCalendar className="text-[#92e3a9]" />
-                      {notice.registrationDeadline}
-                    </div>
-                  </td>
+               
+               
                   <td className="px-6 py-4 whitespace-nowrap text-white">
                     {notice.createdBy}
                   </td>
@@ -213,31 +201,8 @@ export default function ManageNotices() {
                 rows={4}
               />
             </div>
-            <div>
-              <Label htmlFor="semester">Semester</Label>
-              <TextInput
-                id="semester"
-                value={newNotice.semester}
-                onChange={(e) =>
-                  setNewNotice({ ...newNotice, semester: e.target.value })
-                }
-                placeholder="e.g., Fall 2024"
-              />
-            </div>
-            <div>
-              <Label htmlFor="deadline">Registration Deadline</Label>
-              <TextInput
-                id="deadline"
-                type="date"
-                value={newNotice.registrationDeadline}
-                onChange={(e) =>
-                  setNewNotice({
-                    ...newNotice,
-                    registrationDeadline: e.target.value,
-                  })
-                }
-              />
-            </div>
+         
+        
           </div>
           <div className="mt-6 flex justify-end gap-4">
             <Button
@@ -294,38 +259,8 @@ export default function ManageNotices() {
                 rows={4}
               />
             </div>
-            <div>
-              <Label htmlFor="edit-semester">Semester</Label>
-              <TextInput
-                id="edit-semester"
-                value={selectedNotice?.semester}
-                onChange={(e) =>
-                  setSelectedNotice(
-                    selectedNotice
-                      ? { ...selectedNotice, semester: e.target.value }
-                      : null,
-                  )
-                }
-              />
-            </div>
-            <div>
-              <Label htmlFor="edit-deadline">Registration Deadline</Label>
-              <TextInput
-                id="edit-deadline"
-                type="date"
-                value={selectedNotice?.registrationDeadline}
-                onChange={(e) =>
-                  setSelectedNotice(
-                    selectedNotice
-                      ? {
-                          ...selectedNotice,
-                          registrationDeadline: e.target.value,
-                        }
-                      : null,
-                  )
-                }
-              />
-            </div>
+         
+        
           </div>
           <div className="mt-6 flex justify-end gap-4">
             <Button onClick={handleEditNotice}>Save Changes</Button>

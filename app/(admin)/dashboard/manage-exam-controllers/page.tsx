@@ -10,14 +10,14 @@ import {
   HiStatusOnline,
   HiStatusOffline,
 } from "react-icons/hi";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Select, { SingleValue } from "react-select";
-import { HiBuildingOffice } from "react-icons/hi2";
+
 
 interface ExamController {
   id: number;
   name: string;
-  department: string;
+ 
   email: string;
   phone: string;
   status: string;
@@ -28,7 +28,7 @@ export default function ManageExamControllers() {
     {
       id: 1,
       name: "Dr. Tajwone",
-      department: "Computer Science",
+      
       email: "tajwone.doe@neub.edu.bd",
       phone: "+880 1712345678",
       status: "Active",
@@ -36,7 +36,7 @@ export default function ManageExamControllers() {
     {
       id: 2,
       name: "Dr. Chowdhury",
-      department: "Electrical Engineering",
+     
       email: "chowdhry.@neub.edu.bd",
       phone: "+880 1812345678",
       status: "Active",
@@ -44,7 +44,7 @@ export default function ManageExamControllers() {
     {
       id: 3,
       name: "Dr. Jakaria",
-      department: "Civil Engineering",
+     
       email: "jakaria.j@neub.edu.bd",
       phone: "+880 1912345678",
       status: "Inactive",
@@ -54,33 +54,12 @@ export default function ManageExamControllers() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [newExamController, setNewExamController] = useState({
     name: "",
-    department: "",
+  
     email: "",
     phone: "",
   });
 
-  //eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [depts, setDepts] = useState<any>([]);
-
-  useEffect(() => {
-    async function fetchDepartments() {
-      try {
-        const res = await fetch("/api/departments", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        const data = await res.json();
-        console.log(typeof data.departments);
-        setDepts(data.departments);
-      } catch (error) {
-        console.error("Failed to fetch departments:", error);
-      }
-    }
-
-    fetchDepartments();
-  }, []);
+ 
 
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
@@ -107,7 +86,7 @@ export default function ManageExamControllers() {
        // Reset the form
     setNewExamController({
       name: "",
-      department: "",
+      
       email: "",
       phone: "",
     });
@@ -125,7 +104,7 @@ export default function ManageExamControllers() {
   const filteredExamControllerList = examControllerList.filter(
     (controller) =>
       (controller.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        controller.department.toLowerCase().includes(searchQuery.toLowerCase()) ||
+   
         controller.email.toLowerCase().includes(searchQuery.toLowerCase())) &&
       (statusFilter ? controller.status === statusFilter : true),
   );
@@ -182,7 +161,7 @@ export default function ManageExamControllers() {
           <TextInput
             value={searchQuery}
             onChange={handleSearchChange}
-            placeholder="Search by name, department, email"
+            placeholder="Search by name, email"
             icon={HiSearch}
           />
         </div>
@@ -208,10 +187,7 @@ export default function ManageExamControllers() {
                   <HiUser className="mr-2 inline text-[#92e3a9] group-hover:scale-110" />{" "}
                   Name
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
-                  <HiBuildingOffice className="mr-2 inline text-[#92e3a9] group-hover:scale-110" />{" "}
-                  Department
-                </th>
+              
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                   <HiMail className="mr-2 inline text-[#92e3a9] group-hover:scale-110" />{" "}
                   Email
@@ -238,9 +214,7 @@ export default function ManageExamControllers() {
                   <td className="px-6 py-4 whitespace-nowrap text-white">
                     {controller.name}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-white">
-                    {controller.department}
-                  </td>
+                
                   <td className="px-6 py-4 whitespace-nowrap text-white">
                     {controller.email}
                   </td>
@@ -291,31 +265,7 @@ export default function ManageExamControllers() {
                 placeholder="Enter name"
               />
             </div>
-            <div className="flex flex-col gap-2">
-              <label htmlFor="department" className="font-medium">
-                Department
-              </label>
-              <select
-                id="department"
-                name="department"
-                value={newExamController.department}
-                onChange={(e) =>
-                  setNewExamController({ ...newExamController, department: e.target.value })
-                }
-                required
-                className="focus:ring-primary rounded-lg border border-gray-700 bg-[#323840] p-3 focus:ring-2 focus:outline-none"
-              >
-                <option value="" disabled>
-                  Select your department
-                </option>
-                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                {depts.map((dept: any) => (
-                  <option key={dept.ID} value={dept.ID}>
-                    {dept.DEPARTMENT_NAME}
-                  </option>
-                ))}
-              </select>
-            </div>
+          
             <div>
               <Label htmlFor="email">Email</Label>
               <TextInput
