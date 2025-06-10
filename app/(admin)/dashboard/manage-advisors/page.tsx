@@ -78,7 +78,7 @@ export default function ManageAdvisors() {
       !newADVISOR.department ||
       !newADVISOR.phone
     ) {
-      console.error("All fields are required");
+      // console.error("All fields are required");
       alert("All fields are required");
       return;
     }
