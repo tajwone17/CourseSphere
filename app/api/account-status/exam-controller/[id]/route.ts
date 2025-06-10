@@ -6,12 +6,12 @@ export async function PUT(
   { params }: { params: { id: string } },
 ) {
   try {
-    // Extract advisor ID from params
-    const hodId = parseInt(params.id);
+    // Extract accounts ID from params
+    const accountsAdminId = parseInt(params.id);
 
-    if (isNaN(hodId)) {
+    if (isNaN(accountsAdminId)) {
       return NextResponse.json(
-        { error: "Invalid advisor ID" },
+        { error: "Invalid ID" },
         { status: 400 },
       );
     }
@@ -22,22 +22,22 @@ export async function PUT(
 
 
 
-    // Update advisor status in the database
-    await db.query("UPDATE HOD SET STATUS = ? WHERE ID = ?", [
+    // Update accounts status in the database
+    await db.query("UPDATE EXAM_CONTROLLER SET STATUS = ? WHERE ID = ?", [
       status,
-      hodId,
+      accountsAdminId,
     ]);
 
     return NextResponse.json(
       {
-        message: `hHOD status updated to ${status === 1 ? "active" : "inactive"}`,
+        message: `Exam Controller status updated to ${status === 1 ? "active" : "inactive"}`,
       },
       { status: 200 },
     );
   } catch (error) {
-    console.error("Error updating HOD status:", error);
+    console.error("Error updating Exam Controller status:", error);
     return NextResponse.json(
-      { error: "Failed to update HOD status" },
+      { error: "Failed to update Exam Controller status" },
       { status: 500 },
     );
   }

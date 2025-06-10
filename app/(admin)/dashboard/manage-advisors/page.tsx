@@ -180,10 +180,13 @@ export default function ManageAdvisors() {
             }),
           },
         );
-
+   if (response.ok) {
+          alert(
+            `Advisor status updated to ${status === "active" ? "Active" : "Inactive"}`,
+          );
+        }
         if (!response.ok) {
-          console.error("Failed to update account status");
-          // You could add error handling UI here
+            alert("Failed to update status");
         }
       } catch (error) {
         console.error("Error updating account status:", error);

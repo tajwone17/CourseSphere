@@ -112,7 +112,7 @@ export default function ManageHOD() {
       const hodData = await hodRes.json();
       setHodList(hodData.hods);
     } catch (error) {
-      alert(`Error adding HOD: ${error}`);
+      alert(`${error}`);
     }
     //reset form field
     // Reset the form
@@ -153,11 +153,11 @@ export default function ManageHOD() {
             }),
           },
         );
-        if (response.ok) {
-          alert(
-            `HOD status updated to ${status === "active" ? "Active" : "Inactive"}`,
-          );
-        }
+        // if (response.ok) {
+        //   alert(
+        //     `HOD status updated to ${status === "active" ? "Active" : "Inactive"}`,
+        //   );
+        // }
         if (!response.ok) {
           alert("Failed to update HOD status");
         }

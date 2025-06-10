@@ -12,47 +12,21 @@ import {
   HiCheck,
   HiDocumentReport,
 } from "react-icons/hi";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Select, { SingleValue } from "react-select";
 
 interface ExamController {
-  id: number;
-  name: string;
-
-  email: string;
-  phone: string;
-  status: string;
+  ID: number;
+  NAME: string;
+  EMAIL: string;
+  PHONE: string;
+  STATUS: number;
 }
 
 export default function ManageExamControllers() {
   const [examControllerList, setExamControllerList] = useState<
     ExamController[]
-  >([
-    {
-      id: 1,
-      name: "Dr. Tajwone",
-
-      email: "tajwone.doe@neub.edu.bd",
-      phone: "+880 1712345678",
-      status: "Active",
-    },
-    {
-      id: 2,
-      name: "Dr. Chowdhury",
-
-      email: "chowdhry.@neub.edu.bd",
-      phone: "+880 1812345678",
-      status: "Active",
-    },
-    {
-      id: 3,
-      name: "Dr. Jakaria",
-
-      email: "jakaria.j@neub.edu.bd",
-      phone: "+880 1912345678",
-      status: "Inactive",
-    },
-  ]);
+  >([]);
 
   const [showAddModal, setShowAddModal] = useState(false);
   const [newExamController, setNewExamController] = useState({
@@ -62,10 +36,77 @@ export default function ManageExamControllers() {
     phone: "",
   });
 
+  useEffect(() => {
+    async function fetchExamControllers() {
+      try {
+        const response = await fetch("/api/get-exam-controllers");
+        if (!response.ok) {
+          throw new Error("Failed to fetch Accounts Exam Controllers");
+        }
+        const data = await response.json();
+        setExamControllerList(data.examControllers);
+        console.log("Fetched  Exam Controllers:", data.examControllers);
+      } catch (error: unknown) {
+        console.log(error);
+      }
+    }
+    fetchExamControllers();
+  }, []);
   const [searchName, setSearchName] = useState("");
   const [searchEmail, setSearchEmail] = useState("");
   const [searchPhone, setSearchPhone] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [selectedAccount, setSelectedAccount] = useState<ExamController | null>(
+    null,
+  );
+  const [status, setStatus] = useState<"active" | "inactive">("inactive");
+  const openModal = (acc: ExamController, action: "active" | "inactive") => {
+    setSelectedAccount(acc);
+    setStatus(action);
+    setShowModal(true);
+  };
+
+  const confirmAction = async () => {
+    if (selectedAccount) {
+      try {
+        // Update local state
+        setExamControllerList((prev) =>
+          prev.map((acc) =>
+            acc.ID === selectedAccount.ID
+              ? { ...acc, STATUS: status === "active" ? 1 : 0 }
+              : acc,
+          ),
+        );
+
+        // Make API call to update status in the database
+        const response = await fetch(
+          `/api/account-status/exam-controller/${selectedAccount.ID}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              status: status === "active" ? 1 : 0,
+            }),
+          },
+        );
+        // if (response.ok) {
+        //   alert(
+        //     `Exam Controller status updated to ${status === "active" ? "Active" : "Inactive"}`,
+        //   );
+        // }
+
+        if (!response.ok) {
+          alert("Failed to update status");
+        }
+      } catch (error) {
+        console.log("Error:", error);
+      }
+    }
+    setShowModal(false);
+  };
 
   const handleAddExamController = async () => {
     setShowAddModal(false);
@@ -82,9 +123,9 @@ export default function ManageExamControllers() {
         console.log("Error response:", errorText);
         throw new Error(errorMsg);
       }
-      console.log("New Exam Controller added successfully");
+      alert("New Exam Controller added successfully");
     } catch (error) {
-      console.error("Error adding Exam Controller:", error);
+      alert(` ${error}`);
     }
     // Reset the form
     setNewExamController({
@@ -95,38 +136,27 @@ export default function ManageExamControllers() {
     });
   };
 
-  const handleToggleStatus = (id: number) => {
-    const updatedList = examControllerList.map((controller) =>
-      controller.id === id
-        ? {
-            ...controller,
-            status: controller.status === "Active" ? "Inactive" : "Active",
-          }
-        : controller,
-    );
-    setExamControllerList(updatedList);
-  };
   const filteredExamControllerList = examControllerList.filter((controller) => {
     // Name filter
     const nameMatch =
       !searchName ||
-      controller.name.toLowerCase().includes(searchName.toLowerCase());
+      controller.NAME.toLowerCase().includes(searchName.toLowerCase());
 
     // Email filter
     const emailMatch =
       !searchEmail ||
-      controller.email.toLowerCase().includes(searchEmail.toLowerCase());
+      controller.EMAIL.toLowerCase().includes(searchEmail.toLowerCase());
 
     // Phone filter
     const phoneMatch =
       !searchPhone ||
-      controller.phone.toLowerCase().includes(searchPhone.toLowerCase());
+      controller.PHONE.toLowerCase().includes(searchPhone.toLowerCase());
 
     // Status filter
     const statusMatch =
       !statusFilter ||
       statusFilter === " " ||
-      controller.status === statusFilter;
+      controller.STATUS === parseInt(statusFilter);
 
     return nameMatch && emailMatch && phoneMatch && statusMatch;
   });
@@ -327,32 +357,32 @@ export default function ManageExamControllers() {
             <tbody className="divide-y divide-gray-800">
               {filteredExamControllerList.map((controller) => (
                 <tr
-                  key={controller.id}
+                  key={controller.ID}
                   className="bg-gray-900 transition-colors hover:bg-gray-800"
                 >
                   <td className="px-6 py-4 whitespace-nowrap text-white">
-                    {controller.name}
+                    {controller.NAME}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-white">
-                    {controller.email}
+                    {controller.EMAIL}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-white">
-                    {controller.phone}
+                    {controller.PHONE}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-white">
-                    {controller.status === "Active" ? (
+                    {controller.STATUS === 1 ? (
                       <HiStatusOnline className="mr-2 inline text-green-500" />
                     ) : (
                       <HiStatusOffline className="mr-2 inline text-red-500" />
                     )}
-                    {controller.status}
+                    {controller.STATUS==1?"Active":"Inactive"}
                   </td>{" "}
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {controller.status === "Inactive" ? (
+                    {controller.STATUS === 0 ? (
                       <Button
                         size="xs"
                         style={{ backgroundColor: "#22c55e", color: "#fff" }}
-                        onClick={() => handleToggleStatus(controller.id)}
+                        onClick={() => openModal(controller, "active")}
                         className="flex items-center gap-1 px-3 py-1 transition-transform hover:scale-105"
                       >
                         <HiCheck className="h-4 w-4 text-white" />
@@ -362,7 +392,7 @@ export default function ManageExamControllers() {
                       <Button
                         size="xs"
                         style={{ backgroundColor: "#ef4444", color: "#fff" }}
-                        onClick={() => handleToggleStatus(controller.id)}
+                        onClick={() => openModal(controller, "inactive")}
                         className="flex items-center gap-1 px-3 py-1 transition-transform hover:scale-105"
                       >
                         <HiX className="h-4 w-4 text-white" />
@@ -380,7 +410,7 @@ export default function ManageExamControllers() {
       <Modal show={showAddModal} onClose={() => setShowAddModal(false)}>
         <div className="relative bg-gray-800 p-4">
           <div className="mb-6 text-center">
-            <div className="bg-opacity-20 mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-gray">
+            <div className="bg-opacity-20 bg-gray mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full">
               <HiDocumentReport className="h-10 w-10 text-[#92e3a9]" />
             </div>
             <div className="text-xl font-semibold text-white">
@@ -461,6 +491,42 @@ export default function ManageExamControllers() {
               onClick={() => setShowAddModal(false)}
               className="transition-transform hover:scale-105"
             >
+              Cancel
+            </Button>
+          </div>
+        </div>
+      </Modal>
+      {/* Confirmation Modal */}{" "}
+      <Modal show={showModal} size="md" onClose={() => setShowModal(false)}>
+        <div className="p-6 text-center">
+          {status === "active" ? (
+            <HiStatusOnline className="mx-auto mb-4 h-14 w-14 text-green-500" />
+          ) : (
+            <HiX className="mx-auto mb-4 h-14 w-14 text-red-500" />
+          )}
+          <h3 className="mb-5 text-lg font-normal text-gray-300">
+            Are you sure you want to{" "}
+            <span className="font-semibold text-white">{status}</span> the
+            account of{" "}
+            <span className="font-semibold text-white">
+              {selectedAccount?.NAME}
+            </span>
+            ?
+          </h3>
+          <div className="flex justify-center gap-4">
+            <Button
+              color={status === "active" ? "success" : "failure"}
+              onClick={confirmAction}
+              className="flex items-center gap-2"
+            >
+              {status === "active" ? (
+                <HiCheck className="text-white" />
+              ) : (
+                <HiX className="text-white" />
+              )}
+              Yes, {status}
+            </Button>
+            <Button color="gray" onClick={() => setShowModal(false)}>
               Cancel
             </Button>
           </div>

@@ -30,7 +30,7 @@ export default function ManageAccountsAdmin() {
       try {
         const response = await fetch("/api/get-account-admins");
         if (!response.ok) {
-          throw new Error("Failed to fetch advisors");
+          throw new Error("Failed to fetch Accounts Admin");
         }
         const data = await response.json();
         setAccountsAdminList(data.accountsAdmin);
@@ -57,7 +57,14 @@ export default function ManageAccountsAdmin() {
   const [searchEmail, setSearchEmail] = useState("");
   const [searchPhone, setSearchPhone] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
-
+    const [showModal, setShowModal] = useState(false);
+    const [selectedAccount, setSelectedAccount] = useState<AccountsAdmin | null>(null);
+    const [status, setStatus] = useState<"active" | "inactive">("inactive");
+  const openModal = (acc: AccountsAdmin, action: "active" | "inactive") => {
+    setSelectedAccount(acc);
+    setStatus(action);
+    setShowModal(true);
+  };
   const handleAddAccountsAdmin = async () => {
     setShowAddModal(false);
     try {
@@ -73,15 +80,16 @@ export default function ManageAccountsAdmin() {
         console.log("Error response:", errorText);
         throw new Error(errorMsg);
       }
-      console.log("New Accounts Admin added successfully");
+      else{
+     alert("New Accounts Admin added successfully");
       const response= await fetch("/api/get-account-admins");
       if(response){
         const data = await response.json();
         setAccountsAdminList(data.accountsAdmin);
         console.log("Updated Accounts Admins List:", data.accountsAdmin);
-      }
+      }}
     } catch (error) {
-      console.error("Error adding Accounts Admin:", error);
+      alert(`${error}`);
     }
     //reset form field
     // Reset the form
@@ -93,17 +101,49 @@ export default function ManageAccountsAdmin() {
     });
   };
 
-  const handleToggleStatus = (id: number) => {
-    const updatedList = accountsAdminList.map((admin) =>
-      admin.ID === id
-        ? {
-            ...admin,
-            status: admin.STATUS === 1? 0 : 1,
-          }
-        : admin,
-    );
-    setAccountsAdminList(updatedList);
+  const confirmAction = async () => {
+    if (selectedAccount) {
+      try {
+        // Update local state
+        setAccountsAdminList((prev) =>
+          prev.map((acc) =>
+            acc.ID === selectedAccount.ID
+              ? { ...acc, STATUS: status === "active" ? 1 : 0 }
+              : acc,
+          ),
+        );
+
+        // Make API call to update status in the database
+        const response = await fetch(
+          `/api/account-status/accounts-admin/${selectedAccount.ID}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              status: status === "active" ? 1 : 0,
+            }),
+          },
+        );
+        //  if (response.ok) {
+        //   alert(
+        //     `Accounts Admin status updated to ${status === "active" ? "Active" : "Inactive"}`,
+        //   );
+        // }
+
+        if (!response.ok) {
+        alert("Failed to update status");
+        }
+      } catch (error) {
+         console.log("Error:",error);
+    
+      }
+    }
+    setShowModal(false);
   };
+
+
   const filteredAccountsAdminList = accountsAdminList.filter((admin) => {
     // Name filter
     const nameMatch =
@@ -149,9 +189,9 @@ export default function ManageAccountsAdmin() {
     selectedOption: SingleValue<{ value: string; label: string }> | null,
   ) => {
     if (selectedOption) {
-      setStatusFilter(selectedOption.value); // Set the value of the selected option
+      setStatusFilter(selectedOption.value); 
     } else {
-      setStatusFilter(""); // Clear the filter if nothing is selected
+      setStatusFilter(""); 
     }
   };
 
@@ -349,7 +389,7 @@ export default function ManageAccountsAdmin() {
                       <Button
                         size="xs"
                         style={{ backgroundColor: "#22c55e", color: "#fff" }}
-                        onClick={() => handleToggleStatus(admin.ID)}
+                        onClick={() => openModal(admin,"active")}
                         className="flex items-center gap-1 px-3 py-1 transition-transform hover:scale-105"
                       >
                         <HiCheck className="h-4 w-4 text-white" />
@@ -359,7 +399,7 @@ export default function ManageAccountsAdmin() {
                       <Button
                         size="xs"
                         style={{ backgroundColor: "#ef4444", color: "#fff" }}
-                        onClick={() => handleToggleStatus(admin.ID)}
+                      onClick={() => openModal(admin, "inactive")}
                         className="flex items-center gap-1 px-3 py-1 transition-transform hover:scale-105"
                       >
                         <HiX className="h-4 w-4 text-white" />
@@ -463,6 +503,42 @@ export default function ManageAccountsAdmin() {
           </div>
         </div>
       </Modal>
+       {/* Confirmation Modal */}{" "}
+            <Modal show={showModal} size="md" onClose={() => setShowModal(false)}>
+              <div className="p-6 text-center">
+                {status === "active" ? (
+                  <HiStatusOnline className="mx-auto mb-4 h-14 w-14 text-green-500" />
+                ) : (
+                  <HiX className="mx-auto mb-4 h-14 w-14 text-red-500" />
+                )}
+                <h3 className="mb-5 text-lg font-normal text-gray-300">
+                  Are you sure you want to{" "}
+                  <span className="font-semibold text-white">{status}</span> the
+                  account of{" "}
+                  <span className="font-semibold text-white">
+                    {selectedAccount?.NAME}
+                  </span>
+                  ?
+                </h3>
+                <div className="flex justify-center gap-4">
+                  <Button
+                    color={status === "active" ? "success" : "failure"}
+                    onClick={confirmAction}
+                    className="flex items-center gap-2"
+                  >
+                    {status === "active" ? (
+                      <HiCheck className="text-white" />
+                    ) : (
+                      <HiX className="text-white" />
+                    )}
+                    Yes, {status}
+                  </Button>
+                  <Button color="gray" onClick={() => setShowModal(false)}>
+                    Cancel
+                  </Button>
+                </div>
+              </div>
+            </Modal>
     </div>
   );
 }
