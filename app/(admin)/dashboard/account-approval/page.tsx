@@ -1,7 +1,14 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Button, Modal } from "flowbite-react";
-import { HiCheck, HiX, HiSearch, HiExclamation } from "react-icons/hi";
+import {
+  HiCheck,
+  HiX,
+  HiUser,
+  HiIdentification,
+  HiMail,
+  HiStatusOnline,
+} from "react-icons/hi";
 
 interface PendingAccount {
   ID: number;
@@ -122,7 +129,12 @@ export default function AccountApproval() {
       data-aos="zoom-in"
       data-aos-duration="1000"
     >
-      <h1 className="mb-8 text-4xl font-bold text-white">Account Activation</h1>
+      <h1 className="mb-8 flex items-center gap-3 text-4xl font-bold text-white">
+        <span className="rounded-lg bg-[#92e3a9] p-2">
+          <HiStatusOnline className="h-8 w-8 text-gray-900" />
+        </span>
+        Account Activation
+      </h1>
 
       <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
         <div className="relative">
@@ -133,7 +145,9 @@ export default function AccountApproval() {
             value={searchName}
             onChange={(e) => setSearchName(e.target.value)}
           />
-          <HiSearch className="absolute top-2.5 left-3 h-5 w-5 text-gray-400" />
+          <div className="absolute top-0 left-0 flex h-full items-center pl-3">
+            <HiUser className="h-5 w-5 text-[#92e3a9]" />
+          </div>
         </div>
         <div className="relative">
           <input
@@ -143,7 +157,9 @@ export default function AccountApproval() {
             value={searchRegNum}
             onChange={(e) => setSearchRegNum(e.target.value)}
           />
-          <HiSearch className="absolute top-2.5 left-3 h-5 w-5 text-gray-400" />
+          <div className="absolute top-0 left-0 flex h-full items-center pl-3">
+            <HiIdentification className="h-5 w-5 text-[#92e3a9]" />
+          </div>
         </div>
         <div className="relative">
           <input
@@ -153,11 +169,13 @@ export default function AccountApproval() {
             value={searchEmail}
             onChange={(e) => setSearchEmail(e.target.value)}
           />
-          <HiSearch className="absolute top-2.5 left-3 h-5 w-5 text-gray-400" />
+          <div className="absolute top-0 left-0 flex h-full items-center pl-3">
+            <HiMail className="h-5 w-5 text-[#92e3a9]" />
+          </div>
         </div>
         <div className="relative">
           <select
-            className="w-full rounded border border-gray-700 bg-gray-800 px-3 py-2 text-white placeholder-gray-400 focus:border-[#92e3a9] focus:outline-none"
+            className="w-full appearance-none rounded border border-gray-700 bg-gray-800 px-10 py-2 text-white placeholder-gray-400 focus:border-[#92e3a9] focus:outline-none"
             value={searchStatus}
             onChange={(e) => setSearchStatus(e.target.value)}
           >
@@ -165,6 +183,22 @@ export default function AccountApproval() {
             <option value="active">Active</option>
             <option value="inactive">Inactive</option>
           </select>
+          <div className="absolute top-0 left-0 flex h-full items-center pl-3">
+            <HiStatusOnline className="h-5 w-5 text-[#92e3a9]" />
+          </div>
+          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3">
+            <svg
+              className="h-3 w-3 fill-current text-[#92e3a9]"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+            >
+              <path
+                fillRule="evenodd"
+                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </div>
         </div>
       </div>
 
@@ -173,16 +207,19 @@ export default function AccountApproval() {
           <thead className="bg-gray-800">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+                <HiUser className="mr-2 inline text-[#92e3a9] group-hover:scale-110" />{" "}
                 Name
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
-                REGISTRATION NUMBER
+                <HiIdentification className="mr-2 inline text-[#92e3a9] group-hover:scale-110" />{" "}
+                Registration Number
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+                <HiMail className="mr-2 inline text-[#92e3a9] group-hover:scale-110" />{" "}
                 Email
               </th>
-
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+                <HiStatusOnline className="mr-2 inline text-[#92e3a9] group-hover:scale-110" />{" "}
                 Action
               </th>
             </tr>
@@ -213,16 +250,20 @@ export default function AccountApproval() {
                       size="xs"
                       style={{ backgroundColor: "#22c55e", color: "#fff" }}
                       onClick={() => openModal(acc, "active")}
+                      className="flex items-center gap-1 px-3 py-1 transition-transform hover:scale-105"
                     >
-                      <HiCheck className="mr-1" /> Activate
+                      <HiCheck className="h-4 w-4 text-white" />
+                      <span>Activate</span>
                     </Button>
                   ) : (
                     <Button
                       size="xs"
                       style={{ backgroundColor: "#ef4444", color: "#fff" }}
                       onClick={() => openModal(acc, "inactive")}
+                      className="flex items-center gap-1 px-3 py-1 transition-transform hover:scale-105"
                     >
-                      <HiX className="mr-1" /> Deactivate
+                      <HiX className="h-4 w-4 text-white" />
+                      <span>Deactivate</span>
                     </Button>
                   )}
                 </td>
@@ -235,7 +276,11 @@ export default function AccountApproval() {
       {/* Confirmation Modal */}
       <Modal show={showModal} size="md" onClose={() => setShowModal(false)}>
         <div className="p-6 text-center">
-          <HiExclamation className="mx-auto mb-4 h-14 w-14 text-yellow-400" />
+          {status === "active" ? (
+            <HiStatusOnline className="mx-auto mb-4 h-14 w-14 text-green-500" />
+          ) : (
+            <HiX className="mx-auto mb-4 h-14 w-14 text-red-500" />
+          )}
           <h3 className="mb-5 text-lg font-normal text-gray-300">
             Are you sure you want to{" "}
             <span className="font-semibold text-white">{status}</span> the
@@ -249,7 +294,13 @@ export default function AccountApproval() {
             <Button
               color={status === "active" ? "success" : "failure"}
               onClick={confirmAction}
+              className="flex items-center gap-2"
             >
+              {status === "active" ? (
+                <HiCheck className="text-white" />
+              ) : (
+                <HiX className="text-white" />
+              )}
               Yes, {status}
             </Button>
             <Button color="gray" onClick={() => setShowModal(false)}>

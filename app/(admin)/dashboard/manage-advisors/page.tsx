@@ -3,18 +3,17 @@
 import { Button, TextInput, Modal, Label } from "flowbite-react";
 import {
   HiPlus,
-  HiSearch,
   HiUser,
   HiMail,
   HiPhone,
   HiStatusOnline,
   HiStatusOffline,
-  HiExclamation,
   HiX,
+  HiUserGroup,
 } from "react-icons/hi";
 import { useEffect, useState } from "react";
 import Select, { SingleValue } from "react-select";
-import { HiCheck } from "react-icons/hi2";
+import { HiCheck, HiBuildingOffice2 } from "react-icons/hi2";
 import { useAuth } from "@/app/context/AuthContext";
 interface ADVISOR {
   ID: number;
@@ -109,7 +108,6 @@ export default function ManageAdvisors() {
         console.log("New ADVISOR added successfully");
       }
     } catch (error) {
-
       console.log("Error adding ADVISOR:", error);
     }
 
@@ -217,9 +215,15 @@ export default function ManageAdvisors() {
       data-aos="zoom-in"
       data-aos-duration="1000"
     >
+      {" "}
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-4xl font-bold text-white">Manage Advisor`s</h1>
+          <h1 className="flex items-center gap-3 text-4xl font-bold text-white">
+            <span className="rounded-lg bg-[#92e3a9] p-2">
+              <HiUserGroup className="h-8 w-8 text-gray-900" />
+            </span>
+            Manage Advisors
+          </h1>
         </div>
 
         <Button
@@ -238,31 +242,43 @@ export default function ManageAdvisors() {
         </Button>
       </div>{" "}
       <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
-        <div>
-          <TextInput
+        <div className="relative">
+          <input
+            type="text"
+            className="w-full rounded border border-gray-700 bg-gray-800 py-2 pr-4 pl-10 text-white placeholder-gray-400 focus:border-[#92e3a9] focus:outline-none"
+            placeholder="Search by name"
             value={searchName}
             onChange={(e) => setSearchName(e.target.value)}
-            placeholder="Search by name"
-            icon={HiSearch}
           />
+          <div className="absolute top-0 left-0 flex h-full items-center pl-3">
+            <HiUser className="h-5 w-5 text-[#92e3a9]" />
+          </div>
         </div>
-        <div>
-          <TextInput
+        <div className="relative">
+          <input
+            type="text"
+            className="w-full rounded border border-gray-700 bg-gray-800 py-2 pr-4 pl-10 text-white placeholder-gray-400 focus:border-[#92e3a9] focus:outline-none"
+            placeholder="Search by email"
             value={searchEmail}
             onChange={(e) => setSearchEmail(e.target.value)}
-            placeholder="Search by email"
-            icon={HiSearch}
           />
-        </div>{" "}
-        <div>
-          <TextInput
+          <div className="absolute top-0 left-0 flex h-full items-center pl-3">
+            <HiMail className="h-5 w-5 text-[#92e3a9]" />
+          </div>
+        </div>
+        <div className="relative">
+          <input
+            type="text"
+            className="w-full rounded border border-gray-700 bg-gray-800 py-2 pr-4 pl-10 text-white placeholder-gray-400 focus:border-[#92e3a9] focus:outline-none"
+            placeholder="Search by phone"
             value={searchDepartment}
             onChange={(e) => setSearchDepartment(e.target.value)}
-            placeholder="Search by phone"
-            icon={HiPhone}
           />
+          <div className="absolute top-0 left-0 flex h-full items-center pl-3">
+            <HiPhone className="h-5 w-5 text-[#92e3a9]" />
+          </div>
         </div>
-        <div>
+        <div className="relative">
           <Select
             options={statusOptions}
             onChange={handleStatusChange}
@@ -361,7 +377,6 @@ export default function ManageAdvisors() {
                   <td className="px-6 py-4 whitespace-nowrap text-white">
                     {advisor.NAME}
                   </td>
-
                   <td className="px-6 py-4 whitespace-nowrap text-white">
                     {advisor.EMAIL}
                   </td>
@@ -375,23 +390,27 @@ export default function ManageAdvisors() {
                       <HiStatusOffline className="mr-2 inline text-red-500" />
                     )}
                     {advisor.STATUS === 1 ? "Active" : "Inactive"}
-                  </td>
+                  </td>{" "}
                   <td className="px-6 py-4 whitespace-nowrap">
                     {advisor.STATUS === 0 ? (
                       <Button
                         size="xs"
                         style={{ backgroundColor: "#22c55e", color: "#fff" }}
                         onClick={() => openModal(advisor, "active")}
+                        className="flex items-center gap-1 px-3 py-1 transition-transform hover:scale-105"
                       >
-                        <HiCheck className="mr-1" /> Activate
+                        <HiCheck className="h-4 w-4 text-white" />
+                        <span>Activate</span>
                       </Button>
                     ) : (
                       <Button
                         size="xs"
                         style={{ backgroundColor: "#ef4444", color: "#fff" }}
                         onClick={() => openModal(advisor, "inactive")}
+                        className="flex items-center gap-1 px-3 py-1 transition-transform hover:scale-105"
                       >
-                        <HiX className="mr-1" /> Deactivate
+                        <HiX className="h-4 w-4 text-white" />
+                        <span>Deactivate</span>
                       </Button>
                     )}
                   </td>
@@ -404,12 +423,20 @@ export default function ManageAdvisors() {
       {/* Add ADVISOR Modal */}{" "}
       <Modal show={showAddModal} onClose={() => setShowAddModal(false)}>
         <div className="relative bg-gray-800 p-4">
-          <div className="mb-4 text-xl font-semibold text-white">
-            Add New ADVISOR
+          <div className="mb-6 text-center">
+            <div className="bg-opacity-20 mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-[#92e3a9]">
+              <HiUserGroup className="h-10 w-10 text-[#92e3a9]" />
+            </div>
+            <div className="text-xl font-semibold text-white">
+              Add New Advisor
+            </div>
           </div>
           <div className="space-y-4">
-            <div>
-              <Label htmlFor="name">Name</Label>
+            <div className="relative">
+              <Label htmlFor="name" className="mb-1 flex items-center gap-2">
+                <HiUser className="text-[#92e3a9]" />
+                Name
+              </Label>
               <TextInput
                 id="name"
                 value={newADVISOR.name}
@@ -419,8 +446,14 @@ export default function ManageAdvisors() {
                 placeholder="Enter name"
               />
             </div>{" "}
-            <div>
-              <Label htmlFor="department">Department</Label>
+            <div className="relative">
+              <Label
+                htmlFor="department"
+                className="mb-1 flex items-center gap-2"
+              >
+                <HiBuildingOffice2 className="text-[#92e3a9]" />
+                Department
+              </Label>
               <TextInput
                 id="department"
                 value={
@@ -440,8 +473,11 @@ export default function ManageAdvisors() {
                 </p>
               )}
             </div>
-            <div>
-              <Label htmlFor="email">Email</Label>
+            <div className="relative">
+              <Label htmlFor="email" className="mb-1 flex items-center gap-2">
+                <HiMail className="text-[#92e3a9]" />
+                Email
+              </Label>
               <TextInput
                 id="email"
                 type="email"
@@ -452,8 +488,11 @@ export default function ManageAdvisors() {
                 placeholder="Enter email"
               />
             </div>
-            <div>
-              <Label htmlFor="phone">Phone</Label>
+            <div className="relative">
+              <Label htmlFor="phone" className="mb-1 flex items-center gap-2">
+                <HiPhone className="text-[#92e3a9]" />
+                Phone
+              </Label>
               <TextInput
                 id="phone"
                 value={newADVISOR.phone}
@@ -463,7 +502,7 @@ export default function ManageAdvisors() {
                 placeholder="Enter phone number"
               />
             </div>
-          </div>
+          </div>{" "}
           <div className="mt-6 flex justify-end gap-4">
             <Button
               style={{
@@ -473,19 +512,29 @@ export default function ManageAdvisors() {
                 cursor: "pointer",
               }}
               onClick={handleAddAdvisor}
+              className="flex items-center gap-2 transition-transform hover:scale-105"
             >
-              Add ADVISOR
+              <HiPlus className="h-4 w-4" />
+              <span>Add Advisor</span>
             </Button>
-            <Button color="gray" onClick={() => setShowAddModal(false)}>
+            <Button
+              color="gray"
+              onClick={() => setShowAddModal(false)}
+              className="transition-transform hover:scale-105"
+            >
               Cancel
             </Button>
           </div>
         </div>
       </Modal>
-      {/* Confirmation Modal */}
+      {/* Confirmation Modal */}{" "}
       <Modal show={showModal} size="md" onClose={() => setShowModal(false)}>
         <div className="p-6 text-center">
-          <HiExclamation className="mx-auto mb-4 h-14 w-14 text-yellow-400" />
+          {status === "active" ? (
+            <HiStatusOnline className="mx-auto mb-4 h-14 w-14 text-green-500" />
+          ) : (
+            <HiX className="mx-auto mb-4 h-14 w-14 text-red-500" />
+          )}
           <h3 className="mb-5 text-lg font-normal text-gray-300">
             Are you sure you want to{" "}
             <span className="font-semibold text-white">{status}</span> the
@@ -499,7 +548,13 @@ export default function ManageAdvisors() {
             <Button
               color={status === "active" ? "success" : "failure"}
               onClick={confirmAction}
+              className="flex items-center gap-2"
             >
+              {status === "active" ? (
+                <HiCheck className="text-white" />
+              ) : (
+                <HiX className="text-white" />
+              )}
               Yes, {status}
             </Button>
             <Button color="gray" onClick={() => setShowModal(false)}>
