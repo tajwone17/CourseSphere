@@ -436,7 +436,7 @@ export default function ManageHOD() {
       <Modal show={showAddModal} onClose={() => setShowAddModal(false)}>
         <div className="relative bg-gray-800 p-4">
           <div className="mb-6 text-center">
-            <div className="bg-opacity-20 mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-[#92e3a9]">
+            <div className="bg-opacity-20 mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-gray">
               <HiBuildingOffice className="h-10 w-10 text-[#92e3a9]" />
             </div>
             <div className="text-xl font-semibold text-white">Add New HOD</div>
@@ -527,13 +527,7 @@ export default function ManageHOD() {
               <HiPlus className="h-4 w-4" />
               <span>Add HOD</span>
             </Button>
-            <Button
-              color="gray"
-              onClick={() => setShowAddModal(false)}
-              className="transition-transform hover:scale-105"
-            >
-              Cancel Add HOD
-            </Button>
+        
             <Button color="gray" onClick={() => setShowAddModal(false)}>
               Cancel
             </Button>

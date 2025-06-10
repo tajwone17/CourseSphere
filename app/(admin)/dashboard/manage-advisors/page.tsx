@@ -424,7 +424,7 @@ export default function ManageAdvisors() {
       <Modal show={showAddModal} onClose={() => setShowAddModal(false)}>
         <div className="relative bg-gray-800 p-4">
           <div className="mb-6 text-center">
-            <div className="bg-opacity-20 mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-[#92e3a9]">
+            <div className="bg-opacity-20 mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-gray-200 ">
               <HiUserGroup className="h-10 w-10 text-[#92e3a9]" />
             </div>
             <div className="text-xl font-semibold text-white">
