@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
   const { name, email, department, phone } = await request.json();
 
   // Validate the input data
-  if (!name || !email || !department || !phone) {
+  if (!name || !email  || !phone) {
     return new Response("Invalid input", { status: 400 });
   }
 
@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
     email,
   ]);
   if (user.length > 0) {
-    console.log("user exists");
+    return new Response("Advisor already exists", { status: 409 });
   }
 
   // Insert the new advisor into the database

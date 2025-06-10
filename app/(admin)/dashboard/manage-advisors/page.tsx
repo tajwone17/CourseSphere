@@ -75,7 +75,7 @@ export default function ManageAdvisors() {
     if (
       !newADVISOR.name ||
       !newADVISOR.email ||
-      !newADVISOR.department ||
+      // !newADVISOR.department ||
       !newADVISOR.phone
     ) {
       // console.error("All fields are required");
@@ -96,7 +96,7 @@ export default function ManageAdvisors() {
         const errorText = await res.text();
         const errorMsg = errorText.split("\n")[0];
         console.log("Error response:", errorText);
-        alert(`Error: ${errorMsg}`);
+        alert(` ${errorMsg}`);
         throw new Error(errorMsg);
       } else {
         // Fetch updated list after successful addition
@@ -109,7 +109,8 @@ export default function ManageAdvisors() {
         console.log("New ADVISOR added successfully");
       }
     } catch (error) {
-      console.error("Error adding ADVISOR:", error);
+
+      console.log("Error adding ADVISOR:", error);
     }
 
     // Reset the form and close modal
@@ -218,7 +219,7 @@ export default function ManageAdvisors() {
     >
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-4xl font-bold text-white">Manage ADVISOR`S</h1>
+          <h1 className="text-4xl font-bold text-white">Manage Advisor`s</h1>
         </div>
 
         <Button
