@@ -3,32 +3,35 @@
 import { Button, TextInput, Modal, Label } from "flowbite-react";
 import {
   HiPlus,
-  HiSearch,
   HiUser,
   HiMail,
   HiPhone,
   HiStatusOnline,
   HiStatusOffline,
+  HiX,
+  HiCheck,
+  HiDocumentReport,
 } from "react-icons/hi";
 import { useState } from "react";
 import Select, { SingleValue } from "react-select";
 
-
 interface ExamController {
   id: number;
   name: string;
- 
+
   email: string;
   phone: string;
   status: string;
 }
 
 export default function ManageExamControllers() {
-  const [examControllerList, setExamControllerList] = useState<ExamController[]>([
+  const [examControllerList, setExamControllerList] = useState<
+    ExamController[]
+  >([
     {
       id: 1,
       name: "Dr. Tajwone",
-      
+
       email: "tajwone.doe@neub.edu.bd",
       phone: "+880 1712345678",
       status: "Active",
@@ -36,7 +39,7 @@ export default function ManageExamControllers() {
     {
       id: 2,
       name: "Dr. Chowdhury",
-     
+
       email: "chowdhry.@neub.edu.bd",
       phone: "+880 1812345678",
       status: "Active",
@@ -44,7 +47,7 @@ export default function ManageExamControllers() {
     {
       id: 3,
       name: "Dr. Jakaria",
-     
+
       email: "jakaria.j@neub.edu.bd",
       phone: "+880 1912345678",
       status: "Inactive",
@@ -54,14 +57,14 @@ export default function ManageExamControllers() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [newExamController, setNewExamController] = useState({
     name: "",
-  
+
     email: "",
     phone: "",
   });
 
- 
-
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchName, setSearchName] = useState("");
+  const [searchEmail, setSearchEmail] = useState("");
+  const [searchPhone, setSearchPhone] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
 
   const handleAddExamController = async () => {
@@ -83,10 +86,10 @@ export default function ManageExamControllers() {
     } catch (error) {
       console.error("Error adding Exam Controller:", error);
     }
-       // Reset the form
+    // Reset the form
     setNewExamController({
       name: "",
-      
+
       email: "",
       phone: "",
     });
@@ -95,22 +98,54 @@ export default function ManageExamControllers() {
   const handleToggleStatus = (id: number) => {
     const updatedList = examControllerList.map((controller) =>
       controller.id === id
-        ? { ...controller, status: controller.status === "Active" ? "Inactive" : "Active" }
-        : controller ,
+        ? {
+            ...controller,
+            status: controller.status === "Active" ? "Inactive" : "Active",
+          }
+        : controller,
     );
     setExamControllerList(updatedList);
   };
+  const filteredExamControllerList = examControllerList.filter((controller) => {
+    // Name filter
+    const nameMatch =
+      !searchName ||
+      controller.name.toLowerCase().includes(searchName.toLowerCase());
 
-  const filteredExamControllerList = examControllerList.filter(
-    (controller) =>
-      (controller.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-   
-        controller.email.toLowerCase().includes(searchQuery.toLowerCase())) &&
-      (statusFilter ? controller.status === statusFilter : true),
-  );
+    // Email filter
+    const emailMatch =
+      !searchEmail ||
+      controller.email.toLowerCase().includes(searchEmail.toLowerCase());
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(event.target.value);
+    // Phone filter
+    const phoneMatch =
+      !searchPhone ||
+      controller.phone.toLowerCase().includes(searchPhone.toLowerCase());
+
+    // Status filter
+    const statusMatch =
+      !statusFilter ||
+      statusFilter === " " ||
+      controller.status === statusFilter;
+
+    return nameMatch && emailMatch && phoneMatch && statusMatch;
+  });
+  const handleNameSearchChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setSearchName(event.target.value);
+  };
+
+  const handleEmailSearchChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setSearchEmail(event.target.value);
+  };
+
+  const handlePhoneSearchChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setSearchPhone(event.target.value);
   };
 
   const handleStatusChange = (
@@ -135,9 +170,15 @@ export default function ManageExamControllers() {
       data-aos="zoom-in"
       data-aos-duration="1000"
     >
+      {" "}
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-4xl font-bold text-white">Manage Exam Controllers</h1>
+          <h1 className="flex items-center gap-3 text-4xl font-bold text-white">
+            <span className="rounded-lg bg-[#92e3a9] p-2">
+              <HiDocumentReport className="h-8 w-8 text-gray-900" />
+            </span>
+            Manage Exam Controllers
+          </h1>
         </div>
 
         <Button
@@ -155,29 +196,107 @@ export default function ManageExamControllers() {
           Add New Exam Controller
         </Button>
       </div>
-
-      <div className="mb-6 flex items-center gap-4">
-        <div className="w-1/3">
-          <TextInput
-            value={searchQuery}
-            onChange={handleSearchChange}
-            placeholder="Search by name, email"
-            icon={HiSearch}
+      <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
+        {" "}
+        <div className="relative">
+          <input
+            type="text"
+            className="w-full rounded border border-gray-700 bg-gray-800 py-2 pr-4 pl-10 text-white placeholder-gray-400 focus:border-[#92e3a9] focus:outline-none"
+            placeholder="Search by name"
+            value={searchName}
+            onChange={handleNameSearchChange}
           />
+          <div className="absolute top-0 left-0 flex h-full items-center pl-3">
+            <HiUser className="h-5 w-5 text-[#92e3a9]" />
+          </div>
         </div>
-        <div className="w-1/3">
+        <div className="relative">
+          <input
+            type="text"
+            className="w-full rounded border border-gray-700 bg-gray-800 py-2 pr-4 pl-10 text-white placeholder-gray-400 focus:border-[#92e3a9] focus:outline-none"
+            placeholder="Search by email"
+            value={searchEmail}
+            onChange={handleEmailSearchChange}
+          />
+          <div className="absolute top-0 left-0 flex h-full items-center pl-3">
+            <HiMail className="h-5 w-5 text-[#92e3a9]" />
+          </div>
+        </div>
+        <div className="relative">
+          <input
+            type="text"
+            className="w-full rounded border border-gray-700 bg-gray-800 py-2 pr-4 pl-10 text-white placeholder-gray-400 focus:border-[#92e3a9] focus:outline-none"
+            placeholder="Search by phone"
+            value={searchPhone}
+            onChange={handlePhoneSearchChange}
+          />
+          <div className="absolute top-0 left-0 flex h-full items-center pl-3">
+            <HiPhone className="h-5 w-5 text-[#92e3a9]" />
+          </div>
+        </div>
+        <div className="relative">
           <Select
             options={statusOptions}
-            onChange={handleStatusChange} // Corrected here
+            onChange={handleStatusChange}
             placeholder="Filter by Status"
             isSearchable={false}
             value={statusOptions.find(
               (option) => option.value === statusFilter,
-            )} // Corrected here
+            )}
+            styles={{
+              control: (baseStyles) => ({
+                ...baseStyles,
+                backgroundColor: "#1f2937", // Dark background
+                borderColor: "#374151",
+                color: "white",
+                "&:hover": {
+                  borderColor: "#4b5563",
+                },
+              }),
+              menu: (baseStyles) => ({
+                ...baseStyles,
+                backgroundColor: "#1f2937", // Dark background for dropdown menu
+              }),
+              option: (baseStyles, { isFocused, isSelected }) => ({
+                ...baseStyles,
+                backgroundColor: isSelected
+                  ? "#92e3a9" // Primary green color for selected item
+                  : isFocused
+                    ? "#374151" // Slightly lighter dark for hover
+                    : "#1f2937", // Dark background
+                color: isSelected ? "black" : "white",
+                cursor: "pointer",
+                ":active": {
+                  backgroundColor: isSelected ? "#92e3a9" : "#374151",
+                },
+              }),
+              singleValue: (baseStyles) => ({
+                ...baseStyles,
+                color: "white", // Text color for selected value
+              }),
+              placeholder: (baseStyles) => ({
+                ...baseStyles,
+                color: "#9ca3af", // Light gray for placeholder
+              }),
+              dropdownIndicator: (baseStyles) => ({
+                ...baseStyles,
+                color: "#9ca3af", // Light gray for dropdown arrow
+                "&:hover": {
+                  color: "white",
+                },
+              }),
+              indicatorSeparator: (baseStyles) => ({
+                ...baseStyles,
+                backgroundColor: "#4b5563",
+              }),
+              input: (baseStyles) => ({
+                ...baseStyles,
+                color: "white",
+              }),
+            }}
           />
         </div>
       </div>
-
       <div className="rounded-lg border border-gray-800 bg-gray-900 p-6">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-800">
@@ -187,7 +306,7 @@ export default function ManageExamControllers() {
                   <HiUser className="mr-2 inline text-[#92e3a9] group-hover:scale-110" />{" "}
                   Name
                 </th>
-              
+
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                   <HiMail className="mr-2 inline text-[#92e3a9] group-hover:scale-110" />{" "}
                   Email
@@ -214,7 +333,6 @@ export default function ManageExamControllers() {
                   <td className="px-6 py-4 whitespace-nowrap text-white">
                     {controller.name}
                   </td>
-                
                   <td className="px-6 py-4 whitespace-nowrap text-white">
                     {controller.email}
                   </td>
@@ -228,63 +346,97 @@ export default function ManageExamControllers() {
                       <HiStatusOffline className="mr-2 inline text-red-500" />
                     )}
                     {controller.status}
-                  </td>
+                  </td>{" "}
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <Button
-                      style={{
-                        backgroundColor:
-                          controller.status === "Active" ? "#ef4444" : "#10b981",
-                        color: "#ffffff",
-                      }}
-                      size="xs"
-                      onClick={() => handleToggleStatus(controller.id)}
-                    >
-                      {controller.status === "Active" ? "Inactive" : "Active"}
-                    </Button>
+                    {controller.status === "Inactive" ? (
+                      <Button
+                        size="xs"
+                        style={{ backgroundColor: "#22c55e", color: "#fff" }}
+                        onClick={() => handleToggleStatus(controller.id)}
+                        className="flex items-center gap-1 px-3 py-1 transition-transform hover:scale-105"
+                      >
+                        <HiCheck className="h-4 w-4 text-white" />
+                        <span>Activate</span>
+                      </Button>
+                    ) : (
+                      <Button
+                        size="xs"
+                        style={{ backgroundColor: "#ef4444", color: "#fff" }}
+                        onClick={() => handleToggleStatus(controller.id)}
+                        className="flex items-center gap-1 px-3 py-1 transition-transform hover:scale-105"
+                      >
+                        <HiX className="h-4 w-4 text-white" />
+                        <span>Deactivate</span>
+                      </Button>
+                    )}
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-      </div>
-
+      </div>{" "}
       {/* Add Exam Controller Modal */}
       <Modal show={showAddModal} onClose={() => setShowAddModal(false)}>
         <div className="relative bg-gray-800 p-4">
-          <div className="mb-4 text-xl font-semibold text-white">
-            Add New Exam Controller
+          <div className="mb-6 text-center">
+            <div className="bg-opacity-20 mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-gray">
+              <HiDocumentReport className="h-10 w-10 text-[#92e3a9]" />
+            </div>
+            <div className="text-xl font-semibold text-white">
+              Add New Exam Controller
+            </div>
           </div>
           <div className="space-y-4">
-            <div>
-              <Label htmlFor="name">Name</Label>
+            <div className="relative">
+              <Label htmlFor="name" className="mb-1 flex items-center gap-2">
+                <HiUser className="text-[#92e3a9]" />
+                Name
+              </Label>
               <TextInput
                 id="name"
                 value={newExamController.name}
-                onChange={(e) => setNewExamController({ ...newExamController, name: e.target.value })}
+                onChange={(e) =>
+                  setNewExamController({
+                    ...newExamController,
+                    name: e.target.value,
+                  })
+                }
                 placeholder="Enter name"
               />
             </div>
-          
-            <div>
-              <Label htmlFor="email">Email</Label>
+
+            <div className="relative">
+              <Label htmlFor="email" className="mb-1 flex items-center gap-2">
+                <HiMail className="text-[#92e3a9]" />
+                Email
+              </Label>
               <TextInput
                 id="email"
                 type="email"
                 value={newExamController.email}
                 onChange={(e) =>
-                  setNewExamController({ ...newExamController, email: e.target.value })
+                  setNewExamController({
+                    ...newExamController,
+                    email: e.target.value,
+                  })
                 }
                 placeholder="Enter email"
               />
             </div>
-            <div>
-              <Label htmlFor="phone">Phone</Label>
+            <div className="relative">
+              <Label htmlFor="phone" className="mb-1 flex items-center gap-2">
+                <HiPhone className="text-[#92e3a9]" />
+                Phone
+              </Label>
               <TextInput
                 id="phone"
                 value={newExamController.phone}
                 onChange={(e) =>
-                  setNewExamController({ ...newExamController, phone: e.target.value })
+                  setNewExamController({
+                    ...newExamController,
+                    phone: e.target.value,
+                  })
                 }
                 placeholder="Enter phone number"
               />
@@ -299,10 +451,16 @@ export default function ManageExamControllers() {
                 cursor: "pointer",
               }}
               onClick={handleAddExamController}
+              className="flex items-center gap-2 transition-transform hover:scale-105"
             >
-              Add Exam Controller
+              <HiPlus className="h-4 w-4" />
+              <span>Add Exam Controller</span>
             </Button>
-            <Button color="gray" onClick={() => setShowAddModal(false)}>
+            <Button
+              color="gray"
+              onClick={() => setShowAddModal(false)}
+              className="transition-transform hover:scale-105"
+            >
               Cancel
             </Button>
           </div>
