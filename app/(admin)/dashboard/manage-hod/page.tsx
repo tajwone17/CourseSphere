@@ -9,48 +9,27 @@ import {
   HiPhone,
   HiStatusOnline,
   HiStatusOffline,
+  HiX,
+  HiCheck,
 } from "react-icons/hi";
 import { useEffect, useState } from "react";
 import Select, { SingleValue } from "react-select";
 import { HiBuildingOffice } from "react-icons/hi2";
 
 interface HOD {
-  id: number;
-  name: string;
-  department: string;
-  email: string;
-  phone: string;
-  status: string;
+  ID: number;
+  NAME: string;
+  DEPARTMENT_ID: string;
+  EMAIL: string;
+  PHONE: string;
+  STATUS: number;
 }
 
 export default function ManageHOD() {
-  const [hodList, setHodList] = useState<HOD[]>([
-    {
-      id: 1,
-      name: "Dr. Tajwone",
-      department: "Computer Science",
-      email: "tajwone.doe@neub.edu.bd",
-      phone: "+880 1712345678",
-      status: "Active",
-    },
-    {
-      id: 2,
-      name: "Dr. Chowdhury",
-      department: "Electrical Engineering",
-      email: "chowdhry.@neub.edu.bd",
-      phone: "+880 1812345678",
-      status: "Active",
-    },
-    {
-      id: 3,
-      name: "Dr. Jakaria",
-      department: "Civil Engineering",
-      email: "jakaria.j@neub.edu.bd",
-      phone: "+880 1912345678",
-      status: "Inactive",
-    },
-  ]);
-
+  const [hodList, setHodList] = useState<HOD[]>([]);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedHOD, setSelectedHOD] = useState<HOD | null>(null);
+  const [status, setStatus] = useState<"active" | "inactive">("inactive");
   const [showAddModal, setShowAddModal] = useState(false);
   const [newHOD, setNewHOD] = useState({
     name: "",
@@ -59,10 +38,29 @@ export default function ManageHOD() {
     phone: "",
   });
 
+  const departmentName = (deptId: string) => {
+    //eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const department = depts.find((dept: any) => dept.ID === deptId);
+    return department ? department.DEPARTMENT_NAME : "Unknown";
+  };
   //eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [depts, setDepts] = useState<any>([]);
 
   useEffect(() => {
+    async function fetchHODs() {
+      try {
+        const res = await fetch("/api/hod/get-hod", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await res.json();
+        setHodList(data.hods);
+      } catch (error) {
+        console.error("Failed to fetch HODs:", error);
+      }
+    }
     async function fetchDepartments() {
       try {
         const res = await fetch("/api/departments", {
@@ -78,7 +76,7 @@ export default function ManageHOD() {
         console.error("Failed to fetch departments:", error);
       }
     }
-
+    fetchHODs();
     fetchDepartments();
   }, []);
 
@@ -86,7 +84,6 @@ export default function ManageHOD() {
   const [statusFilter, setStatusFilter] = useState("");
 
   const handleAddHOD = async () => {
-
     setShowAddModal(false);
     try {
       const res = await fetch("/api/hod/add-hod", {
@@ -106,31 +103,65 @@ export default function ManageHOD() {
       console.error("Error adding HOD:", error);
     }
     //reset form field
-       // Reset the form
+    // Reset the form
     setNewHOD({
       name: "",
       department: "",
       email: "",
       phone: "",
     });
-
   };
 
-  const handleToggleStatus = (id: number) => {
-    const updatedList = hodList.map((hod) =>
-      hod.id === id
-        ? { ...hod, status: hod.status === "Active" ? "Inactive" : "Active" }
-        : hod,
-    );
-    setHodList(updatedList);
+  const openModal = (hod: HOD, action: "active" | "inactive") => {
+    setSelectedHOD(hod);
+    setStatus(action);
+    setShowModal(true);
+  };
+
+  const handleToggleStatus = async () => {
+    if (selectedHOD) {
+      const updatedList = hodList.map((hod) =>
+        hod.ID === selectedHOD.ID
+          ? { ...hod, STATUS: status === "active" ? 1 : 0 }
+          : hod,
+      );
+      setHodList(updatedList);
+
+      try {
+        // Make API call to update status in the database
+        const response = await fetch(
+          `/api/account-status/hod/${selectedHOD.ID}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              status: status === "active" ? 1 : 0,
+            }),
+          },
+        );
+        if (response.ok) {
+          alert(
+            `HOD status updated to ${status === "active" ? "Active" : "Inactive"}`,
+          );
+        }
+        if (!response.ok) {
+          alert("Failed to update HOD status");
+        }
+      } catch (error) {
+        console.error("Error updating HOD status:", error);
+      }
+    }
+    setShowModal(false);
   };
 
   const filteredHodList = hodList.filter(
     (hod) =>
-      (hod.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        hod.department.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        hod.email.toLowerCase().includes(searchQuery.toLowerCase())) &&
-      (statusFilter ? hod.status === statusFilter : true),
+      (hod.NAME.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        hod.DEPARTMENT_ID.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        hod.EMAIL.toLowerCase().includes(searchQuery.toLowerCase())) &&
+      (statusFilter ? hod.STATUS === Number(statusFilter) : true),
   );
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -179,7 +210,6 @@ export default function ManageHOD() {
           Add New HOD
         </Button>
       </div>
-
       <div className="mb-6 flex items-center gap-4">
         <div className="w-1/3">
           <TextInput
@@ -201,7 +231,6 @@ export default function ManageHOD() {
           />
         </div>
       </div>
-
       <div className="rounded-lg border border-gray-800 bg-gray-900 p-6">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-800">
@@ -235,41 +264,51 @@ export default function ManageHOD() {
             <tbody className="divide-y divide-gray-800">
               {filteredHodList.map((hod) => (
                 <tr
-                  key={hod.id}
+                  key={hod.ID}
                   className="bg-gray-900 transition-colors hover:bg-gray-800"
                 >
                   <td className="px-6 py-4 whitespace-nowrap text-white">
-                    {hod.name}
+                    {hod.NAME}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-white">
-                    {hod.department}
+                    {departmentName(hod.DEPARTMENT_ID)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-white">
-                    {hod.email}
+                    {hod.EMAIL}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-white">
-                    {hod.phone}
+                    {hod.PHONE}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-white">
-                    {hod.status === "Active" ? (
+                    {hod.STATUS === 1 ? (
                       <HiStatusOnline className="mr-2 inline text-green-500" />
                     ) : (
                       <HiStatusOffline className="mr-2 inline text-red-500" />
                     )}
-                    {hod.status}
-                  </td>
+                    {hod.STATUS == 1 ? "Active" : "Inactive"}
+                  </td>{" "}
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <Button
-                      style={{
-                        backgroundColor:
-                          hod.status === "Active" ? "#ef4444" : "#10b981",
-                        color: "#ffffff",
-                      }}
-                      size="xs"
-                      onClick={() => handleToggleStatus(hod.id)}
-                    >
-                      {hod.status === "Active" ? "Inctive" : "active"}
-                    </Button>
+                    {hod.STATUS === 0 ? (
+                      <Button
+                        size="xs"
+                        style={{ backgroundColor: "#10b981", color: "#fff" }}
+                        onClick={() => openModal(hod, "active")}
+                        className="flex items-center gap-1 px-3 py-1 transition-transform hover:scale-105"
+                      >
+                        <HiCheck className="h-4 w-4 text-white" />
+                        <span>Activate</span>
+                      </Button>
+                    ) : (
+                      <Button
+                        size="xs"
+                        style={{ backgroundColor: "#ef4444", color: "#fff" }}
+                        onClick={() => openModal(hod, "inactive")}
+                        className="flex items-center gap-1 px-3 py-1 transition-transform hover:scale-105"
+                      >
+                        <HiX className="h-4 w-4 text-white" />
+                        <span>Deactivate</span>
+                      </Button>
+                    )}
                   </td>
                 </tr>
               ))}
@@ -277,7 +316,6 @@ export default function ManageHOD() {
           </table>
         </div>
       </div>
-
       {/* Add HOD Modal */}
       <Modal show={showAddModal} onClose={() => setShowAddModal(false)}>
         <div className="relative bg-gray-800 p-4">
@@ -356,6 +394,42 @@ export default function ManageHOD() {
               Add HOD
             </Button>
             <Button color="gray" onClick={() => setShowAddModal(false)}>
+              Cancel
+            </Button>
+          </div>
+        </div>
+      </Modal>{" "}
+      {/* Confirmation Modal */}
+      <Modal show={showModal} size="md" onClose={() => setShowModal(false)}>
+        <div className="p-6 text-center">
+          {status === "active" ? (
+            <HiStatusOnline className="mx-auto mb-4 h-14 w-14 text-green-500" />
+          ) : (
+            <HiX className="mx-auto mb-4 h-14 w-14 text-red-500" />
+          )}
+          <h3 className="mb-5 text-lg font-normal text-gray-300">
+            Are you sure you want to{" "}
+            <span className="font-semibold text-white">{status}</span> the
+            account of{" "}
+            <span className="font-semibold text-white">
+              {selectedHOD?.NAME}
+            </span>
+            ?
+          </h3>
+          <div className="flex justify-center gap-4">
+            <Button
+              color={status === "active" ? "success" : "failure"}
+              onClick={handleToggleStatus}
+              className="flex items-center gap-2"
+            >
+              {status === "active" ? (
+                <HiCheck className="text-white" />
+              ) : (
+                <HiX className="text-white" />
+              )}
+              Yes, {status}
+            </Button>
+            <Button color="gray" onClick={() => setShowModal(false)}>
               Cancel
             </Button>
           </div>
