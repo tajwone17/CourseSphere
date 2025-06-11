@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Button, Modal } from "flowbite-react";
+import {useAuth} from "../../../context/AuthContext";
 import {
   HiCheck,
   HiX,
@@ -21,13 +22,18 @@ interface PendingAccount {
 }
 
 export default function AccountApproval() {
+    const { user } = useAuth();
   const [accounts, setAccounts] = useState<PendingAccount[]>([]);
   const [status, setStatus] = useState<"active" | "inactive">("inactive");
 
   useEffect(() => {
     async function fetchStudents() {
       try {
-        const response = await fetch("/api/students");
+        const response = await fetch("/api/students",{
+         headers: {
+            "departmentid": user?.departmentId ? String(user.departmentId) : "",
+          },
+        });
         if (!response.ok) {
           throw new Error("Failed to fetch students");
         }
@@ -42,7 +48,7 @@ export default function AccountApproval() {
     }
 
     fetchStudents();
-  }, []);
+  }, [user?.departmentId]);
 
   const [searchName, setSearchName] = useState("");
   const [searchRegNum, setSearchRegNum] = useState("");
