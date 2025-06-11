@@ -10,6 +10,8 @@ import {
   HiStatusOffline,
   HiStatusOnline,
   HiX,
+  HiCreditCard,
+  HiClock,
 } from "react-icons/hi";
 import Select, { SingleValue } from "react-select";
 import { useAuth } from "../../../context/AuthContext";
@@ -30,7 +32,6 @@ export default function ManageCourse() {
   const [selectedCourse, setSelectedCourse] = useState<COURSE | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [newCourse, setNewCourse] = useState({
-    
     code: "",
     title: "",
     credit: "",
@@ -83,7 +84,6 @@ export default function ManageCourse() {
       !newCourse.code ||
       !newCourse.title ||
       !newCourse.credit ||
-      
       !newCourse.instructor_name
     ) {
       // console.error("All fields are required");
@@ -95,7 +95,10 @@ export default function ManageCourse() {
       console.log("Sending data:", newCourse);
       const res = await fetch("/api/courses/add-course", {
         method: "POST",
-        headers: { "Content-Type": "application/json","departmentid": user?.departmentId},
+        headers: {
+          "Content-Type": "application/json",
+          departmentid: user?.departmentId,
+        },
         credentials: "include",
         body: JSON.stringify(newCourse),
       });
@@ -268,9 +271,9 @@ export default function ManageCourse() {
       (titleSearch === "" ||
         course.TITLE.toLowerCase().includes(titleSearch.toLowerCase())) &&
       (instructorSearch === "" ||
-        course.INSTRUCTOR_NAME
-          .toLowerCase()
-          .includes(instructorSearch.toLowerCase())) &&
+        course.INSTRUCTOR_NAME.toLowerCase().includes(
+          instructorSearch.toLowerCase(),
+        )) &&
       (statusFilter === "" ||
         course.STATUS ===
           (statusFilter === "Active"
@@ -288,7 +291,10 @@ export default function ManageCourse() {
     >
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-4xl font-bold text-white">Manage Courses</h1>
+          <h1 className="flex items-center text-4xl font-bold text-white">
+            <HiDocumentText className="mr-3 h-10 w-10 text-[#92e3a9]" />
+            Manage Courses
+          </h1>
           <p className="mt-4 text-lg text-gray-400">
             Add, view, and manage courses
           </p>
@@ -411,23 +417,41 @@ export default function ManageCourse() {
           <thead className="bg-gray-800">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
-                Code
+                <div className="flex items-center gap-2">
+                  <HiOutlineHashtag className="h-4 w-4 text-[#92e3a9]" />
+                  <span>Code</span>
+                </div>
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
-                Title
+                <div className="flex items-center gap-2">
+                  <HiDocumentText className="h-4 w-4 text-[#92e3a9]" />
+                  <span>Title</span>
+                </div>
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
-                Credit
+                <div className="flex items-center gap-2">
+                  <HiCreditCard className="h-4 w-4 text-[#92e3a9]" />
+                  <span>Credit</span>
+                </div>
               </th>
 
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
-                Instructor
+                <div className="flex items-center gap-2">
+                  <HiUser className="h-4 w-4 text-[#92e3a9]" />
+                  <span>Instructor</span>
+                </div>
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
-                Status
+                <div className="flex items-center gap-2">
+                  <HiStatusOnline className="h-4 w-4 text-[#92e3a9]" />
+                  <span>Status</span>
+                </div>
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
-                Action
+                <div className="flex items-center gap-2">
+                  <HiClock className="h-4 w-4 text-[#92e3a9]" />
+                  <span>Action</span>
+                </div>
               </th>
             </tr>
           </thead>
@@ -557,7 +581,10 @@ export default function ManageCourse() {
                 id="instructor"
                 value={newCourse.instructor_name}
                 onChange={(e) =>
-                  setNewCourse({ ...newCourse, instructor_name: e.target.value })
+                  setNewCourse({
+                    ...newCourse,
+                    instructor_name: e.target.value,
+                  })
                 }
                 className="border-gray-700 bg-gray-900 text-white"
                 required
@@ -582,41 +609,41 @@ export default function ManageCourse() {
         </div>
       </Modal>
       {/* Confirmation Modal */}{" "}
-            <Modal show={showModal} size="md" onClose={() => setShowModal(false)}>
-              <div className="p-6 text-center">
-                {status === "active" ? (
-                  <HiStatusOnline className="mx-auto mb-4 h-14 w-14 text-green-500" />
-                ) : (
-                  <HiX className="mx-auto mb-4 h-14 w-14 text-red-500" />
-                )}
-                <h3 className="mb-5 text-lg font-normal text-gray-300">
-                  Are you sure you want to{" "}
-                  <span className="font-semibold text-white">{status}</span> the
-                  account of{" "}
-                  <span className="font-semibold text-white">
-                    {selectedCourse?.TITLE}
-                  </span>
-                  ?
-                </h3>
-                <div className="flex justify-center gap-4">
-                  <Button
-                    color={status === "active" ? "success" : "failure"}
-                    onClick={confirmAction}
-                    className="flex items-center gap-2"
-                  >
-                    {status === "active" ? (
-                      <HiCheck className="text-white" />
-                    ) : (
-                      <HiX className="text-white" />
-                    )}
-                    Yes, {status}
-                  </Button>
-                  <Button color="gray" onClick={() => setShowModal(false)}>
-                    Cancel
-                  </Button>
-                </div>
-              </div>
-            </Modal>
+      <Modal show={showModal} size="md" onClose={() => setShowModal(false)}>
+        <div className="p-6 text-center">
+          {status === "active" ? (
+            <HiStatusOnline className="mx-auto mb-4 h-14 w-14 text-green-500" />
+          ) : (
+            <HiX className="mx-auto mb-4 h-14 w-14 text-red-500" />
+          )}
+          <h3 className="mb-5 text-lg font-normal text-gray-300">
+            Are you sure you want to{" "}
+            <span className="font-semibold text-white">{status}</span> the
+            account of{" "}
+            <span className="font-semibold text-white">
+              {selectedCourse?.TITLE}
+            </span>
+            ?
+          </h3>
+          <div className="flex justify-center gap-4">
+            <Button
+              color={status === "active" ? "success" : "failure"}
+              onClick={confirmAction}
+              className="flex items-center gap-2"
+            >
+              {status === "active" ? (
+                <HiCheck className="text-white" />
+              ) : (
+                <HiX className="text-white" />
+              )}
+              Yes, {status}
+            </Button>
+            <Button color="gray" onClick={() => setShowModal(false)}>
+              Cancel
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }
