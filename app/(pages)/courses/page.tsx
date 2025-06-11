@@ -166,6 +166,7 @@ export default function CourseCatalogTable() {
               options={courseCodeOptions}
               placeholder="Search by code"
               isClearable
+              instanceId="course-code-select"
               onChange={(option) => setSearchCode(option?.value || "")}
               className="pl-8"
               styles={{
@@ -206,6 +207,7 @@ export default function CourseCatalogTable() {
               options={courseTitleOptions}
               placeholder="Search by title"
               isClearable
+              instanceId="course-title-select"
               onChange={(option) => setSearchTitle(option?.value || "")}
               className="pl-8"
               styles={{
@@ -247,6 +249,7 @@ export default function CourseCatalogTable() {
               options={instructorOptions}
               placeholder="Search by Instructor"
               isClearable
+              instanceId="instructor-select"
               onChange={(option) => setSearchInstructor(option?.value || "")}
               className="pl-8"
               styles={{
