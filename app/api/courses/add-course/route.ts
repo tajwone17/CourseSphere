@@ -3,10 +3,10 @@ import { NextRequest } from "next/server";
 import db from "@/app/lib/db";
 export async function POST(request: NextRequest) {
   try {
-    const { title, code, credit, department, instructor } =
+    const { title, code, credit, department, instructor_name } =
       await request.json();
 
-    if (!title || !code || !credit || !department || !instructor) {
+    if (!title || !code || !credit || !department || !instructor_name) {
       return Response.json(
         { error: "All fields are required" },
         { status: 400 },
@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
     //eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [result]: any = await db.query(
       `INSERT INTO COURSE (TITLE, CODE, CREDIT, DEPARTMENT_ID, STATUS, INSTRUCTOR_NAME) VALUES (?, ?, ?, ?, ?, ?)`,
-      [title, code, credit, department, true, instructor],
+      [title, code, credit, department, true, instructor_name],
     );
 
     return Response.json(
