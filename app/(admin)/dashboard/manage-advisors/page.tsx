@@ -57,7 +57,11 @@ export default function ManageAdvisors() {
   useEffect(() => {
     async function fetchAdvisors() {
       try {
-        const response = await fetch("/api/advisors");
+        const response = await fetch("/api/advisors", {
+          headers: {
+            "departmentid": user?.departmentId ? String(user.departmentId) : "",
+          },
+        });
         if (!response.ok) {
           throw new Error("Failed to fetch advisors");
         }
@@ -68,7 +72,7 @@ export default function ManageAdvisors() {
       }
     }
     fetchAdvisors();
-  }, []);
+  }, [user?.departmentId]);
   const handleAddAdvisor = async () => {
     // Validate the form data
     if (
@@ -99,7 +103,13 @@ export default function ManageAdvisors() {
         throw new Error(errorMsg);
       } else {
         // Fetch updated list after successful addition
-        const response = await fetch("/api/advisors");
+        const response = await fetch("/api/advisors",{
+          headers: {
+            "departmentid": user?.departmentId
+              ? String(user.departmentId)
+              : "",
+          },
+        });
         if (response.ok) {
           const data = await response.json();
           setAdvisorList(data.advisors);
