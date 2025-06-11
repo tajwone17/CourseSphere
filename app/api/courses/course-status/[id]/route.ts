@@ -6,12 +6,12 @@ export async function PUT(
   { params }: { params: { id: string } },
 ) {
   try {
-    // Extract ID from params
-    const hodId = parseInt(params.id);
+  
+    const courseId = parseInt(params.id);
 
-    if (isNaN(hodId)) {
+    if (isNaN(courseId)) {
       return NextResponse.json(
-        { error: "Invalid advisor ID" },
+        { error: "Invalid course ID" },
         { status: 400 },
       );
     }
@@ -23,21 +23,21 @@ export async function PUT(
 
 
     // Update advisor status in the database
-    await db.query("UPDATE HOD SET STATUS = ? WHERE ID = ?", [
+    await db.query("UPDATE COURSE SET STATUS = ? WHERE ID = ?", [
       status,
-      hodId,
+      courseId,
     ]);
 
     return NextResponse.json(
       {
-        message: `hHOD status updated to ${status === 1 ? "active" : "inactive"}`,
+        message: `course status updated to ${status === 1 ? "active" : "inactive"}`,
       },
       { status: 200 },
     );
   } catch (error) {
-    console.error("Error updating HOD status:", error);
+    console.error("Error updating course status:", error);
     return NextResponse.json(
-      { error: "Failed to update HOD status" },
+      { error: "Failed to update course status" },
       { status: 500 },
     );
   }

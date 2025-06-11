@@ -1,58 +1,41 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Modal, TextInput, Label } from "flowbite-react";
-import { HiPlus, HiOutlineHashtag, HiDocumentText, HiUser } from "react-icons/hi";
+import {
+  HiPlus,
+  HiOutlineHashtag,
+  HiDocumentText,
+  HiUser,
+  HiCheck,
+  HiStatusOffline,
+  HiStatusOnline,
+  HiX,
+} from "react-icons/hi";
 import Select, { SingleValue } from "react-select";
-
-interface Course {
-  id: number;
-  code: string;
-  title: string;
-  credit: number;
-  department: string;
-  instructor: string;
-  status: "Active" | "Inactive";
+import { useAuth } from "../../../context/AuthContext";
+interface COURSE {
+  ID: number;
+  CODE: string;
+  TITLE: string;
+  CREDIT: number;
+  DEPARTMENT: string;
+  INSTRUCTOR_NAME: string;
+  STATUS: number;
 }
 
-const initialCourses: Course[] = [
-  {
-    id: 1,
-    code: "CSE101",
-    title: "Introduction to Programming",
-    credit: 3,
-    department: "CSE",
-    instructor: "Dr. A. Rahman",
-    status: "Active",
-  },
-  {
-    id: 2,
-    code: "EEE201",
-    title: "Basic Electronics",
-    credit: 3,
-    department: "EEE",
-    instructor: "Prof. S. Islam",
-    status: "Active",
-  },
-  {
-    id: 3,
-    code: "CIV150",
-    title: "Engineering Drawing",
-    credit: 2,
-    department: "Civil",
-    instructor: "Engr. M. Hasan",
-    status: "Inactive",
-  },
-];
-
 export default function ManageCourse() {
-  const [courses, setCourses] = useState(initialCourses);
+  const { user } = useAuth();
+  const [courseList, setCourseList] = useState<COURSE[]>([]);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState<COURSE | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [newCourse, setNewCourse] = useState({
+    
     code: "",
     title: "",
     credit: "",
     department: "",
-    instructor: "",
+    instructor_name: "",
   });
 
   // Replace single search with separate search fields
@@ -60,50 +43,203 @@ export default function ManageCourse() {
   const [titleSearch, setTitleSearch] = useState("");
   const [instructorSearch, setInstructorSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
+  const [status, setStatus] = useState<"active" | "inactive">("inactive");
 
-  const handleAddCourse = () => {
+  useEffect(() => {
+    console.log("User data:", user);
+
+    if (user && user.department && user.departmentId) {
+      setNewCourse((prev) => ({
+        ...prev,
+        department: user.departmentId,
+      }));
+    }
+  }, [user]);
+
+  useEffect(() => {
+    async function fetchCourses() {
+      try {
+        const response = await fetch("/api/courses/get-courses", {
+          headers: {
+            departmentid: user?.departmentId ? String(user.departmentId) : "",
+          },
+        });
+        if (!response.ok) {
+          throw new Error("Failed to fetch Courses");
+        }
+        const data = await response.json();
+        console.log(data.courses);
+        setCourseList(data.courses);
+      } catch (error: unknown) {
+        console.log(error);
+      }
+    }
+    fetchCourses();
+  }, [user?.departmentId]);
+
+  const handleAddCourse = async () => {
+    // Validate the form data
     if (
       !newCourse.code ||
       !newCourse.title ||
       !newCourse.credit ||
-      !newCourse.department ||
-      !newCourse.instructor
-    )
+      
+      !newCourse.instructor_name
+    ) {
+      // console.error("All fields are required");
+      alert("All fields are required");
       return;
-    setCourses([
-      ...courses,
-      {
-        id: courses.length + 1,
-        code: newCourse.code,
-        title: newCourse.title,
-        credit: Number(newCourse.credit),
-        department: newCourse.department,
-        instructor: newCourse.instructor,
-        status: "Active",
-      },
-    ]);
-    setShowAddModal(false);
+    }
+
+    try {
+      console.log("Sending data:", newCourse);
+      const res = await fetch("/api/courses/add-course", {
+        method: "POST",
+        headers: { "Content-Type": "application/json","departmentid": user?.departmentId},
+        credentials: "include",
+        body: JSON.stringify(newCourse),
+      });
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        const errorMsg = errorText.split("\n")[0];
+        console.log("Error response:", errorText);
+        alert(` ${errorMsg}`);
+        throw new Error(errorMsg);
+      } else {
+        // Fetch updated list after successful addition
+        const response = await fetch("/api/courses/get-courses", {
+          headers: {
+            departmentid: user?.departmentId ? String(user.departmentId) : "",
+          },
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setCourseList(data.courses);
+        }
+        alert("Course added successfully");
+        console.log("New Course added successfully");
+      }
+    } catch (error) {
+      console.log("Error adding Course:", error);
+    }
+
+    // Reset the form and close modal
     setNewCourse({
       code: "",
       title: "",
       credit: "",
       department: "",
-      instructor: "",
+      instructor_name: "",
     });
+    setShowAddModal(false);
   };
+  const openModal = (course: COURSE, action: "active" | "inactive") => {
+    setSelectedCourse(course);
+    setStatus(action);
+    setShowModal(true);
+  };
+  // const filteredCourseList = courseList.filter((course) => {
+  //   // Name filter
+  //   const codeMatch =
+  //     !codeSearch ||
+  //     course.CODE.toLowerCase().includes(codeSearch.toLowerCase());
 
-  const handleToggleStatus = (id: number) => {
-    setCourses((prev) =>
-      prev.map((course) =>
-        course.id === id
-          ? {
-              ...course,
-              status: course.status === "Active" ? "Inactive" : "Active",
-            }
-          : course,
-      ),
-    );
+  //   // Title filter
+  //   const titleMatch =
+  //     !titleSearch ||
+  //     course.TITLE.toLowerCase().includes(titleSearch.toLowerCase());
+
+  //   // Instructor filter
+  //   const instructorMatch =
+  //     !instructorSearch ||
+  //     course.INSTRUCTOR.toLowerCase().includes(instructorSearch.toLowerCase());
+
+  //   // Status filter
+  //   const statusMatch =
+  //     !statusFilter ||
+  //     course.STATUS ===
+  //       (statusFilter === "Active"
+  //         ? 1
+  //         : statusFilter === "Inactive"
+  //           ? 0
+  //           : course.STATUS);
+
+  //   return codeMatch && titleMatch && instructorMatch && statusMatch;
+  // });
+
+  const confirmAction = async () => {
+    if (selectedCourse) {
+      try {
+        // Update local state
+        setCourseList((prev) =>
+          prev.map((course) =>
+            course.ID === selectedCourse.ID
+              ? { ...course, STATUS: status === "active" ? 1 : 0 }
+              : course,
+          ),
+        );
+
+        // Make API call to update status in the database
+        const response = await fetch(
+          `/api/courses/course-status/${selectedCourse.ID}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              status: status === "active" ? 1 : 0,
+            }),
+          },
+        );
+        if (response.ok) {
+          alert(
+            `Course status updated to ${status === "active" ? "Active" : "Inactive"}`,
+          );
+        }
+        if (!response.ok) {
+          alert("Failed to update status");
+        }
+      } catch (error) {
+        console.error("Error updating account status:", error);
+        // You could add error handling UI here
+      }
+    }
+    setShowModal(false);
   };
+  const handleStatusChange = (
+    selectedOption: SingleValue<{ value: string; label: string }> | null,
+  ) => {
+    if (selectedOption) {
+      setStatusFilter(selectedOption.value); // Set the value of the selected option
+    } else {
+      setStatusFilter(""); // Clear the filter if nothing is selected
+    }
+  };
+  const statusOptions = [
+    { value: " ", label: "All" },
+    { value: "Active", label: "Active" },
+    { value: "Inactive", label: "Inactive" },
+  ];
+
+  // Email filter
+  //   const emailMatch =
+  //     !searchEmail ||
+  //     course.INSTRUCTOR.toLowerCase().includes(searchEmail.toLowerCase());
+
+  //   // Status filter
+  //   const statusMatch =
+  //     !statusFilter ||
+  //     course.STATUS ===
+  //       (statusFilter === "Active"
+  //         ? 1
+  //         : statusFilter === "Inactive"
+  //           ? 0
+  //           : course.STATUS);
+
+  //   return codeMatch && titleMatch && instructorMatch && statusMatch;
+  // });
 
   // Add handlers for search fields
   const handleCodeSearchChange = (
@@ -124,34 +260,24 @@ export default function ManageCourse() {
     setInstructorSearch(event.target.value);
   };
 
-  const handleStatusChange = (
-    selectedOption: SingleValue<{ value: string; label: string }> | null,
-  ) => {
-    if (selectedOption) {
-      setStatusFilter(selectedOption.value);
-    } else {
-      setStatusFilter("");
-    }
-  };
-
-  const statusOptions = [
-    { value: "", label: "All" },
-    { value: "Active", label: "Active" },
-    { value: "Inactive", label: "Inactive" },
-  ];
-
   // Update filtering logic to use all search fields
-  const filteredCourses = courses.filter(
+  const filteredCourses = courseList.filter(
     (course) =>
       (codeSearch === "" ||
-        course.code.toLowerCase().includes(codeSearch.toLowerCase())) &&
+        course.CODE.toLowerCase().includes(codeSearch.toLowerCase())) &&
       (titleSearch === "" ||
-        course.title.toLowerCase().includes(titleSearch.toLowerCase())) &&
+        course.TITLE.toLowerCase().includes(titleSearch.toLowerCase())) &&
       (instructorSearch === "" ||
-        course.instructor
+        course.INSTRUCTOR_NAME
           .toLowerCase()
           .includes(instructorSearch.toLowerCase())) &&
-      (statusFilter === "" || course.status === statusFilter),
+      (statusFilter === "" ||
+        course.STATUS ===
+          (statusFilter === "Active"
+            ? 1
+            : statusFilter === "Inactive"
+              ? 0
+              : course.STATUS)),
   );
 
   return (
@@ -314,35 +440,51 @@ export default function ManageCourse() {
               </tr>
             )}
             {filteredCourses.map((course) => (
-              <tr key={course.id} className="hover:bg-gray-800">
+              <tr key={course.ID} className="hover:bg-gray-800">
                 <td className="px-6 py-4 whitespace-nowrap text-white">
-                  {course.code}
+                  {course.CODE}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-white">
-                  {course.title}
+                  {course.TITLE}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-white">
-                  {course.credit}
+                  {course.CREDIT}
                 </td>
 
                 <td className="px-6 py-4 whitespace-nowrap text-white">
-                  {course.instructor}
+                  {course.INSTRUCTOR_NAME}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-white">
-                  {course.status}
+                  {course.STATUS === 1 ? (
+                    <HiStatusOnline className="mr-2 inline text-green-500" />
+                  ) : (
+                    <HiStatusOffline className="mr-2 inline text-red-500" />
+                  )}
+                  {course.STATUS === 1 ? "Active" : "Inactive"}
                 </td>
+                {/* {" "} */}
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <Button
-                    size="xs"
-                    style={{
-                      backgroundColor:
-                        course.status === "Active" ? "#ef4444" : "#22c55e",
-                      color: "#fff",
-                    }}
-                    onClick={() => handleToggleStatus(course.id)}
-                  >
-                    {course.status === "Active" ? "Set Inactive" : "Set Active"}
-                  </Button>
+                  {course.STATUS === 0 ? (
+                    <Button
+                      size="xs"
+                      style={{ backgroundColor: "#22c55e", color: "#fff" }}
+                      onClick={() => openModal(course, "active")}
+                      className="flex items-center gap-1 px-3 py-1 transition-transform hover:scale-105"
+                    >
+                      <HiCheck className="h-4 w-4 text-white" />
+                      <span>Activate</span>
+                    </Button>
+                  ) : (
+                    <Button
+                      size="xs"
+                      style={{ backgroundColor: "#ef4444", color: "#fff" }}
+                      onClick={() => openModal(course, "inactive")}
+                      className="flex items-center gap-1 px-3 py-1 transition-transform hover:scale-105"
+                    >
+                      <HiX className="h-4 w-4 text-white" />
+                      <span>Deactivate</span>
+                    </Button>
+                  )}
                 </td>
               </tr>
             ))}
@@ -413,9 +555,9 @@ export default function ManageCourse() {
               </Label>
               <TextInput
                 id="instructor"
-                value={newCourse.instructor}
+                value={newCourse.instructor_name}
                 onChange={(e) =>
-                  setNewCourse({ ...newCourse, instructor: e.target.value })
+                  setNewCourse({ ...newCourse, instructor_name: e.target.value })
                 }
                 className="border-gray-700 bg-gray-900 text-white"
                 required
@@ -439,6 +581,42 @@ export default function ManageCourse() {
           </form>
         </div>
       </Modal>
+      {/* Confirmation Modal */}{" "}
+            <Modal show={showModal} size="md" onClose={() => setShowModal(false)}>
+              <div className="p-6 text-center">
+                {status === "active" ? (
+                  <HiStatusOnline className="mx-auto mb-4 h-14 w-14 text-green-500" />
+                ) : (
+                  <HiX className="mx-auto mb-4 h-14 w-14 text-red-500" />
+                )}
+                <h3 className="mb-5 text-lg font-normal text-gray-300">
+                  Are you sure you want to{" "}
+                  <span className="font-semibold text-white">{status}</span> the
+                  account of{" "}
+                  <span className="font-semibold text-white">
+                    {selectedCourse?.TITLE}
+                  </span>
+                  ?
+                </h3>
+                <div className="flex justify-center gap-4">
+                  <Button
+                    color={status === "active" ? "success" : "failure"}
+                    onClick={confirmAction}
+                    className="flex items-center gap-2"
+                  >
+                    {status === "active" ? (
+                      <HiCheck className="text-white" />
+                    ) : (
+                      <HiX className="text-white" />
+                    )}
+                    Yes, {status}
+                  </Button>
+                  <Button color="gray" onClick={() => setShowModal(false)}>
+                    Cancel
+                  </Button>
+                </div>
+              </div>
+            </Modal>
     </div>
   );
 }

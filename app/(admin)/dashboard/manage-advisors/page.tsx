@@ -59,7 +59,7 @@ export default function ManageAdvisors() {
       try {
         const response = await fetch("/api/advisors", {
           headers: {
-            "departmentid": user?.departmentId ? String(user.departmentId) : "",
+            departmentid: user?.departmentId ? String(user.departmentId) : "",
           },
         });
         if (!response.ok) {
@@ -103,11 +103,9 @@ export default function ManageAdvisors() {
         throw new Error(errorMsg);
       } else {
         // Fetch updated list after successful addition
-        const response = await fetch("/api/advisors",{
+        const response = await fetch("/api/advisors", {
           headers: {
-            "departmentid": user?.departmentId
-              ? String(user.departmentId)
-              : "",
+            departmentid: user?.departmentId ? String(user.departmentId) : "",
           },
         });
         if (response.ok) {
@@ -190,13 +188,13 @@ export default function ManageAdvisors() {
             }),
           },
         );
-   if (response.ok) {
+        if (response.ok) {
           alert(
             `Advisor status updated to ${status === "active" ? "Active" : "Inactive"}`,
           );
         }
         if (!response.ok) {
-            alert("Failed to update status");
+          alert("Failed to update status");
         }
       } catch (error) {
         console.error("Error updating account status:", error);
@@ -439,7 +437,7 @@ export default function ManageAdvisors() {
       <Modal show={showAddModal} onClose={() => setShowAddModal(false)}>
         <div className="relative bg-gray-800 p-4">
           <div className="mb-6 text-center">
-            <div className="bg-opacity-20 mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-gray-200 ">
+            <div className="bg-opacity-20 mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-gray-200">
               <HiUserGroup className="h-10 w-10 text-[#92e3a9]" />
             </div>
             <div className="text-xl font-semibold text-white">
