@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { Button, Modal, TextInput, Label } from "flowbite-react";
-import { HiPlus, HiCode, HiDocumentText, HiUser } from "react-icons/hi";
+import { HiPlus, HiOutlineHashtag, HiDocumentText, HiUser } from "react-icons/hi";
 import Select, { SingleValue } from "react-select";
 
 interface Course {
@@ -190,7 +190,7 @@ export default function ManageCourse() {
             onChange={handleCodeSearchChange}
           />
           <div className="absolute top-0 left-0 flex h-full items-center pl-3">
-            <HiCode className="h-5 w-5 text-[#92e3a9]" />
+            <HiOutlineHashtag className="h-5 w-5 text-[#92e3a9]" />
           </div>
         </div>
         <div className="relative">
