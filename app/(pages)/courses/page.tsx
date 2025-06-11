@@ -137,16 +137,19 @@ export default function CourseCatalogTable() {
           Browse and select courses for your upcoming semester
         </p>
       </div>
-
       <div
         className="rounded-lg border border-gray-800 bg-gray-900 p-6 shadow-xl"
         data-aos="fade-up"
         data-aos-duration="800"
       >
+        {" "}
         <h2 className="mb-4 text-xl font-semibold text-white">
           Search & Filter
         </h2>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div
+          className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"
+          style={{ position: "relative", zIndex: 100 }}
+        >
           <Select
             value={department}
             onChange={(e) => setDepartment(e.target.value)}
@@ -160,7 +163,7 @@ export default function CourseCatalogTable() {
             ))}
           </Select>
 
-          <div className="relative">
+          <div className="relative z-50">
             <HiSearch className="absolute top-3.5 left-3 text-gray-500" />
             <ReactSelect
               options={courseCodeOptions}
@@ -169,6 +172,10 @@ export default function CourseCatalogTable() {
               instanceId="course-code-select"
               onChange={(option) => setSearchCode(option?.value || "")}
               className="pl-8"
+              menuPortalTarget={
+                typeof document !== "undefined" ? document.body : null
+              }
+              menuPosition="fixed"
               styles={{
                 control: (base) => ({
                   ...base,
@@ -191,6 +198,12 @@ export default function CourseCatalogTable() {
                 menu: (base) => ({
                   ...base,
                   backgroundColor: "#1f2937", // dropdown menu background
+                  zIndex: 9999, // Add high z-index to ensure dropdown appears above other elements
+                  position: "absolute",
+                }),
+                menuPortal: (base) => ({
+                  ...base,
+                  zIndex: 9999,
                 }),
                 option: (base, state) => ({
                   ...base,
@@ -202,7 +215,7 @@ export default function CourseCatalogTable() {
             />
           </div>
 
-          <div className="relative">
+          <div className="relative z-50">
             <ReactSelect
               options={courseTitleOptions}
               placeholder="Search by title"
@@ -210,6 +223,10 @@ export default function CourseCatalogTable() {
               instanceId="course-title-select"
               onChange={(option) => setSearchTitle(option?.value || "")}
               className="pl-8"
+              menuPortalTarget={
+                typeof document !== "undefined" ? document.body : null
+              }
+              menuPosition="fixed"
               styles={{
                 control: (base) => ({
                   ...base,
@@ -232,6 +249,12 @@ export default function CourseCatalogTable() {
                 menu: (base) => ({
                   ...base,
                   backgroundColor: "#1f2937", // dropdown menu background
+                  zIndex: 9999, // Add high z-index to ensure dropdown appears above other elements
+                  position: "absolute",
+                }),
+                menuPortal: (base) => ({
+                  ...base,
+                  zIndex: 9999,
                 }),
                 option: (base, state) => ({
                   ...base,
@@ -243,7 +266,7 @@ export default function CourseCatalogTable() {
             />
           </div>
 
-          <div className="relative">
+          <div className="relative z-50">
             <HiSearch className="absolute top-3.5 left-3 text-gray-500" />
             <ReactSelect
               options={instructorOptions}
@@ -252,6 +275,10 @@ export default function CourseCatalogTable() {
               instanceId="instructor-select"
               onChange={(option) => setSearchInstructor(option?.value || "")}
               className="pl-8"
+              menuPortalTarget={
+                typeof document !== "undefined" ? document.body : null
+              }
+              menuPosition="fixed"
               styles={{
                 control: (base) => ({
                   ...base,
@@ -274,6 +301,12 @@ export default function CourseCatalogTable() {
                 menu: (base) => ({
                   ...base,
                   backgroundColor: "#1f2937", // dropdown menu background
+                  zIndex: 9999, // Add high z-index to ensure dropdown appears above other elements
+                  position: "absolute",
+                }),
+                menuPortal: (base) => ({
+                  ...base,
+                  zIndex: 9999,
                 }),
                 option: (base, state) => ({
                   ...base,
@@ -285,13 +318,12 @@ export default function CourseCatalogTable() {
             />
           </div>
         </div>
-      </div>
-
+      </div>{" "}
       <div
         className="rounded-lg border border-gray-800 bg-gray-900 p-6 shadow-xl"
         data-aos="fade-up"
         data-aos-delay="200"
-        style={{ maxWidth: "100%" }}
+        style={{ maxWidth: "100%", position: "relative", zIndex: 10 }}
       >
         <h2 className="mb-4 text-xl font-semibold text-white">
           Available Courses
@@ -411,7 +443,6 @@ export default function CourseCatalogTable() {
           </div>
         </div>
       </div>
-
       {/* Pagination */}
       <div className="mt-6 flex items-center justify-center gap-4">
         <button
