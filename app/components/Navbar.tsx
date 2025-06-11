@@ -9,9 +9,10 @@ import {
   HiSpeakerphone,
   HiInformationCircle,
   HiMail,
+  HiUser,
 } from "react-icons/hi";
 import {
-  Avatar,
+
   Badge,
   Button,
   Dropdown,
@@ -124,16 +125,11 @@ export function MyNavbar() {
               arrowIcon={false}
               inline
               label={
-                <Avatar
-                  alt="User settings"
-                  img="https://avatars.githubusercontent.com/u/139250082?v=4"
-                  bordered
-                  rounded
-                  className="cursor-pointer"
-                  placeholderInitials="TC"
-                />
+                 <div className="flex h-12 w-12 items-center justify-center rounded-full border border-black cursor-pointer">
+                            <HiUser className="text-4xl text-black" />
+                          </div>
               }
-              className="w-40"
+              className="w-30"
               dismissOnClick={false}
             >
               <DropdownItem

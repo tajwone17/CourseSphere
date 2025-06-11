@@ -9,10 +9,9 @@ import {
   HiIdentification,
 } from "react-icons/hi";
 import { HiLockClosed } from "react-icons/hi2";
-import Image from "next/image";
+// import Image from "next/image";
 
 // import { useAuth } from "../context/AuthContext";
-
 
 export default function ProfileModal({
   onClose: handleClose,
@@ -28,7 +27,6 @@ export default function ProfileModal({
 
   // Mocked user data for demo
   const userProfile = {
-    avatar: "https://avatars.githubusercontent.com/u/139250082?v=4",
     name: "Tajwone Chowdhury",
     department: "Computer Science Engineering",
     id: "0562310005101031",
@@ -77,16 +75,12 @@ export default function ProfileModal({
         data-aos-delay="400"
       >
         <div className="mb-8 flex flex-col items-center gap-4">
-          <Image
-            src={userProfile.avatar}
-            alt="Avatar"
-            width={120}
-            height={120}
-            className="h-32 w-32 rounded-full border-4 border-[#92e3a9] object-cover shadow-lg"
-            unoptimized
-          />
+          <div className="flex h-21 w-21 items-center justify-center rounded-full border border-[#92e3a9]">
+            <HiUser className="text-6xl text-[#92e3a9]" />
+          </div>
+
           <div className="flex items-center gap-2 text-2xl font-bold text-white">
-            <HiUser className="text-[#92e3a9]" /> {userProfile.name}
+            <HiIdentification className="text-[#92e3a9]" /> {userProfile.name}
           </div>
           <div className="flex items-center gap-2 text-lg text-gray-400">
             <HiOfficeBuilding className="text-[#92e3a9]" />{" "}
