@@ -218,7 +218,7 @@ export default function ManageAdvisors() {
       data-aos="zoom-in"
       data-aos-duration="1000"
     >
-      {" "}
+      {/* {" "} */}
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="flex items-center gap-3 text-4xl font-bold text-white">
@@ -243,7 +243,8 @@ export default function ManageAdvisors() {
           <HiPlus className="h-5 w-5" />
           Add New Advisor
         </Button>
-      </div>{" "}
+      </div>
+      {/* {" "} */}
       <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
         <div className="relative">
           <input
@@ -393,7 +394,8 @@ export default function ManageAdvisors() {
                       <HiStatusOffline className="mr-2 inline text-red-500" />
                     )}
                     {advisor.STATUS === 1 ? "Active" : "Inactive"}
-                  </td>{" "}
+                  </td>
+                  {/* {" "} */}
                   <td className="px-6 py-4 whitespace-nowrap">
                     {advisor.STATUS === 0 ? (
                       <Button
@@ -448,7 +450,8 @@ export default function ManageAdvisors() {
                 }
                 placeholder="Enter name"
               />
-            </div>{" "}
+            </div>
+            {/* {" "} */}
             <div className="relative">
               <Label
                 htmlFor="department"
@@ -505,7 +508,8 @@ export default function ManageAdvisors() {
                 placeholder="Enter phone number"
               />
             </div>
-          </div>{" "}
+          </div>
+          {/* {" "} */}
           <div className="mt-6 flex justify-end gap-4">
             <Button
               style={{

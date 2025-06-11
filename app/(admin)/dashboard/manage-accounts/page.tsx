@@ -207,7 +207,7 @@ export default function ManageAccountsAdmin() {
       data-aos="zoom-in"
       data-aos-duration="1000"
     >
-      {" "}
+      {/* {" "} */}
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="flex items-center gap-3 text-4xl font-bold text-white">
@@ -383,7 +383,8 @@ export default function ManageAccountsAdmin() {
                       <HiStatusOffline className="mr-2 inline text-red-500" />
                     )}
                     {admin.STATUS === 1 ? "Active" : "Inactive"}
-                  </td>{" "}
+                  </td>
+                  {/* {" "} */}
                   <td className="px-6 py-4 whitespace-nowrap">
                     {admin.STATUS === 0 ? (
                       <Button
@@ -412,7 +413,8 @@ export default function ManageAccountsAdmin() {
             </tbody>
           </table>
         </div>
-      </div>{" "}
+      </div>
+      {/* {" "} */}
       {/* Add Accounts Admin Modal */}
       <Modal show={showAddModal} onClose={() => setShowAddModal(false)}>
         <div className="relative bg-gray-800 p-4">

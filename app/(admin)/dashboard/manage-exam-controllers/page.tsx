@@ -200,7 +200,7 @@ export default function ManageExamControllers() {
       data-aos="zoom-in"
       data-aos-duration="1000"
     >
-      {" "}
+      {/* {" "} */}
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="flex items-center gap-3 text-4xl font-bold text-white">
@@ -227,7 +227,7 @@ export default function ManageExamControllers() {
         </Button>
       </div>
       <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
-        {" "}
+        {/* {" "} */}
         <div className="relative">
           <input
             type="text"
@@ -376,7 +376,8 @@ export default function ManageExamControllers() {
                       <HiStatusOffline className="mr-2 inline text-red-500" />
                     )}
                     {controller.STATUS==1?"Active":"Inactive"}
-                  </td>{" "}
+                  </td>
+                  {/* {" "} */}
                   <td className="px-6 py-4 whitespace-nowrap">
                     {controller.STATUS === 0 ? (
                       <Button
@@ -405,7 +406,8 @@ export default function ManageExamControllers() {
             </tbody>
           </table>
         </div>
-      </div>{" "}
+      </div>
+      {/* {" "} */}
       {/* Add Exam Controller Modal */}
       <Modal show={showAddModal} onClose={() => setShowAddModal(false)}>
         <div className="relative bg-gray-800 p-4">

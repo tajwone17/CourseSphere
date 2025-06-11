@@ -100,6 +100,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         id: user.id,
         name: user.name,
         email: user.email,
+        registration_number: user.registration_number || "",
         departmentId: user.department || "",
         department: departmentInfo || {}, // Store full department object
         role: user.role || "",

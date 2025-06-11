@@ -221,7 +221,7 @@ export default function ManageHOD() {
       data-aos="zoom-in"
       data-aos-duration="1000"
     >
-      {" "}
+      {/* {" "} */}
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="flex items-center gap-3 text-4xl font-bold text-white">
@@ -402,7 +402,8 @@ export default function ManageHOD() {
                       <HiStatusOffline className="mr-2 inline text-red-500" />
                     )}
                     {hod.STATUS == 1 ? "Active" : "Inactive"}
-                  </td>{" "}
+                  </td>
+                  {/* {" "} */}
                   <td className="px-6 py-4 whitespace-nowrap">
                     {hod.STATUS === 0 ? (
                       <Button
@@ -431,7 +432,8 @@ export default function ManageHOD() {
             </tbody>
           </table>
         </div>
-      </div>{" "}
+      </div>
+      {/* {" "} */}
       {/* Add HOD Modal */}
       <Modal show={showAddModal} onClose={() => setShowAddModal(false)}>
         <div className="relative bg-gray-800 p-4">

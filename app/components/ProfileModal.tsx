@@ -11,25 +11,24 @@ import {
 import { HiLockClosed } from "react-icons/hi2";
 // import Image from "next/image";
 
-// import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/AuthContext";
 
 export default function ProfileModal({
   onClose: handleClose,
 }: {
   onClose: () => void;
 }) {
-  // const { user, isAuthenticated } = useAuth();
-  const isAuthenticated = true; //TODO: Replace with actual authentication check
-  const user = {
-    email: "tajwone@example.com",
-  };
+  const { user, isAuthenticated } = useAuth();
+  // const isAuthenticated = true; //TODO: Replace with actual authentication check
+
   const userEmail = user?.email || "";
 
-  // Mocked user data for demo
   const userProfile = {
-    name: "Tajwone Chowdhury",
-    department: "Computer Science Engineering",
-    id: "0562310005101031",
+    name: user?.name || "",
+
+    department: user?.department?.name || "",
+    id: user?.registration_number || "",
+    role: user?.role || "",
   };
 
   // Editable fields
@@ -82,13 +81,17 @@ export default function ProfileModal({
           <div className="flex items-center gap-2 text-2xl font-bold text-white">
             <HiIdentification className="text-[#92e3a9]" /> {userProfile.name}
           </div>
-          <div className="flex items-center gap-2 text-lg text-gray-400">
+          {userProfile.role!="admin" &&
+         ( <div className="flex items-center gap-2 text-lg text-gray-400">
             <HiOfficeBuilding className="text-[#92e3a9]" />{" "}
             {userProfile.department}
-          </div>
-          <div className="flex items-center gap-2 text-base text-gray-400">
-            <HiIdentification className="text-[#92e3a9]" /> ID: {userProfile.id}
-          </div>
+          </div>)}
+          {userProfile.role == "student" && (
+            <div className="flex items-center gap-2 text-base text-gray-400">
+              <HiIdentification className="text-[#92e3a9]" /> ID:{" "}
+              {userProfile.id}
+            </div>
+          )}
         </div>
         {isAuthenticated ? (
           <form className="space-y-7">

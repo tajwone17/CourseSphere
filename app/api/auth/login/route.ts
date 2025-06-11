@@ -33,6 +33,7 @@ export async function POST(request: NextRequest) {
     }
 
     const user = rows[0];
+    const REGISTRATION_NUMBER = user.REGISTRATION_NUMBER || "";
 
     // Verify password
     console.log(password, user.PASSWORD);
@@ -64,6 +65,7 @@ export async function POST(request: NextRequest) {
           email: user.EMAIL,
           department: user.DEPARTMENT_ID,
           role: role,
+          registration_number: REGISTRATION_NUMBER,
         },
       },
       {
