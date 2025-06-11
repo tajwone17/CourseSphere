@@ -1,7 +1,8 @@
 "use client";
 import React, { useState } from "react";
 import { Button, Modal, TextInput, Label } from "flowbite-react";
-import { HiPlus, HiSearch } from "react-icons/hi";
+import { HiPlus, HiCode, HiDocumentText, HiUser } from "react-icons/hi";
+import Select, { SingleValue } from "react-select";
 
 interface Course {
   id: number;
@@ -53,7 +54,12 @@ export default function ManageCourse() {
     department: "",
     instructor: "",
   });
-  const [search, setSearch] = useState("");
+
+  // Replace single search with separate search fields
+  const [codeSearch, setCodeSearch] = useState("");
+  const [titleSearch, setTitleSearch] = useState("");
+  const [instructorSearch, setInstructorSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
 
   const handleAddCourse = () => {
     if (
@@ -99,10 +105,53 @@ export default function ManageCourse() {
     );
   };
 
+  // Add handlers for search fields
+  const handleCodeSearchChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setCodeSearch(event.target.value);
+  };
+
+  const handleTitleSearchChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setTitleSearch(event.target.value);
+  };
+
+  const handleInstructorSearchChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setInstructorSearch(event.target.value);
+  };
+
+  const handleStatusChange = (
+    selectedOption: SingleValue<{ value: string; label: string }> | null,
+  ) => {
+    if (selectedOption) {
+      setStatusFilter(selectedOption.value);
+    } else {
+      setStatusFilter("");
+    }
+  };
+
+  const statusOptions = [
+    { value: "", label: "All" },
+    { value: "Active", label: "Active" },
+    { value: "Inactive", label: "Inactive" },
+  ];
+
+  // Update filtering logic to use all search fields
   const filteredCourses = courses.filter(
     (course) =>
-      course.code.toLowerCase().includes(search.toLowerCase()) ||
-      course.title.toLowerCase().includes(search.toLowerCase()),
+      (codeSearch === "" ||
+        course.code.toLowerCase().includes(codeSearch.toLowerCase())) &&
+      (titleSearch === "" ||
+        course.title.toLowerCase().includes(titleSearch.toLowerCase())) &&
+      (instructorSearch === "" ||
+        course.instructor
+          .toLowerCase()
+          .includes(instructorSearch.toLowerCase())) &&
+      (statusFilter === "" || course.status === statusFilter),
   );
 
   return (
@@ -131,16 +180,104 @@ export default function ManageCourse() {
           <HiPlus className="mr-2" /> Add New Course
         </Button>
       </div>
-      <div className="mb-6 flex items-center gap-4">
-        <div className="relative w-full max-w-xs">
+      <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
+        <div className="relative">
           <input
             type="text"
             className="w-full rounded border border-gray-700 bg-gray-800 py-2 pr-4 pl-10 text-white placeholder-gray-400 focus:border-[#92e3a9] focus:outline-none"
-            placeholder="Search by code or title"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search by code"
+            value={codeSearch}
+            onChange={handleCodeSearchChange}
           />
-          <HiSearch className="absolute top-2.5 left-3 h-5 w-5 text-gray-400" />
+          <div className="absolute top-0 left-0 flex h-full items-center pl-3">
+            <HiCode className="h-5 w-5 text-[#92e3a9]" />
+          </div>
+        </div>
+        <div className="relative">
+          <input
+            type="text"
+            className="w-full rounded border border-gray-700 bg-gray-800 py-2 pr-4 pl-10 text-white placeholder-gray-400 focus:border-[#92e3a9] focus:outline-none"
+            placeholder="Search by title"
+            value={titleSearch}
+            onChange={handleTitleSearchChange}
+          />
+          <div className="absolute top-0 left-0 flex h-full items-center pl-3">
+            <HiDocumentText className="h-5 w-5 text-[#92e3a9]" />
+          </div>
+        </div>
+        <div className="relative">
+          <input
+            type="text"
+            className="w-full rounded border border-gray-700 bg-gray-800 py-2 pr-4 pl-10 text-white placeholder-gray-400 focus:border-[#92e3a9] focus:outline-none"
+            placeholder="Search by instructor"
+            value={instructorSearch}
+            onChange={handleInstructorSearchChange}
+          />
+          <div className="absolute top-0 left-0 flex h-full items-center pl-3">
+            <HiUser className="h-5 w-5 text-[#92e3a9]" />
+          </div>
+        </div>
+        <div className="relative">
+          <Select
+            options={statusOptions}
+            onChange={handleStatusChange}
+            placeholder="Filter by Status"
+            isSearchable={false}
+            value={statusOptions.find(
+              (option) => option.value === statusFilter,
+            )}
+            styles={{
+              control: (baseStyles) => ({
+                ...baseStyles,
+                backgroundColor: "#1f2937", // Dark background
+                borderColor: "#374151",
+                color: "white",
+                "&:hover": {
+                  borderColor: "#4b5563",
+                },
+              }),
+              menu: (baseStyles) => ({
+                ...baseStyles,
+                backgroundColor: "#1f2937", // Dark background for dropdown menu
+              }),
+              option: (baseStyles, { isFocused, isSelected }) => ({
+                ...baseStyles,
+                backgroundColor: isSelected
+                  ? "#92e3a9" // Primary green color for selected item
+                  : isFocused
+                    ? "#374151" // Slightly lighter dark for hover
+                    : "#1f2937", // Dark background
+                color: isSelected ? "black" : "white",
+                cursor: "pointer",
+                ":active": {
+                  backgroundColor: isSelected ? "#92e3a9" : "#374151",
+                },
+              }),
+              singleValue: (baseStyles) => ({
+                ...baseStyles,
+                color: "white", // Text color for selected value
+              }),
+              placeholder: (baseStyles) => ({
+                ...baseStyles,
+                color: "#9ca3af", // Light gray for placeholder
+              }),
+              dropdownIndicator: (baseStyles) => ({
+                ...baseStyles,
+                color: "#9ca3af", // Light gray for dropdown arrow
+                "&:hover": {
+                  color: "white",
+                },
+              }),
+              indicatorSeparator: (baseStyles) => ({
+                ...baseStyles,
+                backgroundColor: "#4b5563",
+              }),
+              input: (baseStyles) => ({
+                ...baseStyles,
+                color: "white",
+              }),
+            }}
+          />
         </div>
       </div>
       <div className="overflow-x-auto rounded-lg border border-gray-700 lg:overflow-hidden">
@@ -156,7 +293,7 @@ export default function ManageCourse() {
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                 Credit
               </th>
-            
+
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                 Instructor
               </th>
@@ -187,7 +324,7 @@ export default function ManageCourse() {
                 <td className="px-6 py-4 whitespace-nowrap text-white">
                   {course.credit}
                 </td>
-        
+
                 <td className="px-6 py-4 whitespace-nowrap text-white">
                   {course.instructor}
                 </td>
@@ -269,7 +406,7 @@ export default function ManageCourse() {
                 max={6}
               />
             </div>
-         
+
             <div>
               <Label htmlFor="instructor" className="text-gray-300">
                 Instructor
