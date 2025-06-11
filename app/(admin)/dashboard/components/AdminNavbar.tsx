@@ -11,6 +11,7 @@ import {
   HiSpeakerphone,
   HiMenu,
   HiCash,
+  HiUser,
 } from "react-icons/hi";
 import { useEffect, useState } from "react";
 
@@ -20,7 +21,7 @@ import { useAuth } from "@/app/context/AuthContext";
 export default function AdminNavbar() {
   const router = useRouter();
   const pathname = usePathname();
-   const { logout } = useAuth();
+  const { logout } = useAuth();
   const { user } = useAuth();
   const [role, setRole] = useState<string | null>(null);
   const [openModal, setOpenModal] = useState(false);
@@ -29,7 +30,7 @@ export default function AdminNavbar() {
   useEffect(() => {
     // const adminRole = localStorage.getItem("adminRole");
     // const token = localStorage.getItem("adminToken");
-    
+
     if (!user) {
       router.push("/login");
       return;
@@ -191,15 +192,11 @@ export default function AdminNavbar() {
             arrowIcon={false}
             inline
             label={
-              <Avatar
-                alt="User settings"
-                img="https://scontent.fzyl6-1.fna.fbcdn.net/v/t39.30808-6/372624737_3640915932896748_4744980592238643195_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=a5f93a&_nc_eui2=AeGUvmZnTEIB81Zzlg7HWNr50lPTtsFdLpzSU9O2wV0unKpLICPXB36mmKbTqmMDKwj2H2Wvy3HoZgbvSztt3mLD&_nc_ohc=je1Q2Zu5XIMQ7kNvwEHpa_b&_nc_oc=Adlx8h4yz_M36L65UGkdvIopzNIyLtRaLb4hSzRNKyO1NHR_jbPw9LHSHzN99WNpHUA&_nc_zt=23&_nc_ht=scontent.fzyl6-1.fna&_nc_gid=2SMSTQw7H8gehkRiZHT0xg&oh=00_AfEdhQHt-MbK7tjuhZLPFzM_wpDl1M9LhaOKfwCYQ5lUDQ&oe=6816E171"
-                bordered
-                rounded
-                className="cursor-pointer"
-              />
+              <div className="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full border border-[#92e3a9]">
+                <HiUser className="text-4xl text-[#92e3a9]" />
+              </div>
             }
-            className="w-40"
+            className="w-30"
             dismissOnClick={false}
           >
             <DropdownItem
