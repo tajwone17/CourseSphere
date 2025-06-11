@@ -295,9 +295,7 @@ export default function ManageCourse() {
             <HiDocumentText className="mr-3 h-10 w-10 text-[#92e3a9]" />
             Manage Courses
           </h1>
-          <p className="mt-4 text-lg text-gray-400">
-            Add, view, and manage courses
-          </p>
+         
         </div>
         <Button
           style={{
