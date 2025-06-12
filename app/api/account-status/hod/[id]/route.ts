@@ -6,27 +6,16 @@ export async function PUT(
   { params }: { params: { id: string } },
 ) {
   try {
-    // Extract ID from params
-    const hodId = parseInt(params.id);
+    // Await params before accessing its properties
 
-    if (isNaN(hodId)) {
-      return NextResponse.json(
-        { error: "Invalid advisor ID" },
-        { status: 400 },
-      );
-    }
+    const hodId = await params.id;
 
     // Parse the request body to get the status
     const body = await request.json();
     const { status } = body;
 
-
-
     // Update advisor status in the database
-    await db.query("UPDATE HOD SET STATUS = ? WHERE ID = ?", [
-      status,
-      hodId,
-    ]);
+    await db.query("UPDATE HOD SET STATUS = ? WHERE ID = ?", [status, hodId]);
 
     return NextResponse.json(
       {

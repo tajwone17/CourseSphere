@@ -7,14 +7,14 @@ export async function PUT(
 ) {
   try {
     // Extract accounts ID from params
-    const accountsAdminId = parseInt(params.id);
+    const accountsAdminId = await params.id;
 
-    if (isNaN(accountsAdminId)) {
-      return NextResponse.json(
-        { error: "Invalid Accounts Admin ID" },
-        { status: 400 },
-      );
-    }
+    // if (isNaN(accountsAdminId)) {
+    //   return NextResponse.json(
+    //     { error: "Invalid Accounts Admin ID" },
+    //     { status: 400 },
+    //   );
+    // }
 
     // Parse the request body to get the status
     const body = await request.json();
