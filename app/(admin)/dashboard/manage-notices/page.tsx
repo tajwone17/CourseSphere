@@ -1,82 +1,181 @@
 "use client";
 
 import { Button, TextInput, Label, Modal, Textarea } from "flowbite-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { HiPlus, HiPencil, HiTrash } from "react-icons/hi";
-
-interface Notice {
-  id: number;
-  title: string;
-  description: string;
-
-
-  createdBy: string;
-  createdAt: string;
+import { useAuth } from "../../../context/AuthContext";
+interface NOTICE {
+  ID: string;
+  TITLE: string;
+  DESCRIPTION: string;
+  CREATOR_ID: number;
+  CREATED_AT: string;
 }
 
 export default function ManageNotices() {
-  const [notices, setNotices] = useState<Notice[]>([
-    {
-      id: 1,
-      title: "Fall 2024 Course Registration",
-      description:
-        "Course registration for Fall 2024 semester is now open. Please complete your registration by the deadline.",
-      
-    
-      createdBy: "Dr. Tajwone",
-      createdAt: "2024-04-23",
-    },
-  ]);
+  const [notices, setNotices] = useState<NOTICE[]>([]);
 
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [selectedNotice, setSelectedNotice] = useState<Notice | null>(null);
+  const [selectedNotice, setSelectedNotice] = useState<NOTICE | null>(null);
   const [newNotice, setNewNotice] = useState({
     title: "",
     description: "",
-
   });
-
-  const handleAddNotice = () => {
-    const id = notices.length + 1;
-    const noticeData = {
-      ...newNotice,
-      id,
-      createdBy: "Dr. Tajwone", // This would come from auth context in a real app
-      createdAt: new Date().toISOString().split("T")[0],
+  const { user } = useAuth();
+  useEffect(() => {
+    const fetchData = async () => {
+      if (user && user.id) {
+        const response = await fetch("/api/notices", {
+          headers: { creatorId: user.id },
+          credentials: "include",
+        });
+        const data = await response.json();
+        
+        setNotices(data.notices);
+      
+      }
     };
-    setNotices([...notices, noticeData]);
-    setShowAddModal(false);
-    setNewNotice({
-      title: "",
-      description: "",
-     
-    
-    });
-  };
+    fetchData();
+  }, [user]);
+  const handleAddNotice = async () => {
+    const noticeData = {
+      title: newNotice.title,
+      description: newNotice.description,
+      creatorId: user.id,
+      date: new Date().toISOString().split("T")[0],
+    };
 
-  const handleEditNotice = () => {
+    if (!noticeData.title || !noticeData.description) {
+      alert("Please fill in all fields");
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/notices/add-notice", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(noticeData),
+      });
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        const errorMsg = errorText.split("\n")[0];
+        console.log("Error response:", errorText);
+        alert(` ${errorMsg}`);
+        throw new Error(errorMsg);
+      } else {
+        // Fetch updated list after successful addition
+        const response = await fetch("/api/notices", {
+          headers: { creatorId: user.id },
+          credentials: "include",
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setNotices(data.notices);
+        }
+        alert("Notice added successfully");
+        console.log("New notice added successfully");
+
+        setNewNotice({
+          title: "",
+          description: "",
+        });
+        setShowAddModal(false);
+      }
+    } catch (error) {
+      console.log("Error adding notice:", error);
+    }
+  };
+  const handleEditNotice = async (id: string) => {
     if (!selectedNotice) return;
-    const updatedList = notices.map((notice) =>
-      notice.id === selectedNotice.id ? selectedNotice : notice,
-    );
-    setNotices(updatedList);
+
+    try {
+      const res = await fetch(`/api/notices/edit-notice/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          title: selectedNotice.TITLE,
+          description: selectedNotice.DESCRIPTION,
+          date: new Date().toISOString().split("T")[0],
+          creatorId: user.id,
+        }),
+      });
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        const errorMsg = errorText.split("\n")[0];
+        console.log("Error response:", errorText);
+        alert(` ${errorMsg}`);
+        throw new Error(errorMsg);
+      } else {
+        // Fetch updated list after successful edit
+        const response = await fetch("/api/notices", {
+          headers: { creatorId: user.id },
+          credentials: "include",
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setNotices(data.notices);
+        }
+        alert("Notice updated successfully");
+        console.log("Notice updated successfully");
+      }
+    } catch (error) {
+      console.log("Error updating notice:", error);
+    }
+
     setShowEditModal(false);
   };
-
-  const handleDeleteNotice = () => {
+  const handleDeleteNotice = async () => {
     if (!selectedNotice) return;
-    const updatedList = notices.filter(
-      (notice) => notice.id !== selectedNotice.id,
-    );
-    setNotices(updatedList);
+
+    try {
+      const res = await fetch(
+        `/api/notices/delete-notice/${selectedNotice.ID}`,
+        {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+        },
+      );
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        const errorMsg = errorText.split("\n")[0];
+        console.log("Error response:", errorText);
+        alert(` ${errorMsg}`);
+        throw new Error(errorMsg);
+      } else {
+        // Fetch updated list after successful deletion
+        const response = await fetch("/api/notices", {
+          headers: { creatorId: user.id },
+          credentials: "include",
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setNotices(data);
+        }
+        alert("Notice deleted successfully");
+        console.log("Notice deleted successfully");
+      }
+    } catch (error) {
+      console.log("Error deleting notice:", error);
+    }
+
     setShowDeleteModal(false);
   };
 
   return (
-    <div className="mx-auto max-w-7xl p-8"      data-aos="zoom-in"
-    data-aos-duration="1000">
+    <div
+      className="mx-auto max-w-7xl p-8"
+      data-aos="zoom-in"
+      data-aos-duration="1000"
+    >
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="text-4xl font-bold text-white">Manage Notices</h1>
@@ -110,8 +209,7 @@ export default function ManageNotices() {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                   Title
                 </th>
-             
-             
+
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                   Created By
                 </th>
@@ -126,19 +224,18 @@ export default function ManageNotices() {
             <tbody className="divide-y divide-gray-800">
               {notices.map((notice) => (
                 <tr
-                  key={notice.id}
+                  key={notice.ID}
                   className="bg-gray-900 transition-colors hover:bg-gray-800"
                 >
                   <td className="px-6 py-4 whitespace-nowrap text-white">
-                    {notice.title}
+                    {notice.TITLE}
                   </td>
-               
-               
+
                   <td className="px-6 py-4 whitespace-nowrap text-white">
-                    {notice.createdBy}
+                    {notice.CREATOR_ID}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-gray-400">
-                    {notice.createdAt}
+                    {notice.CREATED_AT}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex gap-2">
@@ -201,8 +298,6 @@ export default function ManageNotices() {
                 rows={4}
               />
             </div>
-         
-        
           </div>
           <div className="mt-6 flex justify-end gap-4">
             <Button
@@ -234,11 +329,11 @@ export default function ManageNotices() {
               <Label htmlFor="edit-title">Title</Label>
               <TextInput
                 id="edit-title"
-                value={selectedNotice?.title}
+                value={selectedNotice?.TITLE}
                 onChange={(e) =>
                   setSelectedNotice(
                     selectedNotice
-                      ? { ...selectedNotice, title: e.target.value }
+                      ? { ...selectedNotice, TITLE: e.target.value }
                       : null,
                   )
                 }
@@ -248,22 +343,32 @@ export default function ManageNotices() {
               <Label htmlFor="edit-description">Description</Label>
               <Textarea
                 id="edit-description"
-                value={selectedNotice?.description}
+                value={selectedNotice?.DESCRIPTION}
                 onChange={(e) =>
                   setSelectedNotice(
                     selectedNotice
-                      ? { ...selectedNotice, description: e.target.value }
+                      ? { ...selectedNotice, DESCRIPTION: e.target.value }
                       : null,
                   )
                 }
                 rows={4}
               />
             </div>
-         
-        
-          </div>
+          </div>{" "}
           <div className="mt-6 flex justify-end gap-4">
-            <Button onClick={handleEditNotice}>Save Changes</Button>
+            <Button
+              style={{
+                backgroundColor: "#92e3a9",
+                color: "black",
+                width: "fit-content",
+                cursor: "pointer",
+              }}
+              onClick={() =>
+                selectedNotice && handleEditNotice(selectedNotice.ID)
+              }
+            >
+              Save Changes
+            </Button>
             <Button color="gray" onClick={() => setShowEditModal(false)}>
               Cancel
             </Button>

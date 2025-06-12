@@ -108,11 +108,7 @@ export default function AdminNavbar() {
             href: "/dashboard/student-management",
             icon: HiUsers,
           },
-          {
-            name: "Manage Notices",
-            href: "/dashboard/manage-notices",
-            icon: HiSpeakerphone,
-          },
+        
         ];
       case "accounts_admin":
         return [
@@ -142,12 +138,9 @@ export default function AdminNavbar() {
   return (
     <>
       <Navbar fluid className="border-b border-gray-800 bg-gray-900">
-        <div className="min-w-0 flex-1">
-          <Link
-            href="/dashboard"
-            className="flex items-center gap-2 truncate text-xl font-semibold text-white"
-          >
-            <HiAcademicCap className="flex-shrink-0 text-[#92e3a9]" />
+        <div className="min-w-0 flex-1 flex items-center gap-2 truncate text-2xl font-semibold text-white">
+        
+            <HiAcademicCap className="flex-shrink-0 text-[#92e3a9] text-3xl" />
             <span className="truncate">
               {role === "admin"
                 ? "Super Admin"
@@ -159,7 +152,7 @@ export default function AdminNavbar() {
                       ? "Accounts Office Portal"
                       : "Advisor Portal"}
             </span>
-          </Link>
+         
         </div>
 
         {/* Hamburger menu for mobile */}
