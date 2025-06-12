@@ -13,7 +13,8 @@ export async function GET(
   { params }: { params: { id: string } },
 ) {
   try {
-    const id = params.id;
+    // Await the params object to access its properties
+    const { id } = await params;
 
     // Query the database for department details
     const [rows] = await db.query<DepartmentRow[]>(
