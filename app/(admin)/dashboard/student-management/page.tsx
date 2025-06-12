@@ -5,7 +5,7 @@ import Link from "next/link";
 import { HiSearch } from "react-icons/hi";
 import { FaCheckCircle, FaClock, FaTimesCircle } from "react-icons/fa";
 import { useEffect, useState } from "react";
-
+import {useAuth} from "../../../context/AuthContext";
 interface Student {
   ID: number;
   NAME: string;
@@ -113,8 +113,14 @@ export default function StudentManagement() {
     return () => clearTimeout(timer);
   }, []);
 
-  const adminRole =
-    typeof window !== "undefined" ? localStorage.getItem("adminRole") : null;
+  const [adminRole, setAdminRole] = useState<string | null>(null);
+  const { user } = useAuth();
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && user && user.role) {
+      setAdminRole(user.role);
+    }
+  }, [user]);
   const getStatus = (status: string) => {
     switch (status) {
       case "approved":
@@ -229,7 +235,7 @@ export default function StudentManagement() {
             <option value="fall2023">Fall 2023</option>
           </Select>
         </div>
-        {adminRole !== "accounts" && (
+        {adminRole !== "accounts_admin" && (
           <div>
             <Select
               className="border-gray-700 bg-gray-800 text-white"
@@ -257,7 +263,7 @@ export default function StudentManagement() {
               <th className="px-6 py-3 text-left text-sm font-medium">
                 Session
               </th>
-              {adminRole !== "accounts" && (
+              {adminRole !== "accounts_admin" && (
                 <th className="px-6 py-3 text-left text-sm font-medium">
                   Status
                 </th>
@@ -271,7 +277,7 @@ export default function StudentManagement() {
             {loading ? (
               <tr>
                 <td
-                  colSpan={adminRole !== "accounts" ? 7 : 6}
+                  colSpan={adminRole !== "accounts_admin" ? 7 : 6}
                   className="px-6 py-4 text-center text-white"
                 >
                   Loading students data...
@@ -280,7 +286,7 @@ export default function StudentManagement() {
             ) : filteredStudents.length === 0 ? (
               <tr>
                 <td
-                  colSpan={adminRole !== "accounts" ? 7 : 6}
+                  colSpan={adminRole !== "accounts_admin" ? 7 : 6}
                   className="px-6 py-4 text-center text-white"
                 >
                   No students found.
@@ -295,7 +301,7 @@ export default function StudentManagement() {
                   <td className="px-6 py-4">{student.NAME}</td>
                   <td className="px-6 py-4">{student.EMAIL}</td>
                   <td className="px-6 py-4">{student.SESSION || "N/A"}</td>
-                  {adminRole !== "accounts" && (
+                  {adminRole !== "accounts_admin" && (
                     <td className="px-6 py-4">
                       {getStatus(student.STATUS ? "approved" : "pending")}
                     </td>
