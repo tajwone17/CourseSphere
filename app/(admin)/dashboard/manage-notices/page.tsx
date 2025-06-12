@@ -2,7 +2,18 @@
 
 import { Button, TextInput, Label, Modal, Textarea } from "flowbite-react";
 import { useState, useEffect } from "react";
-import { HiPlus, HiPencil, HiTrash } from "react-icons/hi";
+import {
+  HiPlus,
+  HiPencil,
+  HiTrash,
+  HiSpeakerphone,
+  HiDocument,
+  HiCalendar,
+  HiClock,
+  HiInformationCircle,
+  HiBell,
+  HiCheck,
+} from "react-icons/hi";
 import { useAuth } from "../../../context/AuthContext";
 interface NOTICE {
   ID: string;
@@ -32,9 +43,8 @@ export default function ManageNotices() {
           credentials: "include",
         });
         const data = await response.json();
-        
+
         setNotices(data.notices);
-      
       }
     };
     fetchData();
@@ -176,10 +186,17 @@ export default function ManageNotices() {
       data-aos="zoom-in"
       data-aos-duration="1000"
     >
+      {" "}
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-4xl font-bold text-white">Manage Notices</h1>
-          <p className="mt-4 text-lg text-gray-400">
+          <h1 className="flex items-center gap-3 text-4xl font-bold text-white">
+            <span className="rounded-lg bg-[#92e3a9] p-2">
+              <HiSpeakerphone className="h-8 w-8 text-gray-900" />
+            </span>
+            Manage Notices
+          </h1>{" "}
+          <p className="mt-4 flex items-center gap-2 text-lg text-gray-400">
+            <HiInformationCircle className="text-[#92e3a9]" />
             Create and manage notices for students
           </p>
         </div>
@@ -199,21 +216,24 @@ export default function ManageNotices() {
           Add New Notice
         </Button>
       </div>
-
       <div className="rounded-lg border border-gray-800 bg-gray-900 p-6">
         {/* Notices Table */}
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-800">
             <thead className="bg-gray-800">
+              {" "}
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+                  <HiDocument className="mr-2 inline text-[#92e3a9] group-hover:scale-110" />{" "}
                   Title
                 </th>
 
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+                  <HiCalendar className="mr-2 inline text-[#92e3a9] group-hover:scale-110" />{" "}
                   Created At
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+                  <HiClock className="mr-2 inline text-[#92e3a9] group-hover:scale-110" />{" "}
                   Actions
                 </th>
               </tr>
@@ -224,15 +244,22 @@ export default function ManageNotices() {
                   key={notice.ID}
                   className="bg-gray-900 transition-colors hover:bg-gray-800"
                 >
+                  {" "}
                   <td className="px-6 py-4 whitespace-nowrap text-white">
-                    {notice.TITLE}
+                    <div className="flex items-center gap-2">
+                  
+                      {notice.TITLE}
+                    </div>
                   </td>
-
                   <td className="px-6 py-4 whitespace-nowrap text-gray-400">
-                    {new Date(notice.CREATED_AT).toLocaleString()}
+                    <div className="flex items-center gap-2">
+                     
+                      {new Date(notice.CREATED_AT).toLocaleString()}
+                    </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex gap-2">
+                      {" "}
                       <Button
                         style={{ backgroundColor: "#f59e0b", color: "#ffffff" }}
                         size="xs"
@@ -240,6 +267,8 @@ export default function ManageNotices() {
                           setSelectedNotice(notice);
                           setShowEditModal(true);
                         }}
+                        className="flex items-center gap-1 px-3 py-1 transition-transform hover:scale-105"
+                        title="Edit Notice"
                       >
                         <HiPencil className="h-4 w-4" />
                       </Button>
@@ -250,6 +279,8 @@ export default function ManageNotices() {
                           setSelectedNotice(notice);
                           setShowDeleteModal(true);
                         }}
+                        className="flex items-center gap-1 px-3 py-1 transition-transform hover:scale-105"
+                        title="Delete Notice"
                       >
                         <HiTrash className="h-4 w-4" />
                       </Button>
@@ -261,16 +292,24 @@ export default function ManageNotices() {
           </table>
         </div>
       </div>
-
-      {/* Add Notice Modal */}
+      {/* Add Notice Modal */}{" "}
       <Modal show={showAddModal} onClose={() => setShowAddModal(false)}>
         <div className="relative bg-gray-800 p-4">
-          <div className="mb-4 text-xl font-semibold text-white">
-            Add New Notice
+          <div className="mb-6 text-center">
+            <div className="bg-opacity-20 bg-gray mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full">
+              <HiBell className="h-10 w-10 text-[#92e3a9]" />
+            </div>
+            <div className="text-xl font-semibold text-white">
+              Add New Notice
+            </div>
           </div>
           <div className="space-y-4">
+            {" "}
             <div>
-              <Label htmlFor="title">Title</Label>
+              <Label htmlFor="title" className="mb-1 flex items-center gap-2">
+                <HiDocument className="text-[#92e3a9]" />
+                Title
+              </Label>
               <TextInput
                 id="title"
                 value={newNotice.title}
@@ -279,9 +318,15 @@ export default function ManageNotices() {
                 }
                 placeholder="Enter notice title"
               />
-            </div>
+            </div>{" "}
             <div>
-              <Label htmlFor="description">Description</Label>
+              <Label
+                htmlFor="description"
+                className="mb-1 flex items-center gap-2"
+              >
+                <HiInformationCircle className="text-[#92e3a9]" />
+                Description
+              </Label>
               <Textarea
                 id="description"
                 value={newNotice.description}
@@ -302,25 +347,40 @@ export default function ManageNotices() {
                 cursor: "pointer",
               }}
               onClick={handleAddNotice}
+              className="flex items-center gap-2 transition-transform hover:scale-105"
             >
+              <HiPlus className="h-4 w-4" />
               Add Notice
-            </Button>
-            <Button color="gray" onClick={() => setShowAddModal(false)}>
+            </Button>{" "}
+            <Button
+              color="gray"
+              onClick={() => setShowAddModal(false)}
+              className="transition-transform hover:scale-105"
+            >
               Cancel
             </Button>
           </div>
         </div>
       </Modal>
-
-      {/* Edit Notice Modal */}
+      {/* Edit Notice Modal */}{" "}
       <Modal show={showEditModal} onClose={() => setShowEditModal(false)}>
         <div className="relative bg-gray-800 p-4">
-          <div className="mb-4 text-xl font-semibold text-white">
-            Edit Notice
+          <div className="mb-6 text-center">
+            <div className="bg-opacity-20 bg-gray mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full">
+              <HiPencil className="h-10 w-10 text-[#92e3a9]" />
+            </div>
+            <div className="text-xl font-semibold text-white">Edit Notice</div>
           </div>
           <div className="space-y-4">
+            {" "}
             <div>
-              <Label htmlFor="edit-title">Title</Label>
+              <Label
+                htmlFor="edit-title"
+                className="mb-1 flex items-center gap-2"
+              >
+                <HiDocument className="text-[#92e3a9]" />
+                Title
+              </Label>
               <TextInput
                 id="edit-title"
                 value={selectedNotice?.TITLE}
@@ -332,9 +392,15 @@ export default function ManageNotices() {
                   )
                 }
               />
-            </div>
+            </div>{" "}
             <div>
-              <Label htmlFor="edit-description">Description</Label>
+              <Label
+                htmlFor="edit-description"
+                className="mb-1 flex items-center gap-2"
+              >
+                <HiInformationCircle className="text-[#92e3a9]" />
+                Description
+              </Label>
               <Textarea
                 id="edit-description"
                 value={selectedNotice?.DESCRIPTION}
@@ -360,31 +426,50 @@ export default function ManageNotices() {
               onClick={() =>
                 selectedNotice && handleEditNotice(selectedNotice.ID)
               }
+              className="flex items-center gap-2 transition-transform hover:scale-105"
             >
+              <HiCheck className="h-4 w-4" />
               Save Changes
-            </Button>
-            <Button color="gray" onClick={() => setShowEditModal(false)}>
+            </Button>{" "}
+            <Button
+              color="gray"
+              onClick={() => setShowEditModal(false)}
+              className="transition-transform hover:scale-105"
+            >
               Cancel
             </Button>
           </div>
         </div>
       </Modal>
-
-      {/* Delete Confirmation Modal */}
+      {/* Delete Confirmation Modal */}{" "}
       <Modal show={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
         <div className="relative bg-gray-800 p-4">
-          <div className="mb-4 text-xl font-semibold text-white">
-            Delete Notice
+          <div className="mb-6 text-center">
+            <div className="bg-opacity-20 bg-gray mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full">
+              <HiTrash className="h-10 w-10 text-red-500" />
+            </div>
+            <div className="text-xl font-semibold text-white">
+              Delete Notice
+            </div>
           </div>
           <p className="mb-6 text-gray-300">
             Are you sure you want to delete this notice? This action cannot be
             undone.
-          </p>
+          </p>{" "}
           <div className="flex justify-end gap-4">
-            <Button color="failure" onClick={handleDeleteNotice}>
+            <Button
+              color="failure"
+              onClick={handleDeleteNotice}
+              className="flex items-center gap-2 transition-transform hover:scale-105"
+            >
+              <HiTrash className="h-4 w-4" />
               Delete
             </Button>
-            <Button color="gray" onClick={() => setShowDeleteModal(false)}>
+            <Button
+              color="gray"
+              onClick={() => setShowDeleteModal(false)}
+              className="transition-transform hover:scale-105"
+            >
               Cancel
             </Button>
           </div>
