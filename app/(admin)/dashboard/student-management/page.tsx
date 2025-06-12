@@ -2,10 +2,17 @@
 
 import { Button, TextInput, Select } from "flowbite-react";
 import Link from "next/link";
-import { HiSearch } from "react-icons/hi";
+import {
+  HiIdentification,
+  HiCalendar,
+  HiAcademicCap,
+  HiUserGroup,
+  HiEnvelope,
+  HiBuildingOffice2,
+} from "react-icons/hi2";
 import { FaCheckCircle, FaClock, FaTimesCircle } from "react-icons/fa";
 import { useEffect, useState } from "react";
-import {useAuth} from "../../../context/AuthContext";
+import { useAuth } from "../../../context/AuthContext";
 interface Student {
   ID: number;
   NAME: string;
@@ -16,7 +23,6 @@ interface Student {
   STATUS: boolean;
   MOBILE?: string;
 }
-
 
 // Dummy static data for demonstration
 const dummyStudents: Student[] = [
@@ -100,6 +106,7 @@ export default function StudentManagement() {
   const [searchId, setSearchId] = useState("");
   const [searchSession, setSearchSession] = useState("");
   const [searchStatus, setSearchStatus] = useState("");
+  const [searchDepartment, setSearchDepartment] = useState("");
 
   // Load dummy data on component mount
   useEffect(() => {
@@ -121,6 +128,21 @@ export default function StudentManagement() {
       setAdminRole(user.role);
     }
   }, [user]);
+  const getDepartmentName = (departmentId: number) => {
+    switch (departmentId) {
+      case 1:
+        return "Computer Science";
+      case 2:
+        return "Electrical Engineering";
+      case 3:
+        return "Business Administration";
+      case 4:
+        return "Medicine";
+      default:
+        return "Unknown Department";
+    }
+  };
+
   const getStatus = (status: string) => {
     switch (status) {
       case "approved":
@@ -147,18 +169,6 @@ export default function StudentManagement() {
         );
     }
   };
-  // Load dummy data on component mount
-  useEffect(() => {
-    // Simulate API call with a timeout
-    const timer = setTimeout(() => {
-      setStudents(dummyStudents);
-      setFilteredStudents(dummyStudents);
-      setLoading(false);
-    }, 800); // Short delay to simulate loading
-
-    return () => clearTimeout(timer);
-  }, []);
-
   // Filter students based on search criteria
   useEffect(() => {
     let filtered = students;
@@ -183,6 +193,12 @@ export default function StudentManagement() {
       );
     }
 
+    if (searchDepartment) {
+      filtered = filtered.filter(
+        (student) => student.DEPARTMENT_ID.toString() === searchDepartment,
+      );
+    }
+
     if (searchStatus) {
       filtered = filtered.filter((student) => {
         if (searchStatus === "approved") return student.STATUS === true;
@@ -193,7 +209,14 @@ export default function StudentManagement() {
     }
 
     setFilteredStudents(filtered);
-  }, [searchName, searchId, searchSession, searchStatus, students]);
+  }, [
+    searchName,
+    searchId,
+    searchSession,
+    searchStatus,
+    searchDepartment,
+    students,
+  ]);
 
   return (
     <div
@@ -205,48 +228,88 @@ export default function StudentManagement() {
       {/* Filter Section */}
       <div className="mb-8 grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         <div>
-          <TextInput
-            type="text"
-            placeholder="Search by name"
-            icon={HiSearch}
-            className="border-gray-700 bg-gray-800 text-white"
-            value={searchName}
-            onChange={(e) => setSearchName(e.target.value)}
-          />
-        </div>
-        <div>
-          <TextInput
-            type="text"
-            placeholder="Search by ID"
-            icon={HiSearch}
-            className="border-gray-700 bg-gray-800 text-white"
-            value={searchId}
-            onChange={(e) => setSearchId(e.target.value)}
-          />
-        </div>
-        <div>
-          <Select
-            className="border-gray-700 bg-gray-800 text-white"
-            value={searchSession}
-            onChange={(e) => setSearchSession(e.target.value)}
-          >
-            <option value="">All Semesters</option>
-            <option value="spring2024">Spring 2024</option>
-            <option value="fall2023">Fall 2023</option>
-          </Select>
-        </div>
-        {adminRole !== "accounts_admin" && (
-          <div>
-            <Select
+          {" "}
+          <div className="relative">
+            <TextInput
+              type="text"
+              placeholder="Search by name"
+              icon={HiUserGroup}
               className="border-gray-700 bg-gray-800 text-white"
-              value={searchStatus}
-              onChange={(e) => setSearchStatus(e.target.value)}
+              value={searchName}
+              onChange={(e) => setSearchName(e.target.value)}
+              style={{ paddingLeft: "2.5rem" }}
+            />
+            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+              <HiUserGroup className="h-5 w-5 text-[#92e3a9]" />
+            </div>
+          </div>
+        </div>{" "}
+        <div>
+          <div className="relative">
+            <TextInput
+              type="text"
+              placeholder="Search by ID"
+              className="border-gray-700 bg-gray-800 pl-10 text-white"
+              value={searchId}
+              onChange={(e) => setSearchId(e.target.value)}
+            />
+            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+              <HiIdentification className="h-5 w-5 text-[#92e3a9]" />
+            </div>
+          </div>
+        </div>{" "}
+        <div>
+          <div className="relative">
+            <Select
+              className="border-gray-700 bg-gray-800 pl-10 text-white"
+              value={searchSession}
+              onChange={(e) => setSearchSession(e.target.value)}
             >
-              <option value="">All Status</option>
-              <option value="approved">Approved</option>
-              <option value="pending">Pending</option>
-              <option value="rejected">Rejected</option>
-            </Select>
+              <option value="">All Semesters</option>
+              <option value="spring2024">Spring 2024</option>
+              <option value="fall2023">Fall 2023</option>
+            </Select>{" "}
+            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+              <HiCalendar className="h-5 w-5 text-[#92e3a9]" />
+            </div>
+          </div>
+        </div>{" "}
+        {adminRole === "accounts_admin" ? (
+          <div>
+            <div className="relative">
+              <Select
+                className="border-gray-700 bg-gray-800 pl-10 text-white"
+                value={searchDepartment}
+                onChange={(e) => setSearchDepartment(e.target.value)}
+              >
+                <option value="">All Departments</option>
+                <option value="1">Computer Science</option>
+                <option value="2">Electrical Engineering</option>
+                <option value="3">Business Administration</option>
+                <option value="4">Medicine</option>
+              </Select>{" "}
+              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                <HiBuildingOffice2 className="h-5 w-5 text-[#92e3a9]" />
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div>
+            <div className="relative">
+              <Select
+                className="border-gray-700 bg-gray-800 pl-10 text-white"
+                value={searchStatus}
+                onChange={(e) => setSearchStatus(e.target.value)}
+              >
+                <option value="">All Status</option>
+                <option value="approved">Approved</option>
+                <option value="pending">Pending</option>
+                <option value="rejected">Rejected</option>
+              </Select>{" "}
+              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                <HiAcademicCap className="h-5 w-5 text-[#92e3a9]" />
+              </div>
+            </div>
           </div>
         )}
       </div>{" "}
@@ -255,17 +318,45 @@ export default function StudentManagement() {
         <table className="min-w-full divide-y divide-gray-700">
           <thead className="bg-gray-800 text-gray-400">
             <tr>
+              {" "}
               <th className="px-6 py-3 text-left text-sm font-medium">
-                Student ID
+                <span className="flex items-center gap-1">
+                  <HiIdentification className="text-[#92e3a9]" />
+                  Student ID
+                </span>
               </th>
-              <th className="px-6 py-3 text-left text-sm font-medium">Name</th>
-              <th className="px-6 py-3 text-left text-sm font-medium">Email</th>
               <th className="px-6 py-3 text-left text-sm font-medium">
-                Session
+                <span className="flex items-center gap-1">
+                  <HiUserGroup className="text-[#92e3a9]" />
+                  Name
+                </span>
               </th>
+              <th className="px-6 py-3 text-left text-sm font-medium">
+                <span className="flex items-center gap-1">
+                  <HiEnvelope className="text-[#92e3a9]" />
+                  Email
+                </span>
+              </th>
+              <th className="px-6 py-3 text-left text-sm font-medium">
+                <span className="flex items-center gap-1">
+                  <HiCalendar className="text-[#92e3a9]" />
+                  Session
+                </span>
+              </th>
+              {adminRole === "accounts_admin" && (
+                <th className="px-6 py-3 text-left text-sm font-medium">
+                  <span className="flex items-center gap-1">
+                    <HiBuildingOffice2 className="text-[#92e3a9]" />
+                    Department
+                  </span>
+                </th>
+              )}
               {adminRole !== "accounts_admin" && (
                 <th className="px-6 py-3 text-left text-sm font-medium">
-                  Status
+                  <span className="flex items-center gap-1">
+                    <HiAcademicCap className="text-[#92e3a9]" />
+                    Status
+                  </span>
                 </th>
               )}
               <th className="px-6 py-3 text-left text-sm font-medium">
@@ -276,19 +367,13 @@ export default function StudentManagement() {
           <tbody className="divide-y divide-gray-700 bg-gray-900">
             {loading ? (
               <tr>
-                <td
-                  colSpan={adminRole !== "accounts_admin" ? 7 : 6}
-                  className="px-6 py-4 text-center text-white"
-                >
+                <td colSpan={6} className="px-6 py-4 text-center text-white">
                   Loading students data...
                 </td>
               </tr>
             ) : filteredStudents.length === 0 ? (
               <tr>
-                <td
-                  colSpan={adminRole !== "accounts_admin" ? 7 : 6}
-                  className="px-6 py-4 text-center text-white"
-                >
+                <td colSpan={6} className="px-6 py-4 text-center text-white">
                   No students found.
                 </td>
               </tr>
@@ -301,6 +386,11 @@ export default function StudentManagement() {
                   <td className="px-6 py-4">{student.NAME}</td>
                   <td className="px-6 py-4">{student.EMAIL}</td>
                   <td className="px-6 py-4">{student.SESSION || "N/A"}</td>
+                  {adminRole === "accounts_admin" && (
+                    <td className="px-6 py-4">
+                      {getDepartmentName(student.DEPARTMENT_ID)}
+                    </td>
+                  )}
                   {adminRole !== "accounts_admin" && (
                     <td className="px-6 py-4">
                       {getStatus(student.STATUS ? "approved" : "pending")}
