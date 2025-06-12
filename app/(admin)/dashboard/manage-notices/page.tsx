@@ -211,9 +211,6 @@ export default function ManageNotices() {
                 </th>
 
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
-                  Created By
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                   Created At
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
@@ -231,11 +228,8 @@ export default function ManageNotices() {
                     {notice.TITLE}
                   </td>
 
-                  <td className="px-6 py-4 whitespace-nowrap text-white">
-                    {notice.CREATOR_ID}
-                  </td>
                   <td className="px-6 py-4 whitespace-nowrap text-gray-400">
-                    {notice.CREATED_AT}
+                    {new Date(notice.CREATED_AT).toLocaleString()}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex gap-2">
