@@ -17,6 +17,81 @@ interface Student {
   MOBILE?: string;
 }
 
+
+// Dummy static data for demonstration
+const dummyStudents: Student[] = [
+  {
+    ID: 1001,
+    NAME: "John Smith",
+    EMAIL: "john.smith@example.com",
+    REGISTRATION_NUMBER: "CSE2021001",
+    DEPARTMENT_ID: 1,
+    SESSION: "spring2024",
+    STATUS: true,
+    MOBILE: "+1-555-123-4567",
+  },
+  {
+    ID: 1002,
+    NAME: "Sarah Johnson",
+    EMAIL: "sarah.j@example.com",
+    REGISTRATION_NUMBER: "CSE2021002",
+    DEPARTMENT_ID: 1,
+    SESSION: "spring2024",
+    STATUS: false,
+    MOBILE: "+1-555-234-5678",
+  },
+  {
+    ID: 1003,
+    NAME: "Michael Chen",
+    EMAIL: "m.chen@example.com",
+    REGISTRATION_NUMBER: "EEE2021045",
+    DEPARTMENT_ID: 2,
+    SESSION: "fall2023",
+    STATUS: true,
+    MOBILE: "+1-555-345-6789",
+  },
+  {
+    ID: 1004,
+    NAME: "Emily Rodriguez",
+    EMAIL: "e.rodriguez@example.com",
+    REGISTRATION_NUMBER: "BBA2022013",
+    DEPARTMENT_ID: 3,
+    SESSION: "fall2023",
+    STATUS: true,
+    MOBILE: "+1-555-456-7890",
+  },
+  {
+    ID: 1005,
+    NAME: "David Kim",
+    EMAIL: "d.kim@example.com",
+    REGISTRATION_NUMBER: "CSE2022078",
+    DEPARTMENT_ID: 1,
+    SESSION: "spring2024",
+    STATUS: false,
+    MOBILE: "+1-555-567-8901",
+  },
+  {
+    ID: 1006,
+    NAME: "Priya Patel",
+    EMAIL: "p.patel@example.com",
+    REGISTRATION_NUMBER: "MED2023011",
+    DEPARTMENT_ID: 4,
+    SESSION: "fall2023",
+    STATUS: true,
+    MOBILE: "+1-555-678-9012",
+  },
+  {
+    ID: 1007,
+    NAME: "James Wilson",
+    EMAIL: "j.wilson@example.com",
+    REGISTRATION_NUMBER: "EEE2022056",
+    DEPARTMENT_ID: 2,
+    SESSION: "spring2024",
+    STATUS: false,
+    MOBILE: "+1-555-789-0123",
+  },
+];
+
 export default function StudentManagement() {
   const [students, setStudents] = useState<Student[]>([]);
   const [filteredStudents, setFilteredStudents] = useState<Student[]>([]);
@@ -26,28 +101,16 @@ export default function StudentManagement() {
   const [searchSession, setSearchSession] = useState("");
   const [searchStatus, setSearchStatus] = useState("");
 
+  // Load dummy data on component mount
   useEffect(() => {
-    async function fetchStudents() {
-      try {
-        setLoading(true);
-        const response = await fetch("/api/students");
-        if (!response.ok) {
-          throw new Error("Failed to fetch students");
-        }
-        const data = await response.json();
-        setStudents(data.students);
-        setFilteredStudents(data.students); // Initialize filteredStudents
-        console.log("Fetched students:", data.students);
-      } catch (error: unknown) {
-        const errorMessage =
-          error instanceof Error ? error.message : String(error);
-        console.error("Error fetching students:", errorMessage);
-      } finally {
-        setLoading(false);
-      }
-    }
+    // Simulate API call with a timeout
+    const timer = setTimeout(() => {
+      setStudents(dummyStudents);
+      setFilteredStudents(dummyStudents);
+      setLoading(false);
+    }, 800); // Short delay to simulate loading
 
-    fetchStudents();
+    return () => clearTimeout(timer);
   }, []);
 
   const adminRole =
@@ -78,6 +141,17 @@ export default function StudentManagement() {
         );
     }
   };
+  // Load dummy data on component mount
+  useEffect(() => {
+    // Simulate API call with a timeout
+    const timer = setTimeout(() => {
+      setStudents(dummyStudents);
+      setFilteredStudents(dummyStudents);
+      setLoading(false);
+    }, 800); // Short delay to simulate loading
+
+    return () => clearTimeout(timer);
+  }, []);
 
   // Filter students based on search criteria
   useEffect(() => {

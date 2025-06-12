@@ -289,7 +289,7 @@ export default function ManageNotices() {
       data-aos="zoom-in"
       data-aos-duration="1000"
     >
-      {" "}
+      
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="flex items-center gap-3 text-4xl font-bold text-white">

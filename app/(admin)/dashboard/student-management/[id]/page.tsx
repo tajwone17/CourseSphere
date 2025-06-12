@@ -3,6 +3,7 @@
 import { Button, Select, Textarea, TextInput } from "flowbite-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useAuth } from "../../../../context/AuthContext";
 import {
   FaArrowLeft,
   FaCheckCircle,
@@ -20,17 +21,15 @@ interface Course {
   comments: string;
 }
 
-
-
 export default function RegistrationApproval() {
   const [adminRole, setAdminRole] = useState<string | null>(null);
+  const { user } = useAuth();
 
-useEffect(() => {
-  if (typeof window !== "undefined") {
-    const role = localStorage.getItem("adminRole");
-    setAdminRole(role);
-  }
-}, []);
+  useEffect(() => {
+    if (typeof window !== "undefined" && user && user.role) {
+      setAdminRole(user.role);
+    }
+  }, [user]);
 
   const [courses, setCourses] = useState<Course[]>([
     {
@@ -140,8 +139,10 @@ useEffect(() => {
     <div className="mx-auto max-w-7xl p-8">
       {/* Title */}
       <div className="mb-8">
-        <h1 className="text-4xl font-bold text-[#92e3a9] text-center">Registration Review</h1>
-        <p className="mt-2 text-lg text-gray-400 text-center">
+        <h1 className="text-center text-4xl font-bold text-[#92e3a9]">
+          Registration Review
+        </h1>
+        <p className="mt-2 text-center text-lg text-gray-400">
           Review student&apos;s course registration requests
         </p>
       </div>
@@ -186,7 +187,7 @@ useEffect(() => {
             <p className="text-gray-400">
               <span className="font-medium text-white">Advisor:</span> Jakaria
             </p>
-            {adminRole === "accounts" && (
+            {adminRole === "accounts_admin" && (
               <p className="text-gray-400">
                 <span className="font-medium text-white">Amount:</span>{" "}
                 {totalPayable.toFixed(2)} BDT
@@ -217,7 +218,7 @@ useEffect(() => {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                   Prerequisite
                 </th>
-                {adminRole !== "accounts" && (
+                {adminRole !== "accounts_admin" && (
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                     Status
                   </th>
@@ -239,7 +240,7 @@ useEffect(() => {
                   <td className="px-6 py-4 text-sm whitespace-nowrap text-white">
                     {course.prerequisite}
                   </td>
-                  {adminRole !== "accounts" && (
+                  {adminRole !== "accounts_admin" && (
                     <td className="px-6 py-4 text-sm whitespace-nowrap">
                       <Select
                         value={course.status}
@@ -266,7 +267,7 @@ useEffect(() => {
           </table>
         </div>
       </div>
-      {adminRole !== "accounts" && (
+      {adminRole !== "accounts_admin" && (
         <>
           {/* Students Comments */}
           <div className="mb-8">
@@ -292,7 +293,7 @@ useEffect(() => {
         </>
       )}
       {/* Accounts Office Financial Form */}
-      {adminRole === "accounts" && (
+      {adminRole === "accounts_admin" && (
         <div className="mb-10 rounded-lg border border-gray-700 bg-gray-800 p-6">
           <h2 className="mb-6 text-2xl font-semibold text-white">
             Accounts Section - Financial Calculation
@@ -307,7 +308,6 @@ useEffect(() => {
                 placeholder={key
                   .replace(/([A-Z])/g, " $1")
                   .replace(/^./, (str) => str.toUpperCase())}
-               
               />
             ))}
           </div>
