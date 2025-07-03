@@ -560,12 +560,12 @@ export default function Component() {
               aria-invalid={fieldErrors.department_id ? "true" : "false"}
             >
               <option value="">Select your department</option>
-                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
               {depts.map((dept: any) => (
-                  <option key={dept.ID} value={dept.ID}>
-                    {dept.DEPARTMENT_NAME}
-                  </option>
-                ))}
+                <option key={dept.ID} value={dept.ID}>
+                  {dept.DEPARTMENT_NAME}
+                </option>
+              ))}
             </Select>
             {renderFieldError(fieldErrors.department_id, "department_id")}
           </div>
@@ -609,7 +609,7 @@ export default function Component() {
           <Label htmlFor="agreeToTerms" className="flex">
             I agree with the&nbsp;
             <Link
-              href="#"
+              href="/terms"
               className="text-cyan-600 hover:underline dark:text-cyan-500"
             >
               terms and conditions
