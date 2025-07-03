@@ -1,7 +1,13 @@
 "use client";
 
 import { Button, Label, TextInput, Alert } from "flowbite-react";
-import { MdEmail, MdLock, MdInfo } from "react-icons/md";
+import {
+  MdEmail,
+  MdLock,
+  MdInfo,
+  MdVisibility,
+  MdVisibilityOff,
+} from "react-icons/md";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -21,6 +27,7 @@ export default function Component() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   // Check for registration success message
   useEffect(() => {
@@ -129,15 +136,28 @@ export default function Component() {
             <div className="mb-2 block">
               <Label htmlFor="password">Your password</Label>
             </div>
-            <TextInput
-              id="password"
-              type="password"
-              placeholder="••••••••"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              shadow
-            />
+            <div className="relative">
+              <TextInput
+                id="password"
+                type={showPassword ? "text" : "password"}
+                placeholder="••••••••"
+                value={formData.password}
+                onChange={handleChange}
+                required
+                shadow
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute top-1/2 right-3 -translate-y-1/2 transform text-gray-400 transition-colors hover:text-[#92e3a9]"
+              >
+                {showPassword ? (
+                  <MdVisibilityOff size={20} />
+                ) : (
+                  <MdVisibility size={20} />
+                )}
+              </button>
+            </div>
           </div>
         </div>
 
