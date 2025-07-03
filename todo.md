@@ -1,0 +1,4 @@
+- Reset Password
+- hod dashboard
+- Implement student management page where approved/pending will be listed. The request will come from registration page.(for hod)
+- Implement student management page where approved/pending will be listed. The request will come from registration page.(for advisor)

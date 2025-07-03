@@ -1,7 +1,13 @@
 "use client";
 
 import { Button, Label, TextInput, Select, Checkbox } from "flowbite-react";
-import { MdEmail, MdLock, MdSupervisorAccount } from "react-icons/md";
+import {
+  MdEmail,
+  MdLock,
+  MdSupervisorAccount,
+  MdVisibility,
+  MdVisibilityOff,
+} from "react-icons/md";
 import { useState } from "react";
 import { useAuth } from "@/app/context/AuthContext";
 import { useRouter } from "next/navigation";
@@ -12,6 +18,7 @@ export default function AdminLogin() {
   const { login } = useAuth();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -120,17 +127,28 @@ export default function AdminLogin() {
             <Label htmlFor="password" className="text-gray-300">
               Password
             </Label>
-            <div className="flex items-center gap-2">
+            <div className="relative flex items-center gap-2">
               <MdLock size={20} className="text-[#92e3a9]" />
               <TextInput
                 id="password"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 value={formData.password}
                 onChange={handleChange}
                 placeholder="••••••••"
                 required
                 className="w-full rounded-lg border-gray-700 bg-gray-800 text-white focus:border-[#92e3a9] focus:ring-[#92e3a9]"
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 text-gray-400 transition-colors hover:text-[#92e3a9]"
+              >
+                {showPassword ? (
+                  <MdVisibilityOff size={20} />
+                ) : (
+                  <MdVisibility size={20} />
+                )}
+              </button>
             </div>
           </div>
           {/* Remember Me */}
