@@ -12,8 +12,9 @@ import {
   HiX,
   HiCreditCard,
   HiClock,
+  HiLink,
 } from "react-icons/hi";
-import Select, { SingleValue } from "react-select";
+import Select, { SingleValue, MultiValue } from "react-select";
 import { useAuth } from "../../../context/AuthContext";
 interface COURSE {
   ID: number;
@@ -25,9 +26,18 @@ interface COURSE {
   STATUS: number;
 }
 
+interface PrerequisiteCourse {
+  ID: number;
+  CODE: string;
+  TITLE: string;
+}
+
 export default function ManageCourse() {
   const { user } = useAuth();
   const [courseList, setCourseList] = useState<COURSE[]>([]);
+  const [prerequisiteCourses, setPrerequisiteCourses] = useState<
+    PrerequisiteCourse[]
+  >([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<COURSE | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -37,6 +47,7 @@ export default function ManageCourse() {
     credit: "",
     department: "",
     instructor_name: "",
+    prerequisites: [] as number[],
   });
 
   // Replace single search with separate search fields
@@ -77,6 +88,31 @@ export default function ManageCourse() {
     }
     fetchCourses();
   }, [user?.departmentId]);
+
+  // Define fetchPrerequisiteCourses with useCallback
+  const fetchPrerequisiteCourses = React.useCallback(async () => {
+    try {
+      const response = await fetch("/api/courses/prerequisite-courses", {
+        headers: {
+          departmentid: user?.departmentId ? String(user.departmentId) : "",
+        },
+      });
+      if (!response.ok) {
+        throw new Error("Failed to fetch prerequisite courses");
+      }
+      const data = await response.json();
+      setPrerequisiteCourses(data.courses);
+    } catch (error) {
+      console.error("Error fetching prerequisite courses:", error);
+    }
+  }, [user?.departmentId]);
+
+  // Fetch prerequisite courses when the add course modal is opened
+  useEffect(() => {
+    if (showAddModal) {
+      fetchPrerequisiteCourses();
+    }
+  }, [showAddModal, fetchPrerequisiteCourses]);
 
   const handleAddCourse = async () => {
     // Validate the form data
@@ -134,9 +170,21 @@ export default function ManageCourse() {
       credit: "",
       department: "",
       instructor_name: "",
+      prerequisites: [],
     });
     setShowAddModal(false);
   };
+
+  const handlePrerequisiteChange = (
+    selectedOptions: MultiValue<{ value: number; label: string }>,
+  ) => {
+    const selectedIds = selectedOptions.map((option) => option.value);
+    setNewCourse((prev) => ({
+      ...prev,
+      prerequisites: selectedIds,
+    }));
+  };
+
   const openModal = (course: COURSE, action: "active" | "inactive") => {
     setSelectedCourse(course);
     setStatus(action);
@@ -295,7 +343,6 @@ export default function ManageCourse() {
             <HiDocumentText className="mr-3 h-10 w-10 text-[#92e3a9]" />
             Manage Courses
           </h1>
-         
         </div>
         <Button
           style={{
@@ -588,6 +635,80 @@ export default function ManageCourse() {
                 required
               />
             </div>
+
+            <div>
+              <Label
+                htmlFor="prerequisites"
+                className="mb-2 flex items-center gap-2 text-gray-300"
+              >
+                <HiLink className="text-[#92e3a9]" />
+                Prerequisites
+              </Label>
+              <Select
+                isMulti
+                options={prerequisiteCourses.map((course) => ({
+                  value: course.ID,
+                  label: `${course.CODE}: ${course.TITLE}`,
+                }))}
+                onChange={handlePrerequisiteChange}
+                placeholder="Select prerequisite courses (optional)"
+                className="react-select-container"
+                classNamePrefix="react-select"
+                styles={{
+                  control: (baseStyles) => ({
+                    ...baseStyles,
+                    backgroundColor: "#1f2937", // Dark background
+                    borderColor: "#374151",
+                    color: "white",
+                    "&:hover": {
+                      borderColor: "#4b5563",
+                    },
+                  }),
+                  menu: (baseStyles) => ({
+                    ...baseStyles,
+                    backgroundColor: "#1f2937", // Dark background for dropdown menu
+                  }),
+                  option: (baseStyles, { isFocused, isSelected }) => ({
+                    ...baseStyles,
+                    backgroundColor: isSelected
+                      ? "#92e3a9" // Primary green color for selected item
+                      : isFocused
+                        ? "#374151" // Slightly lighter dark for hover
+                        : "#1f2937", // Dark background
+                    color: isSelected ? "black" : "white",
+                    cursor: "pointer",
+                    ":active": {
+                      backgroundColor: isSelected ? "#92e3a9" : "#374151",
+                    },
+                  }),
+                  multiValue: (baseStyles) => ({
+                    ...baseStyles,
+                    backgroundColor: "#374151",
+                  }),
+                  multiValueLabel: (baseStyles) => ({
+                    ...baseStyles,
+                    color: "white",
+                  }),
+                  multiValueRemove: (baseStyles) => ({
+                    ...baseStyles,
+                    color: "#9ca3af",
+                    ":hover": {
+                      backgroundColor: "#ef4444",
+                      color: "white",
+                    },
+                  }),
+                  placeholder: (baseStyles) => ({
+                    ...baseStyles,
+                    color: "#9ca3af", // Light gray for placeholder
+                  }),
+                  input: (baseStyles) => ({
+                    ...baseStyles,
+                    color: "white",
+                  }),
+                }}
+              />
+            </div>
+
             <div className="mt-6 flex justify-end gap-2">
               <Button
                 color="gray"
