@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button } from "flowbite-react";
 import Link from "next/link";
-import { HiArrowRight, HiCalendar, HiSpeakerphone } from "react-icons/hi";
+import { HiArrowRight, HiSpeakerphone } from "react-icons/hi";
 
 interface Notice {
   title: string;
@@ -81,12 +81,7 @@ export default function NoticePage() {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                   Title
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
-                  Semester
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
-                  Deadline
-                </th>
+           
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                   Posted By
                 </th>
@@ -104,15 +99,8 @@ export default function NoticePage() {
                   <td className="px-6 py-4 whitespace-nowrap text-white">
                     {notice.title}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-white">
-                    {notice.semester}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center gap-2 text-white">
-                      <HiCalendar className="text-[#92e3a9]" />
-                      {notice.registrationDeadline}
-                    </div>
-                  </td>
+                 
+             
                   <td className="px-6 py-4 whitespace-nowrap text-gray-400">
                     {notice.createdBy}
                   </td>

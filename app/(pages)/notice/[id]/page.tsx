@@ -58,21 +58,14 @@ export default function NoticeDetailPage(props: PageProps) {
             <HiCalendar className="text-[#92e3a9]" />
             <span>Posted: {notice.date}</span>
           </div>
-          <div className="flex items-center gap-2">
-            <HiCalendar className="text-[#92e3a9]" />
-            <span>Deadline: {notice.registrationDeadline}</span>
-          </div>
+         
           <div className="flex items-center gap-2">
             <HiUser className="text-[#92e3a9]" />
             <span>{notice.createdBy}</span>
           </div>
         </div>
 
-        <div className="mb-4 text-center">
-          <span className="rounded-full bg-gray-800 px-4 py-1 text-sm text-[#92e3a9]">
-            {notice.semester}
-          </span>
-        </div>
+       
 
         <div className="mb-8 rounded-lg bg-gray-800 p-6">
           <p className="text-lg leading-relaxed text-gray-200">
