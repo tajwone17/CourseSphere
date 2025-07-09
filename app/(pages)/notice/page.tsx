@@ -1,43 +1,46 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "flowbite-react";
 import Link from "next/link";
 import { HiArrowRight, HiSpeakerphone } from "react-icons/hi";
+import { useAuth } from "../../context/AuthContext";
 
 interface Notice {
-  title: string;
-  date: string;
-  description: string;
+  ID: number;
+  TITLE: string;
+  DESCRIPTION: string;
   createdBy: string;
-  semester: string;
-  registrationDeadline: string;
+  CREATED_AT: string;
 }
 
-const notices: Notice[] = [
-  {
-    title: "Fall 2024 Course Registration",
-    date: "2024-04-23",
-    description:
-      "Course registration for Fall 2024 semester is now open. Please complete your registration by the deadline.",
-    createdBy: "Dr. Tajwone",
-    semester: "Fall 2024",
-    registrationDeadline: "2024-07-30",
-  },
-  {
-    title: "Spring 2024 Registration Notice",
-    date: "2024-04-22",
-    description:
-      "Registration for Spring 2024 semester courses is now available.",
-    createdBy: "Dr. Chowdhury",
-    semester: "Spring 2024",
-    registrationDeadline: "2024-05-15",
-  },
-];
-
 export default function NoticePage() {
+  const { user } = useAuth();
+  const [notices, setNotices] = useState<Notice[]>([]);
+  const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
+
+  useEffect(() => {
+    const fetchNotices = async () => {
+      if (!user?.departmentId) return;
+      setLoading(true);
+      try {
+        const res = await fetch(
+          `/api/notices?departmentId=${user.departmentId}`,
+        );
+        const data = await res.json();
+        console.log(data);
+        setNotices(data.notices || []);
+      } catch (err) {
+        console.error("Error fetching notices:", err);
+        setNotices([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchNotices();
+  }, [user?.departmentId]);
 
   const totalPages = Math.ceil(notices.length / itemsPerPage);
   const currentNotices = notices.slice(
@@ -81,7 +84,6 @@ export default function NoticePage() {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                   Title
                 </th>
-           
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                   Posted By
                 </th>
@@ -91,38 +93,49 @@ export default function NoticePage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-800">
-              {currentNotices.map((notice, index) => (
-                <tr
-                  key={index}
-                  className="bg-gray-900 transition-colors hover:bg-gray-800"
-                >
-                  <td className="px-6 py-4 whitespace-nowrap text-white">
-                    {notice.title}
-                  </td>
-                 
-             
-                  <td className="px-6 py-4 whitespace-nowrap text-gray-400">
-                    {notice.createdBy}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex justify-center">
-                      <Link href={`/notice/${index}`}>
-                        <Button
-                          size="sm"
-                          className="flex items-center gap-2 transition-transform hover:scale-105"
-                          style={{ backgroundColor: "#92e3a9", color: "black" }}
-                        >
-                          Read More <HiArrowRight size={16} />
-                        </Button>
-                      </Link>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-              {currentNotices.length === 0 && (
+              {loading ? (
                 <tr>
                   <td
-                    colSpan={5}
+                    colSpan={3}
+                    className="px-6 py-4 text-center text-gray-400"
+                  >
+                    Loading...
+                  </td>
+                </tr>
+              ) : currentNotices.length > 0 ? (
+                currentNotices.map((notice: Notice) => (
+                  <tr
+                    key={notice.ID}
+                    className="bg-gray-900 transition-colors hover:bg-gray-800"
+                  >
+                    <td className="px-6 py-4 whitespace-nowrap text-white">
+                      {notice.TITLE}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-gray-400">
+                      {notice.createdBy}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex justify-center">
+                        <Link href={`/notice/${notice.ID}`}>
+                          <Button
+                            size="sm"
+                            className="flex items-center gap-2 transition-transform hover:scale-105"
+                            style={{
+                              backgroundColor: "#92e3a9",
+                              color: "black",
+                            }}
+                          >
+                            Read More <HiArrowRight size={16} />
+                          </Button>
+                        </Link>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td
+                    colSpan={3}
                     className="px-6 py-4 text-center text-gray-400"
                   >
                     No notices found.

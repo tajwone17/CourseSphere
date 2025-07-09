@@ -1,47 +1,61 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "flowbite-react";
 import { HiCalendar, HiUser, HiArrowLeft } from "react-icons/hi";
 
 interface Notice {
-  title: string;
-  date: string;
-  description: string;
+  ID: number;
+  TITLE: string;
+  DESCRIPTION: string;
+  CREATED_AT: string;
   createdBy: string;
-  semester: string;
-  registrationDeadline: string;
 }
-
-const notices: Notice[] = [
-  {
-    title: "Fall 2024 Course Registration",
-    date: "2024-04-23",
-    description:
-      "Course registration for Fall 2024 semester is now open. Please complete your registration by the deadline.",
-    createdBy: "Dr. Tajwone",
-    semester: "Fall 2024",
-    registrationDeadline: "2024-07-30",
-  },
-  {
-    title: "Spring 2024 Registration Notice",
-    date: "2024-04-22",
-    description:
-      "Registration for Spring 2024 semester courses is now available.",
-    createdBy: "Dr. Chowdhury",
-    semester: "Spring 2024",
-    registrationDeadline: "2024-05-15",
-  },
-];
 
 interface PageProps {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 }
 
-export default function NoticeDetailPage(props: PageProps) {
+export default function NoticeDetailPage({ params }: PageProps) {
   const router = useRouter();
-  const { id } = React.use(props.params);
-  const notice = notices[Number(id)];
+  const [notice, setNotice] = useState<Notice | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchNotice = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch(`/api/notices/${params.id}`);
+        if (res.ok) {
+          const data = await res.json();
+          setNotice(data.notice);
+        } else {
+          setNotice(null);
+        }
+      } catch {
+        setNotice(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+    if (params.id) fetchNotice();
+  }, [params.id]);
+
+  if (loading) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 backdrop-blur-sm">
+        <div className="text-xl text-white">Loading...</div>
+      </div>
+    );
+  }
+
+  if (!notice) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 backdrop-blur-sm">
+        <div className="text-xl text-white">Notice not found.</div>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/60 px-4 backdrop-blur-sm">
@@ -50,26 +64,30 @@ export default function NoticeDetailPage(props: PageProps) {
         data-aos="zoom-in"
       >
         <h1 className="mb-4 text-center text-3xl font-bold text-white">
-          {notice.title}
+          {notice.TITLE}
         </h1>
 
         <div className="mb-6 flex items-center justify-center gap-6 text-sm text-gray-400">
           <div className="flex items-center gap-2">
             <HiCalendar className="text-[#92e3a9]" />
-            <span>Posted: {notice.date}</span>
+            <span>
+              Posted:{" "}
+              {new Date(notice.CREATED_AT).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </span>
           </div>
-         
           <div className="flex items-center gap-2">
             <HiUser className="text-[#92e3a9]" />
             <span>{notice.createdBy}</span>
           </div>
         </div>
 
-       
-
         <div className="mb-8 rounded-lg bg-gray-800 p-6">
           <p className="text-lg leading-relaxed text-gray-200">
-            {notice.description}
+            {notice.DESCRIPTION}
           </p>
         </div>
 
