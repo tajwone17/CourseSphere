@@ -1,12 +1,14 @@
 "use client";
 
 import React, { useState } from "react";
-import { Modal, Button } from "flowbite-react";
+import { Modal, Button, Spinner, Alert } from "flowbite-react";
 import {
   HiUser,
   HiMail,
   HiOfficeBuilding,
   HiIdentification,
+  HiExclamationCircle,
+  HiCheckCircle,
 } from "react-icons/hi";
 import { HiLockClosed } from "react-icons/hi2";
 // import Image from "next/image";
@@ -39,26 +41,72 @@ export default function ProfileModal({
   const [editMode, setEditMode] = useState(false);
   const [saving, setSaving] = useState(false);
   const [passwordError, setPasswordError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
-  const handleSave = () => {
+  const handleSave = async () => {
     setPasswordError("");
+    setSuccessMessage("");
+
     if (editMode) {
-      if (newPassword !== confirmPassword) {
+      // Validate password
+      if (newPassword && newPassword !== confirmPassword) {
         setPasswordError("New password and confirm password do not match.");
         return;
       }
-      // Optionally, check currentPassword validity here
+
+      if (newPassword && newPassword.length < 8) {
+        setPasswordError("New password must be at least 8 characters long.");
+        return;
+      }
+
+      if (newPassword && !currentPassword) {
+        setPasswordError("Current password is required to change password.");
+        return;
+      }
+
+      setSaving(true);
+
+      // Only update password if a new password was entered
+      if (newPassword && currentPassword) {
+        try {
+          const response = await fetch("/api/change-password", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              email: userEmail,
+              role: userProfile.role,
+              currentPassword,
+              newPassword,
+            }),
+          });
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            throw new Error(data.error || "Failed to change password");
+          }
+
+          setSuccessMessage("Password changed successfully");
+        } catch (err) {
+          const errorMessage =
+            err instanceof Error ? err.message : "Something went wrong";
+          setPasswordError(errorMessage);
+          setSaving(false);
+          return;
+        }
+      }
+
+      // Reset the form
+      setTimeout(() => {
+        setSaving(false);
+        setEditMode(false);
+        setCurrentPassword("");
+        setNewPassword("");
+        setConfirmPassword("");
+      }, 700);
+    } else {
+      setEditMode(true);
     }
-    setSaving(true);
-    // Only email is persisted in AuthContext
-    localStorage.setItem("userEmail", email);
-    setTimeout(() => {
-      setSaving(false);
-      setEditMode(false);
-      setCurrentPassword("");
-      setNewPassword("");
-      setConfirmPassword("");
-    }, 700);
   };
 
   return (
@@ -81,11 +129,12 @@ export default function ProfileModal({
           <div className="flex items-center gap-2 text-2xl font-bold text-white">
             <HiIdentification className="text-[#92e3a9]" /> {userProfile.name}
           </div>
-          {userProfile.role!="admin" &&
-         ( <div className="flex items-center gap-2 text-lg text-gray-400">
-            <HiOfficeBuilding className="text-[#92e3a9]" />{" "}
-            {userProfile.department}
-          </div>)}
+          {userProfile.role != "admin" && (
+            <div className="flex items-center gap-2 text-lg text-gray-400">
+              <HiOfficeBuilding className="text-[#92e3a9]" />{" "}
+              {userProfile.department}
+            </div>
+          )}
           {userProfile.role == "student" && (
             <div className="flex items-center gap-2 text-base text-gray-400">
               <HiIdentification className="text-[#92e3a9]" /> ID:{" "}
@@ -95,8 +144,22 @@ export default function ProfileModal({
         </div>
         {isAuthenticated ? (
           <form className="space-y-7">
+            {successMessage && (
+              <Alert color="success" icon={HiCheckCircle}>
+                {successMessage}
+              </Alert>
+            )}
+
+            {passwordError && (
+              <Alert color="failure" icon={HiExclamationCircle}>
+                {passwordError}
+              </Alert>
+            )}
+
             <div
-              className={`w-full space-y-7 ${editMode ? "opacity-100" : "cursor-not-allowed opacity-50"}`}
+              className={`w-full space-y-7 ${
+                editMode ? "opacity-100" : "cursor-not-allowed opacity-50"
+              }`}
             >
               <div>
                 <label className="mb-1 block text-gray-400" htmlFor="email">
@@ -110,7 +173,8 @@ export default function ProfileModal({
                     className="w-full rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 text-white focus:border-[#92e3a9] focus:ring-[#92e3a9]"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    disabled={!editMode}
+                    disabled={true} // Email is not editable
+                    readOnly
                   />
                 </div>
               </div>
@@ -176,9 +240,6 @@ export default function ProfileModal({
               </div>
             </div>
 
-            {passwordError && (
-              <div className="mt-1 text-sm text-red-500">{passwordError}</div>
-            )}
             <div className="mt-8 flex justify-end gap-4">
               {editMode ? (
                 <>
@@ -187,9 +248,25 @@ export default function ProfileModal({
                     onClick={handleSave}
                     disabled={saving}
                   >
-                    {saving ? "Saving..." : "Save"}
+                    {saving ? (
+                      <>
+                        <Spinner size="sm" className="mr-2" />
+                        Saving...
+                      </>
+                    ) : (
+                      "Save"
+                    )}
                   </Button>
-                  <Button color="gray" onClick={() => setEditMode(false)}>
+                  <Button
+                    color="gray"
+                    onClick={() => {
+                      setEditMode(false);
+                      setPasswordError("");
+                      setCurrentPassword("");
+                      setNewPassword("");
+                      setConfirmPassword("");
+                    }}
+                  >
                     Cancel
                   </Button>
                 </>
@@ -198,7 +275,7 @@ export default function ProfileModal({
                   style={{ backgroundColor: "#92e3a9", color: "#000" }}
                   onClick={() => setEditMode(true)}
                 >
-                  Edit
+                  Change Password
                 </Button>
               )}
               <Button color="gray" onClick={handleClose}>
