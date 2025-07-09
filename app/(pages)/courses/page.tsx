@@ -4,11 +4,7 @@ import { useState, useEffect } from "react";
 import { Select } from "flowbite-react";
 import { HiBookOpen, HiUser, HiOfficeBuilding, HiSearch } from "react-icons/hi";
 import ReactSelect from "react-select";
-
-interface Department {
-  id: number;
-  name: string;
-}
+import { useAuth } from "@/app/context/AuthContext";
 
 interface Course {
   id: number;
@@ -22,24 +18,25 @@ interface Course {
 }
 
 export default function CourseCatalogTable() {
-  const [department, setDepartment] = useState("all");
+  const { user, isAuthenticated } = useAuth();
   const [searchCode, setSearchCode] = useState("");
   const [searchTitle, setSearchTitle] = useState("");
   const [searchInstructor, setSearchInstructor] = useState("");
+  const [selectedCredit, setSelectedCredit] = useState("all");
   const [selectedCourses, setSelectedCourses] = useState<number[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
-  const [departments, setDepartments] = useState<Department[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
-  // Fetch courses and departments on component mount
+  // Fetch courses on component mount and filter by user's department
   useEffect(() => {
     const fetchCourses = async () => {
       setLoading(true);
       try {
+        // Get all courses
         const response = await fetch(`/api/courses/get-catalog`);
 
         if (!response.ok) {
@@ -47,8 +44,19 @@ export default function CourseCatalogTable() {
         }
 
         const data = await response.json();
-        setCourses(data.courses);
-        setDepartments(data.departments);
+
+        // If user is authenticated and has a department, filter courses by their department
+        if (isAuthenticated && user?.departmentId) {
+          const userDepartmentId = user.departmentId.toString();
+          const filteredCourses = data.courses.filter(
+            (course: Course) =>
+              course.department_id.toString() === userDepartmentId,
+          );
+          setCourses(filteredCourses);
+        } else {
+          // If not authenticated or no department, show all courses
+          setCourses(data.courses);
+        }
       } catch (err) {
         setError(err instanceof Error ? err.message : "An error occurred");
         console.error("Error fetching courses:", err);
@@ -58,7 +66,7 @@ export default function CourseCatalogTable() {
     };
 
     fetchCourses();
-  }, []);
+  }, [isAuthenticated, user?.departmentId]);
 
   // Filter courses based on search criteria
   const filtered = courses.filter((course) => {
@@ -66,9 +74,9 @@ export default function CourseCatalogTable() {
     const matchesTitle = !searchTitle || course.name === searchTitle;
     const matchesInstructor =
       !searchInstructor || course.instructor === searchInstructor;
-    const matchesDept =
-      department === "all" || course.department_id.toString() === department;
-    return matchesCode && matchesTitle && matchesInstructor && matchesDept;
+    const matchesCredit =
+      selectedCredit === "all" || course.credit.toString() === selectedCredit;
+    return matchesCode && matchesTitle && matchesInstructor && matchesCredit;
   });
 
   const totalPages = Math.ceil(filtered.length / itemsPerPage);
@@ -130,18 +138,21 @@ export default function CourseCatalogTable() {
           className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"
           style={{ position: "relative", zIndex: 100 }}
         >
-          <Select
-            value={department}
-            onChange={(e) => setDepartment(e.target.value)}
-            className="w-full"
-          >
-            <option value="all">All Departments</option>
-            {departments.map((dept) => (
-              <option key={dept.id} value={dept.id.toString()}>
-                {dept.name}
-              </option>
-            ))}
-          </Select>
+          <div className="relative">
+          
+            <Select
+              value={selectedCredit}
+              onChange={(e) => setSelectedCredit(e.target.value)}
+              className="w-full"
+            >
+              <option value="all">All Credits</option>
+              <option value="1">1 Credit</option>
+              <option value="1.5">1.5 Credits</option>
+              <option value="2">2 Credits</option>
+              <option value="3">3 Credits</option>
+              <option value="4">4 Credits</option>
+            </Select>
+          </div>
 
           <div className="relative z-50">
             <HiSearch className="absolute top-3.5 left-3 text-gray-500" />
@@ -385,6 +396,14 @@ export default function CourseCatalogTable() {
                           <div className="group flex items-center gap-2 text-white">
                             <HiOfficeBuilding className="text-[#92e3a9] transition-transform group-hover:scale-110" />
                             {course.department_name || "Unknown"}
+                            {isAuthenticated &&
+                              user?.departmentId &&
+                              course.department_id.toString() ===
+                                user.departmentId.toString() && (
+                                <span className="ml-2 rounded-full bg-[#92e3a9]/20 px-2 py-0.5 text-xs text-[#92e3a9]">
+                                  My Department
+                                </span>
+                              )}
                           </div>
                         </td>
                         <td className="px-4 py-4 whitespace-nowrap">
