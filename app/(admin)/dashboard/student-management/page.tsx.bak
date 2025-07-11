@@ -14,7 +14,6 @@ import { FaCheckCircle, FaClock, FaTimesCircle } from "react-icons/fa";
 import { HiClock as HiPending } from "react-icons/hi";
 import { useEffect, useState } from "react";
 import { useAuth } from "../../../context/AuthContext";
-
 interface Student {
   ID: number;
   NAME: string;
@@ -167,7 +166,6 @@ export default function StudentManagement() {
     
     fetchRegistrationRequests();
   }, [userRole, departmentId]);
-  
   const getDepartmentName = (departmentId: number) => {
     switch (departmentId) {
       case 1:
@@ -220,7 +218,6 @@ export default function StudentManagement() {
       minute: '2-digit'
     });
   };
-  
   // This code was removed as it's a legacy filter for students
   // We now filter registrations directly
 
@@ -369,7 +366,7 @@ export default function StudentManagement() {
               <option value="Spring 2024">Spring 2024</option>
               <option value="Fall 2023">Fall 2023</option>
               <option value="Summer 2024">Summer 2024</option>
-            </Select>
+            </Select>{" "}
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
               <HiCalendar className="h-5 w-5 text-[#92e3a9]" />
             </div>
@@ -413,11 +410,8 @@ export default function StudentManagement() {
             </div>
           </div>
         )}
-      </div>
-      
       {/* Table Section */}
-      <div className="overflow-x-auto rounded-lg border border-gray-700">
-        <table className="min-w-full divide-y divide-gray-700">
+      <div className="overflow-x-auto rounded-lg border border-gray-700">          <table className="min-w-full divide-y divide-gray-700">
           <thead className="bg-gray-800 text-gray-400">
             <tr>
               <th className="px-6 py-3 text-left text-sm font-medium">

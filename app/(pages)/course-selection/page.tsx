@@ -9,6 +9,7 @@ import {
 } from "react-icons/hi";
 import Link from "next/link";
 import { useAuth } from "@/app/context/AuthContext";
+import { useRouter } from "next/navigation";
 
 interface CartItem {
   cartId: number;
@@ -22,7 +23,15 @@ interface CartItem {
   ADDED_AT: string;
 }
 
+interface Advisor {
+  ID: number;
+  NAME: string;
+  EMAIL: string;
+  DEPARTMENT_ID: number;
+}
+
 export default function CourseSelectionPage() {
+  const router = useRouter();
   const { user, isAuthenticated } = useAuth();
   const [selectedCourses, setSelectedCourses] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -30,7 +39,29 @@ export default function CourseSelectionPage() {
   const [removingCourse, setRemovingCourse] = useState<number | null>(null);
   const [selectedAdvisor, setSelectedAdvisor] = useState("");
   const [acceptedTerms, setAcceptedTerms] = useState(false);
-  const [advisorOptions, setAdvisorOptions] = useState<string[]>([]);
+  const [advisorOptions, setAdvisorOptions] = useState<Advisor[]>([]);
+  
+  // Registration state
+  const [submitting, setSubmitting] = useState(false);
+  const [registrationSuccess, setRegistrationSuccess] = useState(false);
+  const [registrationError, setRegistrationError] = useState<string | null>(null);
+  const [bundleId, setBundleId] = useState<number | null>(null);
+
+  // Calculate cost per course
+  const getCostPerCredit = (departmentId: number) => {
+    // Default cost
+    const defaultCost = 1500;
+    
+    // Map department IDs to their costs
+    const departmentCosts: Record<number, number> = {
+      1: 1500, // CSE
+      2: 1400, // EEE
+      3: 1300, // BBA
+      4: 1200, // English
+    };
+    
+    return departmentCosts[departmentId] || defaultCost;
+  };
 
   // Calculate totals
   const totalCourses = selectedCourses.length;
@@ -39,6 +70,12 @@ export default function CourseSelectionPage() {
     0
   );
   
+  // Calculate total cost
+  const totalCost = selectedCourses.reduce((total, course) => {
+    const costPerCredit = getCostPerCredit(course.department_id);
+    return total + (costPerCredit * Number(course.credit));
+  }, 0);
+
   // Fetch cart items from API
   useEffect(() => {
     const fetchCartItems = async () => {
@@ -80,17 +117,16 @@ export default function CourseSelectionPage() {
         
         const data = await response.json();
         if (data.advisors) {
-          const options = data.advisors.map((advisor: any) => advisor.NAME);
-          setAdvisorOptions(options);
+          setAdvisorOptions(data.advisors);
         }
       } catch (err) {
         console.error("Error fetching advisors:", err);
         // Set some default options if API fails
         setAdvisorOptions([
-          "Tajwone Chowdhury",
-          "Jakaria",
-          "Oli Ahmed",
-          "Masum Pradhania",
+          { ID: 1, NAME: "Tajwone Chowdhury", EMAIL: "tajwone@example.com", DEPARTMENT_ID: 1 },
+          { ID: 2, NAME: "Jakaria", EMAIL: "jakaria@example.com", DEPARTMENT_ID: 1 },
+          { ID: 3, NAME: "Oli Ahmed", EMAIL: "oli@example.com", DEPARTMENT_ID: 1 },
+          { ID: 4, NAME: "Masum Pradhania", EMAIL: "masum@example.com", DEPARTMENT_ID: 1 },
         ]);
       }
     };
@@ -131,20 +167,87 @@ export default function CourseSelectionPage() {
     }
   };
 
-  // Calculate cost per course
-  const getCostPerCredit = (departmentId: number) => {
-    // Default cost
-    const defaultCost = 1500;
+  // Handle registration submission
+  const handleSubmitRegistration = async () => {
+    if (!isAuthenticated || !user?.id) {
+      setRegistrationError("You must be logged in to register for courses");
+      return;
+    }
     
-    // Map department IDs to their costs
-    const departmentCosts: Record<number, number> = {
-      1: 1500, // CSE
-      2: 1400, // EEE
-      3: 1300, // BBA
-      4: 1200, // English
-    };
+    if (!selectedAdvisor) {
+      setRegistrationError("Please select an advisor before proceeding");
+      return;
+    }
     
-    return departmentCosts[departmentId] || defaultCost;
+    if (selectedCourses.length === 0) {
+      setRegistrationError("You need to select at least one course");
+      return;
+    }
+    
+    if (!acceptedTerms) {
+      setRegistrationError("You must accept the terms before proceeding");
+      return;
+    }
+    
+    setSubmitting(true);
+    setRegistrationError(null);
+    
+    try {
+      // Find the advisor ID from the selected advisor name
+      const advisorObj = advisorOptions.find(a => a.NAME === selectedAdvisor);
+      
+      if (!advisorObj) {
+        throw new Error("Selected advisor not found");
+      }
+      
+      // Determine current semester (you may want to get this from a settings API)
+      const currentDate = new Date();
+      const year = currentDate.getFullYear();
+      let semester = '';
+      
+      const month = currentDate.getMonth() + 1; // 0-indexed
+      if (month >= 1 && month <= 4) {
+        semester = `Spring-${year}`;
+      } else if (month >= 5 && month <= 8) {
+        semester = `Summer-${year}`;
+      } else {
+        semester = `Fall-${year}`;
+      }
+      
+      const response = await fetch("/api/registration/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: user.id,
+          advisorId: advisorObj.ID,
+          semester,
+          totalAmount: totalCost
+        }),
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to submit registration");
+      }
+      
+      if (data.success) {
+        setRegistrationSuccess(true);
+        setBundleId(data.bundleId);
+        
+        // Redirect to registration status page after a delay
+        setTimeout(() => {
+          router.push(`/registration-status?bundleId=${data.bundleId}`);
+        }, 2000);
+      }
+    } catch (err) {
+      console.error("Error submitting registration:", err);
+      setRegistrationError(err instanceof Error ? err.message : "An error occurred during registration");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -190,9 +293,9 @@ export default function CourseSelectionPage() {
                 onChange={(e) => setSelectedAdvisor(e.target.value)}
               >
                 <option value="">Choose your advisor</option>
-                {advisorOptions.map((advisor, index) => (
-                  <option key={index} value={advisor}>
-                    {advisor}
+                {advisorOptions.map((advisor) => (
+                  <option key={advisor.ID} value={advisor.NAME}>
+                    {advisor.NAME}
                   </option>
                 ))}
               </Select>
@@ -361,29 +464,46 @@ export default function CourseSelectionPage() {
                           Select More Courses
                         </Button>
                       </Link>
-                      <Link href="/registration-status">
-                        <Button
-                          size="sm"
-                          disabled={!acceptedTerms || selectedAdvisor === "" || selectedCourses.length === 0}
-                          className="flex items-center gap-2"
-                          style={{
-                            backgroundColor:
-                              acceptedTerms && selectedAdvisor && selectedCourses.length > 0
-                                ? "#92e3a9"
-                                : "#4B5563",
-                            color:
-                              acceptedTerms && selectedAdvisor && selectedCourses.length > 0
-                                ? "black"
-                                : "white",
-                          }}
-                        >
-                          Proceed to Registration
-                        </Button>
-                      </Link>
+                      <Button
+                        size="sm"
+                        onClick={handleSubmitRegistration}
+                        disabled={!acceptedTerms || selectedAdvisor === "" || selectedCourses.length === 0 || submitting}
+                        className="flex items-center gap-2"
+                        style={{
+                          backgroundColor:
+                            acceptedTerms && selectedAdvisor && selectedCourses.length > 0 && !submitting
+                              ? "#92e3a9"
+                              : "#4B5563",
+                          color:
+                            acceptedTerms && selectedAdvisor && selectedCourses.length > 0 && !submitting
+                              ? "black"
+                              : "white",
+                        }}
+                      >
+                        {submitting ? "Processing..." : "Proceed to Registration"}
+                      </Button>
                     </div>
                   </div>
                 </div>
               </div>
+
+              {/* Registration Success/Error Messages */}
+              {registrationSuccess && (
+                <div className="mt-4 rounded-md border border-green-500 bg-green-900/20 p-4 text-green-300">
+                  <p>Registration submitted successfully! Redirecting to registration status page...</p>
+                </div>
+              )}
+              {registrationError && (
+                <div className="mt-4 rounded-md border border-red-500 bg-red-900/20 p-4 text-red-300">
+                  <p>{registrationError}</p>
+                  <button
+                    onClick={() => setRegistrationError(null)}
+                    className="mt-2 rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700"
+                  >
+                    Dismiss
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </>
