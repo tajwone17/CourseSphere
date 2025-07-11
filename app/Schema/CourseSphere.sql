@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 11, 2025 at 09:32 PM
+-- Generation Time: Jul 10, 2025 at 08:22 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -37,6 +37,16 @@ CREATE TABLE `accounts_admin` (
   `CREATED_AT` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `accounts_admin`
+--
+
+INSERT INTO `accounts_admin` (`ID`, `NAME`, `EMAIL`, `PASSWORD`, `PHONE`, `STATUS`, `CREATED_AT`) VALUES
+(2, 'Jakaria Chowdhury Tajwone', '0562310005101031@neub.edu.bd', '$2b$10$/mwnN8DtWPBcJwrXVf8E..5Ef.Nn5mdIdW8wQjkyrLv.Z4TDgdgga', '01765921728', 1, '2025-05-22 05:59:32'),
+(3, 'Tajwone Chowdhury', 'aoli23511@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', '01765921728', 1, '2025-06-10 09:54:50'),
+(4, 'Tajwone Chowdhury', 'tajwone248tc@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', '01765921728', 1, '2025-06-10 16:57:04'),
+(5, 'MR Shahrukh KHan', 'tajwone249@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', '083749494i', 1, '2025-06-10 18:09:27');
+
 -- --------------------------------------------------------
 
 --
@@ -56,7 +66,7 @@ CREATE TABLE `admin` (
 --
 
 INSERT INTO `admin` (`ID`, `NAME`, `EMAIL`, `PASSWORD`, `CREATED_AT`) VALUES
-(1, 'Super Administrator', 'superadmin@neub.edu.bd', '$2b$12$o2eZeSjSISMNx3hWFj4d8Om8Di8gDN1yzaHOZQZMZDUoF1Tl6FMDq', '2025-05-19 18:01:22');
+(1, 'Super Administrator', 'superadmin@neub.edu.bd', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', '2025-05-19 18:01:22');
 
 -- --------------------------------------------------------
 
@@ -75,6 +85,17 @@ CREATE TABLE `advisor` (
   `PHONE` varchar(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `advisor`
+--
+
+INSERT INTO `advisor` (`ID`, `NAME`, `EMAIL`, `PASSWORD`, `DEPARTMENT_ID`, `CREATED_AT`, `STATUS`, `PHONE`) VALUES
+(1, 'Tajwone Chowdhury', 'aoli23511@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 4, '2025-05-20 18:45:30', 0, '01720671208'),
+(4, 'Tajwone Chowdhury', 'dgcvsdg@gmail.cpm', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 3, '2025-06-09 19:15:58', 1, '01765921728'),
+(5, 'Jakaria Chowdhury Tajwone', 'kkabirsingh2510@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 3, '2025-06-09 19:25:17', 1, '01720671208'),
+(7, 'Tajwone Chowdhury', 'tajwone248tc@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 3, '2025-06-09 19:57:32', 1, '01765921728'),
+(8, 'Mohammad Aksar', '0562310005101031@neub.edu.bd', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 3, '2025-06-10 06:38:30', 1, '01765921728');
+
 -- --------------------------------------------------------
 
 --
@@ -91,6 +112,16 @@ CREATE TABLE `course` (
   `INSTRUCTOR_NAME` varchar(100) DEFAULT NULL,
   `CREATED_AT` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `course`
+--
+
+INSERT INTO `course` (`ID`, `TITLE`, `CODE`, `CREDIT`, `DEPARTMENT_ID`, `STATUS`, `INSTRUCTOR_NAME`, `CREATED_AT`) VALUES
+(1, 'dms', 'CSE-012', 3.0, 3, 1, 'TAJWONE VAI', '2025-06-11 18:47:31'),
+(4, 'SEDP', 'CSE-012', 3.0, 3, 1, 'SCP', '2025-06-11 19:23:58'),
+(5, 'Ai', 'CSE-019', 3.0, 3, 1, 'TAJWONE', '2025-07-09 08:54:01'),
+(6, 'SEDP', 'CSE-112', 3.0, 1, 1, 'Sabuj Chandra Paul', '2025-07-09 14:25:31');
 
 -- --------------------------------------------------------
 
@@ -129,12 +160,19 @@ CREATE TABLE `course_registration` (
 --
 
 CREATE TABLE `deadlines` (
-  `ID` int(11) NOT NULL,
-  `TITLE` varchar(100) DEFAULT NULL,
-  `PRIORITY` enum('URGENT') DEFAULT NULL,
-  `DESCRIPTION` varchar(255) DEFAULT NULL,
-  `DEADLINE_DATE` date DEFAULT NULL
+  `id` int(11) NOT NULL,
+  `department_id` int(11) DEFAULT NULL,
+  `course_registration_without_fine` date DEFAULT NULL,
+  `course_registration_with_fine` date DEFAULT NULL,
+  `admit_card_collection` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `deadlines`
+--
+
+INSERT INTO `deadlines` (`id`, `department_id`, `course_registration_without_fine`, `course_registration_with_fine`, `admit_card_collection`) VALUES
+(1, 3, '2025-06-13', '2025-06-14', '2025-07-03');
 
 -- --------------------------------------------------------
 
@@ -148,6 +186,16 @@ CREATE TABLE `department` (
   `AMOUNT_PER_CREDIT` decimal(10,2) NOT NULL,
   `CREATED_AT` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `department`
+--
+
+INSERT INTO `department` (`ID`, `DEPARTMENT_NAME`, `AMOUNT_PER_CREDIT`, `CREATED_AT`) VALUES
+(1, 'CSE', 1500.00, '2025-05-13 19:47:22'),
+(2, 'EEE', 1400.00, '2025-05-13 19:47:22'),
+(3, 'BBA', 1300.00, '2025-05-13 19:47:22'),
+(4, 'English', 1200.00, '2025-05-13 19:47:22');
 
 -- --------------------------------------------------------
 
@@ -164,6 +212,15 @@ CREATE TABLE `exam_controller` (
   `STATUS` tinyint(1) DEFAULT 1,
   `CREATED_AT` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `exam_controller`
+--
+
+INSERT INTO `exam_controller` (`ID`, `NAME`, `EMAIL`, `PASSWORD`, `PHONE`, `STATUS`, `CREATED_AT`) VALUES
+(2, 'Jakaria Chowdhury Tajwone', '0562310005101031@neub.edu.bd', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', '083749494', 0, '2025-05-20 19:05:57'),
+(3, 'Tajwone Chowdhury', 'tajwone248tc@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', '01765921728', 0, '2025-06-10 16:56:37'),
+(5, 'Mr salman Khan', 'tajwone249@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', '01765921728', 1, '2025-07-03 17:41:37');
 
 -- --------------------------------------------------------
 
@@ -182,6 +239,18 @@ CREATE TABLE `hod` (
   `CREATED_AT` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `hod`
+--
+
+INSERT INTO `hod` (`ID`, `NAME`, `EMAIL`, `PASSWORD`, `DEPARTMENT_ID`, `STATUS`, `PHONE`, `CREATED_AT`) VALUES
+(1, 'Tajwone Chowdhury', '0562310005101031@neub.edu.bd', '08168200d5149fb1', 1, 0, '947463303', '2025-05-20 14:55:40'),
+(7, 'mst.fahimajjaman jaina', 'fahimajaina765@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 1, 1, '01765921728', '2025-05-21 05:13:26'),
+(8, 'Sathi Akter', '0562310005101045@neub.edu.bd', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 2, 1, '01765921728', '2025-05-21 05:14:58'),
+(9, 'Tajwone Chowdhury', 'kkabirsingh2510@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 1, 1, '01765921728', '2025-06-10 08:07:17'),
+(10, 'Tajwone Chowdhury', 'tajwone249@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 2, 1, '01765921728', '2025-06-10 08:10:14'),
+(11, 'Tajwone Chowdhury', 'tajwone248tc@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 1, 1, '01765921728', '2025-07-09 14:23:57');
+
 -- --------------------------------------------------------
 
 --
@@ -195,6 +264,13 @@ CREATE TABLE `notice` (
   `CREATOR_ID` int(11) NOT NULL,
   `CREATED_AT` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `notice`
+--
+
+INSERT INTO `notice` (`ID`, `TITLE`, `DESCRIPTION`, `CREATOR_ID`, `CREATED_AT`) VALUES
+(10, 'SHeikh Hasina palay na', '5 th July sheikh hasina polaise', 11, '2025-07-09 14:28:08');
 
 -- --------------------------------------------------------
 
@@ -223,6 +299,13 @@ CREATE TABLE `prerequisite` (
   `PREREQ_COURSE_ID` int(11) NOT NULL,
   `CREATED_AT` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `prerequisite`
+--
+
+INSERT INTO `prerequisite` (`ID`, `COURSE_ID`, `PREREQ_COURSE_ID`, `CREATED_AT`) VALUES
+(1, 5, 1, '2025-07-09 08:54:01');
 
 -- --------------------------------------------------------
 
@@ -302,6 +385,41 @@ CREATE TABLE `student` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
+-- Dumping data for table `student`
+--
+
+INSERT INTO `student` (`ID`, `REGISTRATION_NUMBER`, `NAME`, `EMAIL`, `PASSWORD`, `DEPARTMENT_ID`, `SESSION`, `MOBILE`, `STATUS`, `CREATED_AT`) VALUES
+(1, '0562310005101031', 'Jakaria Chowdhury Tajwone', 'tajwone248tc@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 1, 'Fall-2022', '01703758327', 1, '2025-05-13 19:48:50'),
+(2, '0562310005101003', 'Tajwone Chowdhury', 'tajwone249@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 3, 'Spring-202', '01703758327', 0, '2025-05-13 20:14:04'),
+(3, '0562310005101019', 'tajwone17', '0562310005101031@neub.edu.bd', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 2, 'Spring-202', NULL, 0, '2025-05-13 20:53:54'),
+(4, '0562310005101018', 'mohammed oli', 'dgcvsdg@gmail.cpm', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 1, 'Summer-202', '01703758327', 0, '2025-05-16 21:08:31'),
+(5, '0562310005101005', 'Masum Pradhania', 'masumbillah@neub.edu.bd', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 3, 'Fall-2020', '01702383920', 1, '2025-05-19 17:47:13'),
+(6, '056231000037', 'Jakaria', 'tajwoe247tc@gmai.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 1, 'Spring-202', '01703758327', 0, '2025-05-20 18:11:15');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `verification`
+--
+
+CREATE TABLE `verification` (
+  `ID` int(11) NOT NULL,
+  `EMAIL` varchar(100) NOT NULL,
+  `TYPE` enum('PASSWORD_RESET','EMAIL_VERIFICATION') NOT NULL,
+  `OTP` varchar(6) NOT NULL,
+  `EXPIRES_AT` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `CREATED_AT` timestamp NOT NULL DEFAULT current_timestamp(),
+  `IS_USED` tinyint(1) DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `verification`
+--
+
+INSERT INTO `verification` (`ID`, `EMAIL`, `TYPE`, `OTP`, `EXPIRES_AT`, `CREATED_AT`, `IS_USED`) VALUES
+(1, 'tajwone248tc@gmail.com', 'PASSWORD_RESET', '481056', '2025-07-09 07:02:51', '2025-07-09 07:01:30', 1);
+
+--
 -- Indexes for dumped tables
 --
 
@@ -355,7 +473,8 @@ ALTER TABLE `course_registration`
 -- Indexes for table `deadlines`
 --
 ALTER TABLE `deadlines`
-  ADD PRIMARY KEY (`ID`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `department_id` (`department_id`);
 
 --
 -- Indexes for table `department`
@@ -439,6 +558,13 @@ ALTER TABLE `student`
   ADD KEY `DEPARTMENT_ID` (`DEPARTMENT_ID`);
 
 --
+-- Indexes for table `verification`
+--
+ALTER TABLE `verification`
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `EMAIL` (`EMAIL`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -446,7 +572,7 @@ ALTER TABLE `student`
 -- AUTO_INCREMENT for table `accounts_admin`
 --
 ALTER TABLE `accounts_admin`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `admin`
@@ -458,13 +584,13 @@ ALTER TABLE `admin`
 -- AUTO_INCREMENT for table `advisor`
 --
 ALTER TABLE `advisor`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `course`
 --
 ALTER TABLE `course`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `course_cart`
@@ -482,31 +608,31 @@ ALTER TABLE `course_registration`
 -- AUTO_INCREMENT for table `deadlines`
 --
 ALTER TABLE `deadlines`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `department`
 --
 ALTER TABLE `department`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `exam_controller`
 --
 ALTER TABLE `exam_controller`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `hod`
 --
 ALTER TABLE `hod`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `notice`
 --
 ALTER TABLE `notice`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `payment`
@@ -518,7 +644,7 @@ ALTER TABLE `payment`
 -- AUTO_INCREMENT for table `prerequisite`
 --
 ALTER TABLE `prerequisite`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `registered_courses`
@@ -548,7 +674,13 @@ ALTER TABLE `results`
 -- AUTO_INCREMENT for table `student`
 --
 ALTER TABLE `student`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT for table `verification`
+--
+ALTER TABLE `verification`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Constraints for dumped tables
@@ -580,6 +712,12 @@ ALTER TABLE `course_registration`
   ADD CONSTRAINT `course_registration_ibfk_1` FOREIGN KEY (`BUNDLE_ID`) REFERENCES `registration_bundle` (`ID`),
   ADD CONSTRAINT `course_registration_ibfk_2` FOREIGN KEY (`COURSE_ID`) REFERENCES `course` (`ID`),
   ADD CONSTRAINT `course_registration_ibfk_3` FOREIGN KEY (`ADVISOR_ID`) REFERENCES `advisor` (`ID`);
+
+--
+-- Constraints for table `deadlines`
+--
+ALTER TABLE `deadlines`
+  ADD CONSTRAINT `deadlines_ibfk_1` FOREIGN KEY (`department_id`) REFERENCES `department` (`ID`);
 
 --
 -- Constraints for table `hod`
@@ -632,26 +770,6 @@ ALTER TABLE `results`
 ALTER TABLE `student`
   ADD CONSTRAINT `student_ibfk_1` FOREIGN KEY (`DEPARTMENT_ID`) REFERENCES `department` (`ID`);
 COMMIT;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `verification`
---
-
-CREATE TABLE `verification` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `EMAIL` varchar(100) NOT NULL,
-  `TYPE` enum('PASSWORD_RESET','EMAIL_VERIFICATION') NOT NULL,
-  `OTP` varchar(6) NOT NULL,
-  `EXPIRES_AT` timestamp NOT NULL,
-  `CREATED_AT` timestamp NOT NULL DEFAULT current_timestamp(),
-  `IS_USED` tinyint(1) DEFAULT 0,
-  PRIMARY KEY (`ID`),
-  KEY `EMAIL` (`EMAIL`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

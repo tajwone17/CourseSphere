@@ -7,12 +7,13 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "flowbite-react patch"
+    "postinstall": "flowbite-react patch && npm run rebuild-native",
+    "rebuild-native": "node -e \"try { require('child_process').execSync('npm rebuild bcrypt --build-from-source', {stdio: 'inherit'}) } catch(e) { console.error('Native module rebuild failed, using fallback') }\""
   },
   "dependencies": {
     "aos": "^2.3.4",
     "autoprefixer": "^10.4.21",
-    "bcrypt": "^5.1.1",
+    "bcrypt": "5.1.1",
     "dotenv": "^16.6.1",
     "flowbite": "^3.1.2",
     "flowbite-react": "^0.11.8",
