@@ -35,7 +35,7 @@ export default function CourseSelectionPage() {
   // Calculate totals
   const totalCourses = selectedCourses.length;
   const totalCredits = selectedCourses.reduce(
-    (sum, course) => sum + course.credit,
+    (sum, course) => sum + Number(course.credit),
     0
   );
   
