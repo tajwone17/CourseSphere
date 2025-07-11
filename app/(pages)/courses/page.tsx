@@ -2,9 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { Select } from "flowbite-react";
-import { HiBookOpen, HiUser, HiOfficeBuilding, HiSearch } from "react-icons/hi";
+import { HiBookOpen, HiUser, HiOfficeBuilding, HiSearch, HiShoppingCart } from "react-icons/hi";
 import ReactSelect from "react-select";
 import { useAuth } from "@/app/context/AuthContext";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface Course {
   id: number;
@@ -18,15 +20,18 @@ interface Course {
 }
 
 export default function CourseCatalogTable() {
+  const router = useRouter();
   const { user, isAuthenticated } = useAuth();
   const [searchCode, setSearchCode] = useState("");
   const [searchTitle, setSearchTitle] = useState("");
   const [searchInstructor, setSearchInstructor] = useState("");
   const [selectedCredit, setSelectedCredit] = useState("all");
   const [selectedCourses, setSelectedCourses] = useState<number[]>([]);
+  const [cartCount, setCartCount] = useState(0);
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [addingCourse, setAddingCourse] = useState<number | null>(null);
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
@@ -67,6 +72,77 @@ export default function CourseCatalogTable() {
 
     fetchCourses();
   }, [isAuthenticated, user?.departmentId]);
+
+  // Fetch cart items and update selectedCourses
+  useEffect(() => {
+    const fetchCartItems = async () => {
+      if (!isAuthenticated || !user?.id) return;
+      
+      try {
+        const response = await fetch(`/api/course-selection/get-cart?userId=${user.id}`);
+        
+        if (!response.ok) {
+          throw new Error("Failed to fetch cart items");
+        }
+        
+        const data = await response.json();
+        if (data.success && data.cartItems) {
+          const courseIds = data.cartItems.map((item: any) => item.COURSE_ID);
+          setSelectedCourses(courseIds);
+          setCartCount(courseIds.length);
+        }
+      } catch (err) {
+        console.error("Error fetching cart items:", err);
+      }
+    };
+    
+    fetchCartItems();
+  }, [isAuthenticated, user?.id]);
+
+  // Handle course selection
+  const handleSelectCourse = async (courseId: number) => {
+    if (!isAuthenticated) {
+      alert("Please sign in to select courses");
+      router.push("/signin");
+      return;
+    }
+    
+    if (!user?.id) {
+      setError("User information not available. Please sign in again.");
+      return;
+    }
+
+    setAddingCourse(courseId);
+    
+    try {
+      const response = await fetch("/api/course-selection/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: user.id,
+          courseId,
+        }),
+      });
+      
+      if (!response.ok) {
+        throw new Error("Failed to add course to cart");
+      }
+      
+      const data = await response.json();
+      
+      if (data.success || data.exists) {
+        setSelectedCourses(prev => [...prev, courseId]);
+        setCartCount(prev => prev + 1);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
+      console.error("Error adding course to cart:", err);
+    } finally {
+      setAddingCourse(null);
+    }
+  };
 
   // Filter courses based on search criteria
   const filtered = courses.filter((course) => {
@@ -114,10 +190,18 @@ export default function CourseCatalogTable() {
   return (
     <div className="mx-auto max-w-7xl space-y-8 px-4 py-8">
       <div
-        className="mb-8 text-center"
+        className="mb-8 text-center relative"
         data-aos="fade-down"
         data-aos-duration="1000"
       >
+        {isAuthenticated && (
+          <div className="absolute right-0 top-0">
+            <Link href="/course-selection" className="flex items-center gap-2 px-4 py-2 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors">
+              <HiShoppingCart className="text-[#92e3a9] text-xl" />
+              <span className="text-white">{cartCount} {cartCount === 1 ? 'Course' : 'Courses'}</span>
+            </Link>
+          </div>
+        )}
         <h1 className="mb-2 text-3xl font-bold tracking-tight text-gray-200 lg:text-5xl">
           Course Catalog
         </h1>
@@ -427,20 +511,23 @@ export default function CourseCatalogTable() {
                         <td className="px-4 py-4 whitespace-nowrap">
                           <div className="flex justify-center">
                             {selectedCourses.includes(course.id) ? (
-                              <span className="inline-block min-w-[100px] rounded-md border border-[#92e3a9] bg-[#92e3a9]/10 px-3 py-2 text-center text-[#92e3a9]">
-                                Selected
-                              </span>
+                              <Link href="/course-selection" className="inline-block min-w-[100px] rounded-md border border-[#92e3a9] bg-[#92e3a9]/10 px-3 py-2 text-center text-[#92e3a9] hover:bg-[#92e3a9]/20 transition-colors">
+                                View in Cart
+                              </Link>
                             ) : (
                               <button
-                                className="inline-flex w-full min-w-[100px] justify-center rounded-md bg-[#92e3a9] px-3 py-2 text-sm font-medium text-black transition-all hover:scale-105 hover:bg-[#7acc91] hover:shadow-lg"
-                                onClick={() =>
-                                  setSelectedCourses([
-                                    ...selectedCourses,
-                                    course.id,
-                                  ])
-                                }
+                                className="inline-flex w-full min-w-[100px] justify-center rounded-md bg-[#92e3a9] px-3 py-2 text-sm font-medium text-black transition-all hover:scale-105 hover:bg-[#7acc91] hover:shadow-lg disabled:opacity-50 disabled:hover:scale-100"
+                                onClick={() => handleSelectCourse(course.id)}
+                                disabled={addingCourse === course.id}
                               >
-                                Select Course
+                                {addingCourse === course.id ? (
+                                  <div className="flex items-center">
+                                    <div className="mr-2 h-4 w-4 animate-spin rounded-full border-t-2 border-b-2 border-black"></div>
+                                    Adding...
+                                  </div>
+                                ) : (
+                                  "Select Course"
+                                )}
                               </button>
                             )}
                           </div>

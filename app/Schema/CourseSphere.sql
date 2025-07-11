@@ -131,9 +131,9 @@ INSERT INTO `course` (`ID`, `TITLE`, `CODE`, `CREDIT`, `DEPARTMENT_ID`, `STATUS`
 
 CREATE TABLE `course_cart` (
   `ID` int(11) NOT NULL,
-  `STUDENT_ID` int(11) NOT NULL,
+  `USER_ID` int(11) NOT NULL,
   `COURSE_ID` int(11) NOT NULL,
-  `SEMESTER` varchar(50) NOT NULL,
+  `STATUS` tinyint(1) DEFAULT 0,
   `ADDED_AT` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -457,7 +457,7 @@ ALTER TABLE `course`
 --
 ALTER TABLE `course_cart`
   ADD PRIMARY KEY (`ID`),
-  ADD UNIQUE KEY `STUDENT_ID` (`STUDENT_ID`,`COURSE_ID`,`SEMESTER`),
+  ADD UNIQUE KEY `USER_COURSE` (`USER_ID`,`COURSE_ID`),
   ADD KEY `COURSE_ID` (`COURSE_ID`);
 
 --
@@ -702,7 +702,7 @@ ALTER TABLE `course`
 -- Constraints for table `course_cart`
 --
 ALTER TABLE `course_cart`
-  ADD CONSTRAINT `course_cart_ibfk_1` FOREIGN KEY (`STUDENT_ID`) REFERENCES `student` (`ID`),
+  ADD CONSTRAINT `course_cart_ibfk_1` FOREIGN KEY (`USER_ID`) REFERENCES `student` (`ID`),
   ADD CONSTRAINT `course_cart_ibfk_2` FOREIGN KEY (`COURSE_ID`) REFERENCES `course` (`ID`);
 
 --

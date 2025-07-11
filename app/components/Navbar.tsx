@@ -98,27 +98,6 @@ export function MyNavbar() {
         </NavbarCollapse>
 
         <div className="flex items-center gap-4">
-          {isAuthenticated && user.role === "student" && (
-            <Link
-              href="/course-selection"
-              className="flex items-center gap-2 rounded-lg bg-black px-4 py-2 text-[#92e3a9] transition-all hover:scale-105 hover:bg-gray-900"
-            >
-              <HiAcademicCap className="text-2xl" />
-              <span className="text-m hidden font-bold sm:inline">
-                Course Selection
-              </span>
-              <Badge
-                style={{
-                  border: "1px solid #92e3a9",
-                  backgroundColor: "black",
-                  color: "#92e3a9",
-                }}
-                className="ms-2 rounded-full px-1.5"
-              >
-                2
-              </Badge>
-            </Link>
-          )}
 
           {isAuthenticated && user.role === "student" ? (
             <Dropdown

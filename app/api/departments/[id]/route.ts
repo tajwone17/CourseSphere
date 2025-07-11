@@ -18,7 +18,7 @@ export async function GET(
 
     // Query the database for department details
     const [rows] = await db.query<DepartmentRow[]>(
-      "SELECT ID, DEPARTMENT_NAME FROM DEPARTMENT WHERE ID = ?",
+      "SELECT ID, DEPARTMENT_NAME FROM department WHERE ID = ?",
       [id],
     );
 
