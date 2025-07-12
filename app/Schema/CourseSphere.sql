@@ -367,6 +367,7 @@ CREATE TABLE `results` (
   `STUDENT_ID` int(11) NOT NULL,
   `COURSE_ID` int(11) NOT NULL,
   `GRADE` enum('A+','A','A-','B+','B','B-','C+','C','D','F') NOT NULL,
+  `SEMESTER` varchar(50) NOT NULL,
   `CREATED_AT` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
