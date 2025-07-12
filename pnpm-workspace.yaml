@@ -1,2 +1,6 @@
-ignoredBuiltDependencies:
+packages:
+  - 'packages/*'
+  - 'apps/*'
+
+ignoredBuildDependencies:
   - bcrypt

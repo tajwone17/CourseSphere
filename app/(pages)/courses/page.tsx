@@ -87,6 +87,7 @@ export default function CourseCatalogTable() {
         
         const data = await response.json();
         if (data.success && data.cartItems) {
+          /* eslint-disable-next-line */
           const courseIds = data.cartItems.map((item: any) => item.COURSE_ID);
           setSelectedCourses(courseIds);
           setCartCount(courseIds.length);

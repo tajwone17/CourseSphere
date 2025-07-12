@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Button, Textarea, Select, Checkbox, Label } from 'flowbite-react';
+import { Button,  Checkbox, Label } from 'flowbite-react';
 import { useParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/app/context/AuthContext';
-import { HiArrowLeft, HiCheck, HiX, HiDocumentText, HiAcademicCap } from "react-icons/hi";
+import { HiArrowLeft, HiCheck, HiX,  HiAcademicCap } from "react-icons/hi";
 import Link from 'next/link';
 
 interface CourseRegistration {
@@ -22,11 +22,11 @@ interface CourseRegistration {
   advisor_email: string | null;
 }
 
-interface Advisor {
-  ID: number;
-  NAME: string;
-  EMAIL: string;
-}
+// interface Advisor {
+//   ID: number;
+//   NAME: string;
+//   EMAIL: string;
+// }
 
 interface RegistrationBundle {
   ID: number;
@@ -60,11 +60,11 @@ export default function RegistrationReviewPage() {
   
   const [bundle, setBundle] = useState<RegistrationBundle | null>(null);
   const [courses, setCourses] = useState<CourseRegistration[]>([]);
-  const [advisors, setAdvisors] = useState<Advisor[]>([]);
+  // const [advisors, setAdvisors] = useState<Advisor[]>([]);
   
   // Form state
   const [approvalStatus, setApprovalStatus] = useState<boolean | null>(null);
-  const [advisorId, setAdvisorId] = useState<number | null>(null);
+  // const [advisorId, setAdvisorId] = useState<number | null>(null);
   const [coursesApproval, setCoursesApproval] = useState<{[key: number]: {approved: boolean}}>({});
   const [totalAmount, setTotalAmount] = useState<string>('');
   
@@ -97,7 +97,7 @@ export default function RegistrationReviewPage() {
         if (data.success) {
           setBundle(data.bundle);
           setCourses(data.courses);
-          setAdvisors(data.advisors);
+          // setAdvisors(data.advisors);
           
           // Initialize course approvals
           const initialCoursesApproval: {[key: number]: {approved: boolean}} = {};
@@ -147,6 +147,7 @@ export default function RegistrationReviewPage() {
     
     try {
       let endpoint = '';
+      // eslint-disable-next-line
       let payload: any = {
         bundleId: bundle.ID
       };
@@ -352,7 +353,7 @@ export default function RegistrationReviewPage() {
               </div>
               <div>
                 <h3 className="text-lg font-medium text-blue-400">Head of Department Review</h3>
-                <p>As the Head of Department, you should review the advisor's decisions and either approve or reject the entire registration request.</p>
+                <p>As the Head of Department, you should review the advisor`s decisions and either approve or reject the entire registration request.</p>
               </div>
             </div>
           )}

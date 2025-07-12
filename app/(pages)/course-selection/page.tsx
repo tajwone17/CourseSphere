@@ -40,18 +40,21 @@ export default function CourseSelectionPage() {
   const [selectedAdvisor, setSelectedAdvisor] = useState("");
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [advisorOptions, setAdvisorOptions] = useState<Advisor[]>([]);
-  
+
   // Registration state
   const [submitting, setSubmitting] = useState(false);
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
-  const [registrationError, setRegistrationError] = useState<string | null>(null);
-  const [bundleId, setBundleId] = useState<number | null>(null);
+  const [registrationError, setRegistrationError] = useState<string | null>(
+    null,
+  );
+
+ 
 
   // Calculate cost per course
   const getCostPerCredit = (departmentId: number) => {
     // Default cost
     const defaultCost = 1500;
-    
+
     // Map department IDs to their costs
     const departmentCosts: Record<number, number> = {
       1: 1500, // CSE
@@ -59,7 +62,7 @@ export default function CourseSelectionPage() {
       3: 1300, // BBA
       4: 1200, // English
     };
-    
+
     return departmentCosts[departmentId] || defaultCost;
   };
 
@@ -67,13 +70,13 @@ export default function CourseSelectionPage() {
   const totalCourses = selectedCourses.length;
   const totalCredits = selectedCourses.reduce(
     (sum, course) => sum + Number(course.credit),
-    0
+    0,
   );
-  
+
   // Calculate total cost
   const totalCost = selectedCourses.reduce((total, course) => {
     const costPerCredit = getCostPerCredit(course.department_id);
-    return total + (costPerCredit * Number(course.credit));
+    return total + costPerCredit * Number(course.credit);
   }, 0);
 
   // Fetch cart items from API
@@ -83,15 +86,17 @@ export default function CourseSelectionPage() {
         setLoading(false);
         return;
       }
-      
+
       setLoading(true);
       try {
-        const response = await fetch(`/api/course-selection/get-cart?userId=${user.id}`);
-        
+        const response = await fetch(
+          `/api/course-selection/get-cart?userId=${user.id}`,
+        );
+
         if (!response.ok) {
           throw new Error("Failed to fetch cart items");
         }
-        
+
         const data = await response.json();
         if (data.success && data.cartItems) {
           setSelectedCourses(data.cartItems);
@@ -103,18 +108,20 @@ export default function CourseSelectionPage() {
         setLoading(false);
       }
     };
-    
+
     // Fetch advisor options
     const fetchAdvisors = async () => {
       if (!isAuthenticated || !user?.departmentId) return;
-      
+
       try {
-        const response = await fetch(`/api/advisors?departmentId=${user.departmentId}`);
-        
+        const response = await fetch(
+          `/api/advisors?departmentId=${user.departmentId}`,
+        );
+
         if (!response.ok) {
           throw new Error("Failed to fetch advisors");
         }
-        
+
         const data = await response.json();
         if (data.advisors) {
           setAdvisorOptions(data.advisors);
@@ -123,14 +130,34 @@ export default function CourseSelectionPage() {
         console.error("Error fetching advisors:", err);
         // Set some default options if API fails
         setAdvisorOptions([
-          { ID: 1, NAME: "Tajwone Chowdhury", EMAIL: "tajwone@example.com", DEPARTMENT_ID: 1 },
-          { ID: 2, NAME: "Jakaria", EMAIL: "jakaria@example.com", DEPARTMENT_ID: 1 },
-          { ID: 3, NAME: "Oli Ahmed", EMAIL: "oli@example.com", DEPARTMENT_ID: 1 },
-          { ID: 4, NAME: "Masum Pradhania", EMAIL: "masum@example.com", DEPARTMENT_ID: 1 },
+          {
+            ID: 1,
+            NAME: "Tajwone Chowdhury",
+            EMAIL: "tajwone@example.com",
+            DEPARTMENT_ID: 1,
+          },
+          {
+            ID: 2,
+            NAME: "Jakaria",
+            EMAIL: "jakaria@example.com",
+            DEPARTMENT_ID: 1,
+          },
+          {
+            ID: 3,
+            NAME: "Oli Ahmed",
+            EMAIL: "oli@example.com",
+            DEPARTMENT_ID: 1,
+          },
+          {
+            ID: 4,
+            NAME: "Masum Pradhania",
+            EMAIL: "masum@example.com",
+            DEPARTMENT_ID: 1,
+          },
         ]);
       }
     };
-    
+
     fetchCartItems();
     fetchAdvisors();
   }, [isAuthenticated, user?.id, user?.departmentId]);
@@ -138,9 +165,9 @@ export default function CourseSelectionPage() {
   // Handle removing a course from cart
   const handleRemoveCourse = async (courseId: number) => {
     if (!isAuthenticated || !user?.id) return;
-    
+
     setRemovingCourse(courseId);
-    
+
     try {
       const response = await fetch("/api/course-selection/remove", {
         method: "DELETE",
@@ -152,13 +179,15 @@ export default function CourseSelectionPage() {
           courseId,
         }),
       });
-      
+
       if (!response.ok) {
         throw new Error("Failed to remove course from cart");
       }
-      
+
       // Update UI after successful removal
-      setSelectedCourses(prev => prev.filter(course => course.COURSE_ID !== courseId));
+      setSelectedCourses((prev) =>
+        prev.filter((course) => course.COURSE_ID !== courseId),
+      );
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
       console.error("Error removing course from cart:", err);
@@ -173,38 +202,38 @@ export default function CourseSelectionPage() {
       setRegistrationError("You must be logged in to register for courses");
       return;
     }
-    
+
     if (!selectedAdvisor) {
       setRegistrationError("Please select an advisor before proceeding");
       return;
     }
-    
+
     if (selectedCourses.length === 0) {
       setRegistrationError("You need to select at least one course");
       return;
     }
-    
+
     if (!acceptedTerms) {
       setRegistrationError("You must accept the terms before proceeding");
       return;
     }
-    
+
     setSubmitting(true);
     setRegistrationError(null);
-    
+
     try {
       // Find the advisor ID from the selected advisor name
-      const advisorObj = advisorOptions.find(a => a.NAME === selectedAdvisor);
-      
+      const advisorObj = advisorOptions.find((a) => a.NAME === selectedAdvisor);
+
       if (!advisorObj) {
         throw new Error("Selected advisor not found");
       }
-      
+
       // Determine current semester (you may want to get this from a settings API)
       const currentDate = new Date();
       const year = currentDate.getFullYear();
-      let semester = '';
-      
+      let semester = "";
+
       const month = currentDate.getMonth() + 1; // 0-indexed
       if (month >= 1 && month <= 4) {
         semester = `Spring-${year}`;
@@ -213,7 +242,7 @@ export default function CourseSelectionPage() {
       } else {
         semester = `Fall-${year}`;
       }
-      
+
       const response = await fetch("/api/registration/submit", {
         method: "POST",
         headers: {
@@ -223,20 +252,19 @@ export default function CourseSelectionPage() {
           userId: user.id,
           advisorId: advisorObj.ID,
           semester,
-          totalAmount: totalCost
+          totalAmount: totalCost,
         }),
       });
-      
+
       const data = await response.json();
-      
+
       if (!response.ok) {
         throw new Error(data.error || "Failed to submit registration");
       }
-      
+
       if (data.success) {
         setRegistrationSuccess(true);
-        setBundleId(data.bundleId);
-        
+
         // Redirect to registration status page after a delay
         setTimeout(() => {
           router.push(`/registration-status?bundleId=${data.bundleId}`);
@@ -244,7 +272,11 @@ export default function CourseSelectionPage() {
       }
     } catch (err) {
       console.error("Error submitting registration:", err);
-      setRegistrationError(err instanceof Error ? err.message : "An error occurred during registration");
+      setRegistrationError(
+        err instanceof Error
+          ? err.message
+          : "An error occurred during registration",
+      );
     } finally {
       setSubmitting(false);
     }
@@ -315,7 +347,8 @@ export default function CourseSelectionPage() {
             </h2>
             {selectedCourses.length === 0 ? (
               <div className="py-12 text-center text-gray-400">
-                <p>You haven't selected any courses yet.</p>
+                <p>You haven`t selected any courses yet.</p>
+
                 <Link href="/courses">
                   <button className="mt-4 inline-flex items-center gap-2 rounded-md border border-[#92e3a9] bg-transparent px-4 py-2 text-[#92e3a9] hover:bg-[#92e3a9]/10">
                     <HiArrowLeft />
@@ -350,9 +383,11 @@ export default function CourseSelectionPage() {
                   </thead>
                   <tbody className="divide-y divide-gray-800">
                     {selectedCourses.map((course) => {
-                      const costPerCredit = getCostPerCredit(course.department_id);
+                      const costPerCredit = getCostPerCredit(
+                        course.department_id,
+                      );
                       const totalCost = costPerCredit * course.credit;
-                      
+
                       return (
                         <tr key={course.COURSE_ID} className="bg-gray-900">
                           <td className="px-6 py-4 whitespace-nowrap text-white">
@@ -371,9 +406,11 @@ export default function CourseSelectionPage() {
                             ${totalCost}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <button 
+                            <button
                               className="text-red-500 hover:text-red-400 disabled:opacity-50"
-                              onClick={() => handleRemoveCourse(course.COURSE_ID)}
+                              onClick={() =>
+                                handleRemoveCourse(course.COURSE_ID)
+                              }
                               disabled={removingCourse === course.COURSE_ID}
                             >
                               {removingCourse === course.COURSE_ID ? (
@@ -404,22 +441,31 @@ export default function CourseSelectionPage() {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between border-b border-gray-800 pb-2">
                     <span className="text-gray-400">Total Courses:</span>
-                    <span className="font-medium text-white">{totalCourses}</span>
+                    <span className="font-medium text-white">
+                      {totalCourses}
+                    </span>
                   </div>
                   <div className="flex items-center justify-between border-b border-gray-800 pb-2">
                     <span className="text-gray-400">Course Advisor:</span>
-                    <span className="font-medium text-white">{selectedAdvisor || "Not selected"}</span>
+                    <span className="font-medium text-white">
+                      {selectedAdvisor || "Not selected"}
+                    </span>
                   </div>
                   <div className="flex items-center justify-between border-b border-gray-800 pb-2">
                     <span className="text-gray-400">Total Credits:</span>
-                    <span className="font-medium text-white">{totalCredits}</span>
+                    <span className="font-medium text-white">
+                      {totalCredits}
+                    </span>
                   </div>
                   <div className="flex items-center justify-between border-b border-gray-800 pb-2">
                     <span className="text-gray-400">Total Cost:</span>
                     <span className="font-medium text-white">
-                      ${selectedCourses.reduce((total, course) => {
-                        const costPerCredit = getCostPerCredit(course.department_id);
-                        return total + (costPerCredit * course.credit);
+                      $
+                      {selectedCourses.reduce((total, course) => {
+                        const costPerCredit = getCostPerCredit(
+                          course.department_id,
+                        );
+                        return total + costPerCredit * course.credit;
                       }, 0)}
                     </span>
                   </div>
@@ -427,7 +473,9 @@ export default function CourseSelectionPage() {
 
                 <div className="space-y-6">
                   <div>
-                    <h3 className="mb-2 font-medium text-white">Important Notes:</h3>
+                    <h3 className="mb-2 font-medium text-white">
+                      Important Notes:
+                    </h3>
                     <ul className="list-inside list-disc space-y-1 text-gray-400">
                       <li>Registration is subject to advisor approval</li>
                       <li>Course schedule conflicts will be verified</li>
@@ -444,8 +492,8 @@ export default function CourseSelectionPage() {
                         onChange={(e) => setAcceptedTerms(e.target.checked)}
                       />
                       <label htmlFor="terms" className="text-gray-400">
-                        I confirm that I have reviewed the courses and accept the
-                        registration terms
+                        I confirm that I have reviewed the courses and accept
+                        the registration terms
                       </label>
                     </div>
 
@@ -467,20 +515,33 @@ export default function CourseSelectionPage() {
                       <Button
                         size="sm"
                         onClick={handleSubmitRegistration}
-                        disabled={!acceptedTerms || selectedAdvisor === "" || selectedCourses.length === 0 || submitting}
+                        disabled={
+                          !acceptedTerms ||
+                          selectedAdvisor === "" ||
+                          selectedCourses.length === 0 ||
+                          submitting
+                        }
                         className="flex items-center gap-2"
                         style={{
                           backgroundColor:
-                            acceptedTerms && selectedAdvisor && selectedCourses.length > 0 && !submitting
+                            acceptedTerms &&
+                            selectedAdvisor &&
+                            selectedCourses.length > 0 &&
+                            !submitting
                               ? "#92e3a9"
                               : "#4B5563",
                           color:
-                            acceptedTerms && selectedAdvisor && selectedCourses.length > 0 && !submitting
+                            acceptedTerms &&
+                            selectedAdvisor &&
+                            selectedCourses.length > 0 &&
+                            !submitting
                               ? "black"
                               : "white",
                         }}
                       >
-                        {submitting ? "Processing..." : "Proceed to Registration"}
+                        {submitting
+                          ? "Processing..."
+                          : "Proceed to Registration"}
                       </Button>
                     </div>
                   </div>
@@ -490,7 +551,10 @@ export default function CourseSelectionPage() {
               {/* Registration Success/Error Messages */}
               {registrationSuccess && (
                 <div className="mt-4 rounded-md border border-green-500 bg-green-900/20 p-4 text-green-300">
-                  <p>Registration submitted successfully! Redirecting to registration status page...</p>
+                  <p>
+                    Registration submitted successfully! Redirecting to
+                    registration status page...
+                  </p>
                 </div>
               )}
               {registrationError && (

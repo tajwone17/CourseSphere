@@ -284,7 +284,7 @@ export default function RegistrationStatusPage() {
       <div className="mx-auto max-w-4xl py-10">
         <div className="rounded-lg border border-gray-700 bg-gray-800 p-6 text-center">
           <h1 className="mb-4 text-2xl font-bold text-white">No Registration Found</h1>
-          <p className="mb-4 text-gray-300">You don't have any active course registrations.</p>
+          <p className="mb-4 text-gray-300">You don`t have any active course registrations.</p>
           <Link href="/courses">
             <button className="rounded-md bg-[#92e3a9] px-6 py-2 text-black hover:bg-[#78c18f]">
               Browse Courses

@@ -6,25 +6,24 @@ import {
   HiIdentification,
   HiCalendar,
   HiAcademicCap,
-  HiUserGroup,
-  HiEnvelope,
   HiBuildingOffice2,
+  HiUserGroup,
 } from "react-icons/hi2";
 import { FaCheckCircle, FaClock, FaTimesCircle } from "react-icons/fa";
 import { HiClock as HiPending } from "react-icons/hi";
 import { useEffect, useState } from "react";
 import { useAuth } from "../../../context/AuthContext";
 
-interface Student {
-  ID: number;
-  NAME: string;
-  EMAIL: string;
-  REGISTRATION_NUMBER?: string;
-  DEPARTMENT_ID: number;
-  SESSION?: string;
-  STATUS: boolean;
-  MOBILE?: string;
-}
+// interface Student {
+//   ID: number;
+//   NAME: string;
+//   EMAIL: string;
+//   REGISTRATION_NUMBER?: string;
+//   DEPARTMENT_ID: number;
+//   SESSION?: string;
+//   STATUS: boolean;
+//   MOBILE?: string;
+// }
 
 interface RegistrationRequest {
   BUNDLE_ID: number;
@@ -44,7 +43,9 @@ interface RegistrationRequest {
 
 export default function StudentManagement() {
   const [registrations, setRegistrations] = useState<RegistrationRequest[]>([]);
-  const [filteredRegistrations, setFilteredRegistrations] = useState<RegistrationRequest[]>([]);
+  const [filteredRegistrations, setFilteredRegistrations] = useState<
+    RegistrationRequest[]
+  >([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchName, setSearchName] = useState("");
@@ -63,9 +64,9 @@ export default function StudentManagement() {
     total: 0,
     pending: 0,
     partiallyApproved: 0,
-    rejected: 0
+    rejected: 0,
   });
-  
+
   const { user } = useAuth();
 
   useEffect(() => {
@@ -76,7 +77,7 @@ export default function StudentManagement() {
       }
     }
   }, [user]);
-  
+
   // Filter registrations based on search criteria
   useEffect(() => {
     let filtered = registrations;
@@ -101,13 +102,15 @@ export default function StudentManagement() {
 
     if (searchDepartment) {
       filtered = filtered.filter(
-        (reg: RegistrationRequest) => reg.DEPARTMENT_ID.toString() === searchDepartment,
+        (reg: RegistrationRequest) =>
+          reg.DEPARTMENT_ID.toString() === searchDepartment,
       );
     }
 
     if (searchStatus) {
       filtered = filtered.filter((reg: RegistrationRequest) => {
-        if (searchStatus === "approved") return reg.STATUS === "PARTIALLY_APPROVED";
+        if (searchStatus === "approved")
+          return reg.STATUS === "PARTIALLY_APPROVED";
         if (searchStatus === "pending") return reg.STATUS === "PENDING";
         if (searchStatus === "rejected") return reg.STATUS === "REJECTED";
         return true;
@@ -123,33 +126,33 @@ export default function StudentManagement() {
     searchDepartment,
     registrations,
   ]);
-  
+
   // Fetch registration requests based on user role
   useEffect(() => {
     const fetchRegistrationRequests = async () => {
       if (!userRole) return;
-      
+
       try {
         setLoading(true);
-        
+
         // Build query URL with role and optional departmentId
         let url = `/api/registration/pending-registrations?role=${userRole}`;
         if (departmentId) {
           url += `&departmentId=${departmentId}`;
         }
-        
+
         const response = await fetch(url);
-        
+
         if (!response.ok) {
           throw new Error("Failed to fetch registration requests");
         }
-        
+
         const data = await response.json();
-        
+
         if (data.success && data.registrations) {
           setRegistrations(data.registrations);
           setFilteredRegistrations(data.registrations);
-          
+
           // Set counts if available
           if (data.counts) {
             setCounts(data.counts);
@@ -164,10 +167,10 @@ export default function StudentManagement() {
         setLoading(false);
       }
     };
-    
+
     fetchRegistrationRequests();
   }, [userRole, departmentId]);
-  
+  // eslint-disable-next-line
   const getDepartmentName = (departmentId: number) => {
     switch (departmentId) {
       case 1:
@@ -209,18 +212,18 @@ export default function StudentManagement() {
         );
     }
   };
-  
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
-  
+
   // This code was removed as it's a legacy filter for students
   // We now filter registrations directly
 
@@ -230,8 +233,10 @@ export default function StudentManagement() {
       data-aos="fade-right"
       data-aos-duration="1000"
     >
-      <h1 className="mb-8 text-4xl font-bold text-white">Registration Approval Requests</h1>
-      
+      <h1 className="mb-8 text-4xl font-bold text-white">
+        Registration Approval Requests
+      </h1>
+
       {error && (
         <div className="mb-4 rounded-lg border border-red-500 bg-red-900/20 p-4 text-red-300">
           {error}
@@ -242,39 +247,57 @@ export default function StudentManagement() {
       <div className="mb-6 rounded-lg border border-blue-500 bg-blue-900/20 p-4 text-blue-300">
         {userRole === "advisor" && (
           <div className="flex items-start">
-            <div className="mr-4 mt-1 flex-shrink-0">
+            <div className="mt-1 mr-4 flex-shrink-0">
               <HiAcademicCap className="h-6 w-6 text-blue-400" />
             </div>
             <div>
-              <h3 className="text-lg font-medium text-blue-400">Advisor Role</h3>
-              <p>You are viewing registration requests that need initial approval. After your approval, requests will proceed to the Head of Department.</p>
+              <h3 className="text-lg font-medium text-blue-400">
+                Advisor Role
+              </h3>
+              <p>
+                You are viewing registration requests that need initial
+                approval. After your approval, requests will proceed to the Head
+                of Department.
+              </p>
             </div>
           </div>
         )}
         {userRole === "hod" && (
           <div className="flex items-start">
-            <div className="mr-4 mt-1 flex-shrink-0">
+            <div className="mt-1 mr-4 flex-shrink-0">
               <HiBuildingOffice2 className="h-6 w-6 text-blue-400" />
             </div>
             <div>
-              <h3 className="text-lg font-medium text-blue-400">Head of Department Role</h3>
-              <p>You are viewing registration requests that have been approved by advisors and now require your review. After your approval, requests will proceed to the Accounts Office.</p>
+              <h3 className="text-lg font-medium text-blue-400">
+                Head of Department Role
+              </h3>
+              <p>
+                You are viewing registration requests that have been approved by
+                advisors and now require your review. After your approval,
+                requests will proceed to the Accounts Office.
+              </p>
             </div>
           </div>
         )}
         {userRole === "accounts_admin" && (
           <div className="flex items-start">
-            <div className="mr-4 mt-1 flex-shrink-0">
+            <div className="mt-1 mr-4 flex-shrink-0">
               <HiCalendar className="h-6 w-6 text-blue-400" />
             </div>
             <div>
-              <h3 className="text-lg font-medium text-blue-400">Accounts Admin Role</h3>
-              <p>You are viewing registration requests that have been approved by the Head of Department and now require final verification and fee setting before payment can be made.</p>
+              <h3 className="text-lg font-medium text-blue-400">
+                Accounts Admin Role
+              </h3>
+              <p>
+                You are viewing registration requests that have been approved by
+                the Head of Department and now require final verification and
+                fee setting before payment can be made.
+              </p>
             </div>
           </div>
         )}
       </div>
-      
+
       {/* Statistics Cards */}
       <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
         <div className="rounded-lg border border-gray-700 bg-gray-800 p-4 shadow">
@@ -283,12 +306,14 @@ export default function StudentManagement() {
               <HiUserGroup className="h-6 w-6 text-blue-400" />
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-400">Total Requests</p>
+              <p className="text-sm font-medium text-gray-400">
+                Total Requests
+              </p>
               <p className="text-2xl font-bold text-white">{counts.total}</p>
             </div>
           </div>
         </div>
-        
+
         <div className="rounded-lg border border-gray-700 bg-gray-800 p-4 shadow">
           <div className="flex items-center">
             <div className="mr-4 rounded-full bg-yellow-900/30 p-3">
@@ -300,19 +325,23 @@ export default function StudentManagement() {
             </div>
           </div>
         </div>
-        
+
         <div className="rounded-lg border border-gray-700 bg-gray-800 p-4 shadow">
           <div className="flex items-center">
             <div className="mr-4 rounded-full bg-green-900/30 p-3">
               <FaCheckCircle className="h-6 w-6 text-green-400" />
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-400">Partially Approved</p>
-              <p className="text-2xl font-bold text-white">{counts.partiallyApproved}</p>
+              <p className="text-sm font-medium text-gray-400">
+                Partially Approved
+              </p>
+              <p className="text-2xl font-bold text-white">
+                {counts.partiallyApproved}
+              </p>
             </div>
           </div>
         </div>
-        
+
         <div className="rounded-lg border border-gray-700 bg-gray-800 p-4 shadow">
           <div className="flex items-center">
             <div className="mr-4 rounded-full bg-red-900/30 p-3">
@@ -325,7 +354,7 @@ export default function StudentManagement() {
           </div>
         </div>
       </div>
-      
+
       {/* Filter Section */}
       <div className="mb-8 grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         <div>
@@ -414,7 +443,7 @@ export default function StudentManagement() {
           </div>
         )}
       </div>
-      
+
       {/* Table Section */}
       <div className="overflow-x-auto rounded-lg border border-gray-700">
         <table className="min-w-full divide-y divide-gray-700">
@@ -472,7 +501,7 @@ export default function StudentManagement() {
               <tr>
                 <td colSpan={8} className="px-6 py-4 text-center text-white">
                   <div className="flex justify-center">
-                    <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-t-2 border-[#92e3a9]"></div>
+                    <div className="h-8 w-8 animate-spin rounded-full border-t-2 border-b-2 border-[#92e3a9]"></div>
                   </div>
                   <p className="mt-2">Loading registration requests...</p>
                 </td>
@@ -485,7 +514,10 @@ export default function StudentManagement() {
               </tr>
             ) : (
               filteredRegistrations.map((reg) => (
-                <tr key={reg.BUNDLE_ID} className="text-white hover:bg-gray-800">
+                <tr
+                  key={reg.BUNDLE_ID}
+                  className="text-white hover:bg-gray-800"
+                >
                   <td className="px-6 py-4">
                     {reg.REGISTRATION_NUMBER || "N/A"}
                   </td>
@@ -493,12 +525,8 @@ export default function StudentManagement() {
                   <td className="px-6 py-4">{reg.SEMESTER}</td>
                   <td className="px-6 py-4">{formatDate(reg.SUBMITTED_AT)}</td>
                   <td className="px-6 py-4">{reg.DEPARTMENT_NAME}</td>
-                  <td className="px-6 py-4">
-                    {getStatus(reg.STATUS)}
-                  </td>
-                  <td className="px-6 py-4 text-center">
-                    {reg.course_count}
-                  </td>
+                  <td className="px-6 py-4">{getStatus(reg.STATUS)}</td>
+                  <td className="px-6 py-4 text-center">{reg.course_count}</td>
                   <td className="px-6 py-4">
                     <div className="flex gap-2">
                       <Link

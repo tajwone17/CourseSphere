@@ -260,7 +260,7 @@ export default function ManageResults() {
         <div>
           <h1 className="text-4xl font-bold text-white">Manage Results</h1>
           <p className="mt-4 text-lg text-gray-400">
-            View and manage students' academic performance
+            View and manage student`s academic performance
           </p>
         </div>
       </div>
