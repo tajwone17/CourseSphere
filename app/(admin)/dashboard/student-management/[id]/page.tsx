@@ -65,9 +65,14 @@ export default function RegistrationReviewPage() {
   // Form state
   const [approvalStatus, setApprovalStatus] = useState<boolean | null>(null);
   const [advisorId, setAdvisorId] = useState<number | null>(null);
-  const [comment, setComment] = useState('');
-  const [coursesApproval, setCoursesApproval] = useState<{[key: number]: {approved: boolean, comment: string}}>({});
+  const [coursesApproval, setCoursesApproval] = useState<{[key: number]: {approved: boolean}}>({});
   const [totalAmount, setTotalAmount] = useState<string>('');
+  
+  // Fee adjustment state
+  const [baseAmount, setBaseAmount] = useState<number>(0);
+  const [waiverPercent, setWaiverPercent] = useState<string>('0');
+  const [delayFine, setDelayFine] = useState<string>('0');
+  const [libraryFee, setLibraryFee] = useState<string>('0');
   
   useEffect(() => {
     if (typeof window !== "undefined" && user && user.role) {
@@ -95,19 +100,18 @@ export default function RegistrationReviewPage() {
           setAdvisors(data.advisors);
           
           // Initialize course approvals
-          const initialCoursesApproval: {[key: number]: {approved: boolean, comment: string}} = {};
+          const initialCoursesApproval: {[key: number]: {approved: boolean}} = {};
           data.courses.forEach((course: CourseRegistration) => {
             initialCoursesApproval[course.COURSE_ID] = {
-              approved: course.STATUS === 'APPROVED',
-              comment: course.ADVISOR_COMMENT || ''
+              approved: course.STATUS === 'APPROVED'
             };
           });
           setCoursesApproval(initialCoursesApproval);
           
           // Set total amount
-          if (data.bundle.TOTAL_AMOUNT) {
-            setTotalAmount(data.bundle.TOTAL_AMOUNT.toString());
-          }
+          const total = Number(data.bundle.TOTAL_AMOUNT) || 0;
+          setTotalAmount(total.toString());
+          setBaseAmount(total);
         } else {
           throw new Error(data.error || "Failed to load registration details");
         }
@@ -128,16 +132,6 @@ export default function RegistrationReviewPage() {
       [courseId]: {
         ...prev[courseId],
         approved
-      }
-    }));
-  };
-
-  const handleCourseCommentChange = (courseId: number, comment: string) => {
-    setCoursesApproval(prev => ({
-      ...prev,
-      [courseId]: {
-        ...prev[courseId],
-        comment
       }
     }));
   };
@@ -165,15 +159,14 @@ export default function RegistrationReviewPage() {
       if (userRole === 'accounts_admin' && approvalStatus === true) {
         const amount = parseFloat(totalAmount);
         if (isNaN(amount) || amount <= 0) {
-          throw new Error("Please enter a valid total amount");
+          throw new Error("Total amount must be greater than zero for approval");
         }
       }
       
       // Format course approvals as array
       const courseApprovals = Object.keys(coursesApproval).map(courseId => ({
         courseId: parseInt(courseId),
-        approved: coursesApproval[parseInt(courseId)].approved,
-        comment: coursesApproval[parseInt(courseId)].comment
+        approved: coursesApproval[parseInt(courseId)].approved
       }));
       
       // Different payloads based on user role
@@ -183,7 +176,6 @@ export default function RegistrationReviewPage() {
           ...payload,
           advisorId: user?.id,
           approved: approvalStatus,
-          comment,
           courseApprovals
         };
       } 
@@ -192,8 +184,7 @@ export default function RegistrationReviewPage() {
         payload = {
           ...payload,
           hodId: user?.id,
-          approved: approvalStatus,
-          comment
+          approved: approvalStatus
         };
       }
       else if (userRole === 'accounts_admin') {
@@ -202,7 +193,6 @@ export default function RegistrationReviewPage() {
           ...payload,
           accountsAdminId: user?.id,
           approved: approvalStatus,
-          comment,
           totalAmount: totalAmount ? parseFloat(totalAmount) : null
         };
       }
@@ -246,6 +236,27 @@ export default function RegistrationReviewPage() {
       minute: '2-digit'
     });
   };
+  
+  // Calculate total amount based on adjustments
+  useEffect(() => {
+    if (userRole === 'accounts_admin') {
+      // Parse values, defaulting to 0 if invalid
+      const waiverPercentValue = parseFloat(waiverPercent) || 0;
+      const delayFineAmount = parseFloat(delayFine) || 0;
+      const libraryFeeAmount = parseFloat(libraryFee) || 0;
+      
+      // Calculate waiver amount based on percentage
+      const waiverAmount = (baseAmount * waiverPercentValue) / 100;
+      
+      // Calculate new total
+      const newTotal = baseAmount - waiverAmount + delayFineAmount + libraryFeeAmount;
+      
+      // Ensure total is not negative
+      const finalTotal = Math.max(0, newTotal);
+      
+      setTotalAmount(finalTotal.toFixed(2));
+    }
+  }, [baseAmount, waiverPercent, delayFine, libraryFee, userRole]);
   
   if (loading) {
     return (
@@ -475,9 +486,6 @@ export default function RegistrationReviewPage() {
                 <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
                   Status
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
-                  Comments
-                </th>
                 {userRole === 'advisor' && canApprove && (
                   <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
                     Approve
@@ -508,19 +516,6 @@ export default function RegistrationReviewPage() {
                     }`}>
                       {course.STATUS}
                     </span>
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-300">
-                    {userRole === 'advisor' && canApprove ? (
-                      <Textarea
-                        value={coursesApproval[course.COURSE_ID]?.comment || ''}
-                        onChange={(e) => handleCourseCommentChange(course.COURSE_ID, e.target.value)}
-                        placeholder="Add comment for this course"
-                        className="border-gray-600 bg-gray-700 text-white"
-                        rows={2}
-                      />
-                    ) : (
-                      course.ADVISOR_COMMENT || "No comments"
-                    )}
                   </td>
                   {userRole === 'advisor' && canApprove && (
                     <td className="whitespace-nowrap px-6 py-4 text-sm">
@@ -591,50 +586,159 @@ export default function RegistrationReviewPage() {
               )}
             </div>
             
-            {/* Comments */}
-            <div>
-              <Label htmlFor="comment" className="mb-2 block text-sm font-medium text-gray-400">
-                Comments
-              </Label>
-              <Textarea
-                id="comment"
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-                placeholder="Add your comments regarding this registration"
-                className="border-gray-600 bg-gray-700 text-white"
-                rows={3}
-              />
-            </div>
-            
-            {/* Accounts Admin - Total Amount */}
+            {/* Accounts Admin - Fee Adjustments */}
             {userRole === 'accounts_admin' && (
-              <div>
-                <Label htmlFor="totalAmount" className="mb-2 block text-sm font-medium text-gray-400">
-                  Total Amount <span className="text-red-400">*</span>
-                </Label>
-                <div className="relative">
-                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">$</span>
-                  <input
-                    type="number"
-                    id="totalAmount"
-                    value={totalAmount}
-                    onChange={(e) => setTotalAmount(e.target.value)}
-                    min="0"
-                    step="0.01"
-                    className={`block w-full rounded-md border ${
-                      approvalStatus === true && (!totalAmount || parseFloat(totalAmount) <= 0) 
-                        ? 'border-red-500 focus:border-red-500 focus:ring-red-500' 
-                        : 'border-gray-600 focus:border-green-500 focus:ring-green-500'
-                    } bg-gray-700 pl-8 text-white`}
-                    placeholder="Enter total amount"
-                  />
+              <div className="space-y-4">
+                <h3 className="text-md font-medium text-white border-b border-gray-700 pb-2">Fee Adjustments</h3>
+                
+                {/* Base Amount - Read Only */}
+                <div>
+                  <Label htmlFor="baseAmount" className="mb-2 block text-sm font-medium text-gray-400">
+                    Base Amount
+                  </Label>
+                  <div className="relative">
+                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">$</span>
+                    <input
+                      type="text"
+                      id="baseAmount"
+                      value={baseAmount.toFixed(2)}
+                      readOnly
+                      className="block w-full rounded-md border border-gray-600 bg-gray-800 pl-8 text-white"
+                    />
+                  </div>
+                  <p className="mt-1 text-xs text-gray-400">
+                    Initial fee calculation based on credit hours
+                  </p>
                 </div>
-                <p className="mt-1 text-xs text-gray-400">
-                  Current amount: ${Number(bundle.TOTAL_AMOUNT).toFixed(2)}
-                  {approvalStatus === true && (!totalAmount || parseFloat(totalAmount) <= 0) && (
-                    <span className="ml-2 text-red-400">Required for approval</span>
-                  )}
-                </p>
+                
+                {/* Waiver Percentage */}
+                <div>
+                  <Label htmlFor="waiverPercent" className="mb-2 block text-sm font-medium text-gray-400">
+                    Waiver Percentage
+                  </Label>
+                  <div className="relative">
+                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">%</span>
+                    <input
+                      type="number"
+                      id="waiverPercent"
+                      value={waiverPercent}
+                      onChange={(e) => setWaiverPercent(e.target.value)}
+                      min="0"
+                      max="100"
+                      step="0.1"
+                      className="block w-full rounded-md border border-gray-600 bg-gray-700 pl-8 text-white focus:border-green-500 focus:ring-green-500"
+                      placeholder="Enter waiver percentage"
+                    />
+                  </div>
+                  <p className="mt-1 text-xs text-gray-400">
+                    Discount or scholarship percentage to deduct from total (0-100%)
+                  </p>
+                  <p className="mt-1 text-xs text-green-400">
+                    Waiver amount: ${((parseFloat(waiverPercent) || 0) * baseAmount / 100).toFixed(2)}
+                  </p>
+                </div>
+                
+                {/* Delay Fine */}
+                <div>
+                  <Label htmlFor="delayFine" className="mb-2 block text-sm font-medium text-gray-400">
+                    Delay Fine
+                  </Label>
+                  <div className="relative">
+                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">$</span>
+                    <input
+                      type="number"
+                      id="delayFine"
+                      value={delayFine}
+                      onChange={(e) => setDelayFine(e.target.value)}
+                      min="0"
+                      step="0.01"
+                      className="block w-full rounded-md border border-gray-600 bg-gray-700 pl-8 text-white focus:border-green-500 focus:ring-green-500"
+                      placeholder="Enter delay fine"
+                    />
+                  </div>
+                  <p className="mt-1 text-xs text-gray-400">
+                    Fine for late registration or payment
+                  </p>
+                </div>
+                
+                {/* Library Fee */}
+                <div>
+                  <Label htmlFor="libraryFee" className="mb-2 block text-sm font-medium text-gray-400">
+                    Library Fee
+                  </Label>
+                  <div className="relative">
+                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">$</span>
+                    <input
+                      type="number"
+                      id="libraryFee"
+                      value={libraryFee}
+                      onChange={(e) => setLibraryFee(e.target.value)}
+                      min="0"
+                      step="0.01"
+                      className="block w-full rounded-md border border-gray-600 bg-gray-700 pl-8 text-white focus:border-green-500 focus:ring-green-500"
+                      placeholder="Enter library fee"
+                    />
+                  </div>
+                  <p className="mt-1 text-xs text-gray-400">
+                    Additional library access fees
+                  </p>
+                </div>
+                
+                {/* Total Amount - Read Only */}
+                <div className="pt-2 border-t border-gray-700">
+                  <Label htmlFor="totalAmount" className="mb-2 block text-sm font-medium text-gray-400">
+                    Total Amount <span className="text-red-400">*</span>
+                  </Label>
+                  <div className="relative">
+                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">$</span>
+                    <input
+                      type="text"
+                      id="totalAmount"
+                      value={totalAmount}
+                      readOnly
+                      className={`block w-full rounded-md border font-bold text-lg ${
+                        approvalStatus === true && (!totalAmount || parseFloat(totalAmount) <= 0) 
+                          ? 'border-red-500 bg-red-900/20' 
+                          : 'border-green-600 bg-green-900/20'
+                      } pl-8 text-white`}
+                    />
+                  </div>
+                  <p className="mt-1 text-xs flex justify-between">
+                    <span className="text-gray-400">
+                      Final amount after all adjustments
+                    </span>
+                    {approvalStatus === true && (!totalAmount || parseFloat(totalAmount) <= 0) && (
+                      <span className="text-red-400">Required for approval</span>
+                    )}
+                  </p>
+                </div>
+                
+                {/* Calculation Summary */}
+                <div className="mt-4 p-3 bg-gray-900/50 rounded-lg">
+                  <h4 className="text-sm font-medium text-gray-300 mb-2">Fee Calculation</h4>
+                  <div className="space-y-1 text-xs">
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Base Amount:</span>
+                      <span className="text-white">${baseAmount.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Waiver ({waiverPercent}%):</span>
+                      <span className="text-red-400">-${((parseFloat(waiverPercent) || 0) * baseAmount / 100).toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Delay Fine:</span>
+                      <span className="text-green-400">+${parseFloat(delayFine).toFixed(2) || "0.00"}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Library Fee:</span>
+                      <span className="text-green-400">+${parseFloat(libraryFee).toFixed(2) || "0.00"}</span>
+                    </div>
+                    <div className="border-t border-gray-700 pt-1 flex justify-between font-medium">
+                      <span className="text-gray-300">Final Amount:</span>
+                      <span className="text-white">${totalAmount}</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
           </div>

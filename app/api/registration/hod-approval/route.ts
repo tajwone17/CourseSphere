@@ -6,8 +6,7 @@ export async function POST(request: NextRequest) {
     const { 
       bundleId, 
       hodId,
-      approved, 
-      comment
+      approved
     } = await request.json();
     
     if (!bundleId || !hodId) {

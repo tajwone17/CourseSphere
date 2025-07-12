@@ -7,8 +7,7 @@ export async function POST(request: NextRequest) {
       bundleId, 
       advisorId,
       approved, 
-      comment,
-      courseApprovals // Array of { courseId, approved, comment }
+      courseApprovals // Array of { courseId, approved }
     } = await request.json();
     
     if (!bundleId || !advisorId) {
@@ -26,11 +25,10 @@ export async function POST(request: NextRequest) {
         for (const approval of courseApprovals) {
           await db.query(
             `UPDATE course_registration 
-             SET STATUS = ?, ADVISOR_COMMENT = ? 
+             SET STATUS = ? 
              WHERE BUNDLE_ID = ? AND COURSE_ID = ?`,
             [
               approval.approved ? 'APPROVED' : 'REJECTED', 
-              approval.comment || null,
               bundleId, 
               approval.courseId
             ]
@@ -68,9 +66,9 @@ export async function POST(request: NextRequest) {
         if (!courseApprovals || courseApprovals.length === 0) {
           await db.query(
             `UPDATE course_registration 
-             SET STATUS = 'REJECTED', ADVISOR_COMMENT = ? 
+             SET STATUS = 'REJECTED'
              WHERE BUNDLE_ID = ? AND STATUS = 'PENDING'`,
-            [comment || "Rejected by advisor", bundleId]
+            [bundleId]
           );
         }
       }

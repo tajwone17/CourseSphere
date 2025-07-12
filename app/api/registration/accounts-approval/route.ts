@@ -7,8 +7,7 @@ export async function POST(request: NextRequest) {
       bundleId, 
       accountsAdminId,
       approved, 
-      totalAmount,
-      comment
+      totalAmount
     } = await request.json();
     
     if (!bundleId || !accountsAdminId) {
@@ -44,11 +43,11 @@ export async function POST(request: NextRequest) {
       let newStatus = bundle.STATUS;
       
       if (approved) {
-        // Set accounts admin approval
+        // Set accounts admin approval and update total amount
         await db.query(
           `UPDATE registration_bundle 
            SET ACCOUNTS_ADMIN_APPROVAL = 1, 
-               TOTAL_AMOUNT = ? 
+               TOTAL_AMOUNT = ?
            WHERE ID = ?`,
           [totalAmount || bundle.TOTAL_AMOUNT, bundleId]
         );
