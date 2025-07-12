@@ -42,7 +42,7 @@ CREATE TABLE `accounts_admin` (
 --
 
 INSERT INTO `accounts_admin` (`ID`, `NAME`, `EMAIL`, `PASSWORD`, `PHONE`, `STATUS`, `CREATED_AT`) VALUES
-(2, 'Jakaria Chowdhury Tajwone', '0562310005101031@neub.edu.bd', '$2b$10$/mwnN8DtWPBcJwrXVf8E..5Ef.Nn5mdIdW8wQjkyrLv.Z4TDgdgga', '01765921728', 1, '2025-05-22 05:59:32'),
+(2, 'Jakaria Chowdhury Tajwone', '0562310005101031@neub.edu.bd', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', '01765921728', 1, '2025-05-22 05:59:32'),
 (3, 'Tajwone Chowdhury', 'aoli23511@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', '01765921728', 1, '2025-06-10 09:54:50'),
 (4, 'Tajwone Chowdhury', 'tajwone248tc@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', '01765921728', 1, '2025-06-10 16:57:04'),
 (5, 'MR Shahrukh KHan', 'tajwone249@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', '083749494i', 1, '2025-06-10 18:09:27');
@@ -248,7 +248,7 @@ INSERT INTO `hod` (`ID`, `NAME`, `EMAIL`, `PASSWORD`, `DEPARTMENT_ID`, `STATUS`,
 (7, 'mst.fahimajjaman jaina', 'fahimajaina765@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 1, 1, '01765921728', '2025-05-21 05:13:26'),
 (8, 'Sathi Akter', '0562310005101045@neub.edu.bd', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 2, 1, '01765921728', '2025-05-21 05:14:58'),
 (9, 'Tajwone Chowdhury', 'kkabirsingh2510@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 1, 1, '01765921728', '2025-06-10 08:07:17'),
-(10, 'Tajwone Chowdhury', 'tajwone249@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 2, 1, '01765921728', '2025-06-10 08:10:14'),
+(10, 'Tajwone Chowdhury', 'tajwone249@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 3, 1, '01765921728', '2025-06-10 08:10:14'),
 (11, 'Tajwone Chowdhury', 'tajwone248tc@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 1, 1, '01765921728', '2025-07-09 14:23:57');
 
 -- --------------------------------------------------------

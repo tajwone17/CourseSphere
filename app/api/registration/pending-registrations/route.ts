@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
           d.ID as DEPARTMENT_ID,
           d.DEPARTMENT_NAME,
           COUNT(cr.ID) as course_count
-        FROM registration_bundle rb
+        FROM registration_bundle AS rb
         JOIN student s ON rb.STUDENT_ID = s.ID
         JOIN department d ON s.DEPARTMENT_ID = d.ID
         JOIN course_registration cr ON rb.ID = cr.BUNDLE_ID
