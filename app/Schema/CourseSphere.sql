@@ -318,7 +318,9 @@ INSERT INTO `prerequisite` (`ID`, `COURSE_ID`, `PREREQ_COURSE_ID`, `CREATED_AT`)
 CREATE TABLE `registered_courses` (
   `ID` int(11) NOT NULL,
   `COURSE_ID` int(11) NOT NULL,
-  `STUDENT_ID` int(11) NOT NULL
+  `STUDENT_ID` int(11) NOT NULL,
+  `SEMESTER` varchar(50) NOT NULL,
+  `REGISTRATION_DATE` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------

@@ -75,6 +75,19 @@ export async function GET(request: NextRequest) {
       WHERE cr.BUNDLE_ID = ?`,
       [bundle.ID]
     );
+    
+    // Check if courses have been added to registered_courses
+    if (bundle.STATUS === 'COMPLETED') {
+      for (let i = 0; i < courses.length; i++) {
+        const [registeredCourse]: any = await db.query(
+          `SELECT ID FROM registered_courses 
+           WHERE STUDENT_ID = ? AND COURSE_ID = ?`,
+          [bundle.STUDENT_ID, courses[i].COURSE_ID]
+        );
+        
+        courses[i].isRegistered = registeredCourse && registeredCourse.length > 0;
+      }
+    }
 
     // Get payment info if exists
     const [payments]: any = await db.query(

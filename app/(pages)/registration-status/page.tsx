@@ -44,6 +44,7 @@ interface CourseRegistration {
   instructor: string;
   advisor_name: string;
   advisor_email: string;
+  isRegistered?: boolean;
 }
 
 interface Payment {
@@ -509,6 +510,11 @@ export default function RegistrationStatusPage() {
       <div className="overflow-hidden rounded-lg border border-gray-700 bg-gray-800 shadow">
         <div className="border-b border-gray-700 bg-gray-900 px-6 py-4">
           <h2 className="text-lg font-medium text-white">Registered Courses</h2>
+          {registration.STATUS === 'COMPLETED' && (
+            <p className="mt-1 text-sm text-green-400">
+              Your courses have been officially registered for {registration.SEMESTER}
+            </p>
+          )}
         </div>
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-700">
@@ -532,6 +538,11 @@ export default function RegistrationStatusPage() {
                 <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
                   Comments
                 </th>
+                {registration.STATUS === 'COMPLETED' && (
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
+                    Registration
+                  </th>
+                )}
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-700 bg-gray-800">
@@ -561,6 +572,19 @@ export default function RegistrationStatusPage() {
                   <td className="px-6 py-4 text-sm text-gray-300">
                     {course.ADVISOR_COMMENT || "-"}
                   </td>
+                  {registration.STATUS === 'COMPLETED' && (
+                    <td className="whitespace-nowrap px-6 py-4 text-sm">
+                      {course.isRegistered ? (
+                        <span className="inline-flex items-center rounded-full bg-green-900 px-3 py-0.5 text-xs font-medium text-green-300">
+                          Confirmed
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center rounded-full bg-yellow-900 px-3 py-0.5 text-xs font-medium text-yellow-300">
+                          Processing
+                        </span>
+                      )}
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>

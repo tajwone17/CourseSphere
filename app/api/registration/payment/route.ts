@@ -82,12 +82,51 @@ export async function POST(request: NextRequest) {
 
       // If registration is completed, update course_registration status
       if (registrationStatus === 'COMPLETED') {
+        // Update course_registration status
         await db.query(
           `UPDATE course_registration 
            SET STATUS = 'COMPLETED' 
            WHERE BUNDLE_ID = ? AND STATUS = 'APPROVED'`,
           [bundleId]
         );
+        
+        // Get student ID from the bundle
+        const [bundleDetails]: any = await db.query(
+          `SELECT STUDENT_ID FROM registration_bundle WHERE ID = ?`,
+          [bundleId]
+        );
+        
+        if (bundleDetails && bundleDetails.length > 0) {
+          const studentId = bundleDetails[0].STUDENT_ID;
+          
+          // Get approved courses from the bundle
+          const [courses]: any = await db.query(
+            `SELECT COURSE_ID FROM course_registration 
+             WHERE BUNDLE_ID = ? AND STATUS = 'COMPLETED'`,
+            [bundleId]
+          );
+          
+          // Add each course to registered_courses
+          if (courses && courses.length > 0) {
+            for (const course of courses) {
+              // Check if the course is already in registered_courses
+              const [existingRecord]: any = await db.query(
+                `SELECT ID FROM registered_courses 
+                 WHERE STUDENT_ID = ? AND COURSE_ID = ?`,
+                [studentId, course.COURSE_ID]
+              );
+              
+              // Only insert if the course is not already registered
+              if (!existingRecord || existingRecord.length === 0) {
+                await db.query(
+                  `INSERT INTO registered_courses (STUDENT_ID, COURSE_ID, SEMESTER, REGISTRATION_DATE)
+                   VALUES (?, ?, ?, NOW())`,
+                  [studentId, course.COURSE_ID, bundle.SEMESTER]
+                );
+              }
+            }
+          }
+        }
       }
 
       // Commit the transaction
