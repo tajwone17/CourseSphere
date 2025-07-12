@@ -602,7 +602,7 @@ export default function RegistrationStatusPage() {
                       {formatDate(payment.PAYMENT_DATE)}
                     </td>
                     <td className="whitespace-nowrap px-6 py-4 text-sm text-white">
-                      ${payment.AMOUNT.toFixed(2)}
+                      ${Number(payment.AMOUNT).toFixed(2)}
                     </td>
                     <td className="whitespace-nowrap px-6 py-4 text-sm text-white">
                       {payment.PAYMENT_METHOD || "Online"}
