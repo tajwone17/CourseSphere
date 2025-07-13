@@ -97,36 +97,44 @@ export default function RegistrationStatusPage() {
           : `/api/registration/status?userId=${user?.id}`;
 
         const response = await fetch(url);
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch registration status");
-        }
-
         const data = await response.json();
 
-        if (data.success && data.registration) {
-          // Ensure TOTAL_AMOUNT is a number
-          const parsedRegistration = {
-            ...data.registration,
-            TOTAL_AMOUNT: Number(data.registration.TOTAL_AMOUNT),
-          };
-          setRegistration(parsedRegistration);
-
-          // Set the active registration flag if registration status is not COMPLETED or REJECTED
-          const isActive =
-            parsedRegistration.STATUS !== "COMPLETED" &&
-            parsedRegistration.STATUS !== "REJECTED";
-          setHasActiveRegistration(isActive);
-
-          // Store active registration status in localStorage for other pages to check
-          if (isActive) {
-            localStorage.setItem("hasActiveRegistration", "true");
-          } else {
+        // If there's no registration found, handle it gracefully without setting an error
+        if (!response.ok || !data.success || !data.registration) {
+          // This is expected when no registration exists - don't treat as error
+          if (
+            response.status === 404 ||
+            data.error?.includes("No registration found")
+          ) {
+            console.log("No registration found - showing empty state");
+            setRegistration(null);
             localStorage.removeItem("hasActiveRegistration");
+            setLoading(false);
+            return;
           }
+
+          // For other types of errors, throw an error
+          throw new Error(data.error || "Failed to fetch registration status");
+        }
+
+        // Process valid registration data
+        const parsedRegistration = {
+          ...data.registration,
+          TOTAL_AMOUNT: Number(data.registration.TOTAL_AMOUNT),
+        };
+        setRegistration(parsedRegistration);
+
+        // Set the active registration flag if registration status is not COMPLETED or REJECTED
+        const isActive =
+          parsedRegistration.STATUS !== "COMPLETED" &&
+          parsedRegistration.STATUS !== "REJECTED";
+        setHasActiveRegistration(isActive);
+
+        // Store active registration status in localStorage for other pages to check
+        if (isActive) {
+          localStorage.setItem("hasActiveRegistration", "true");
         } else {
           localStorage.removeItem("hasActiveRegistration");
-          throw new Error(data.error || "No registration found");
         }
       } catch (err) {
         console.error("Error fetching registration status:", err);
@@ -309,7 +317,7 @@ export default function RegistrationStatusPage() {
     );
   }
 
-  if (error) {
+  if (error && !error.includes("No registration found")) {
     return (
       <div className="mx-auto max-w-4xl py-10">
         <div className="rounded-lg border border-red-500 bg-red-900/20 p-6 text-center">
