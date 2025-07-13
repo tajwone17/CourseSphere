@@ -102,27 +102,40 @@ export async function GET(request: Request) {
     const currentYear = currentDate.getFullYear();
     const currentMonth = currentDate.getMonth();
 
-    // Parse the session year (assuming format like "Fall-2022")
+    // Parse the session year (assuming format like "Spring-2022" or "Summer-2022")
     const sessionParts = session?.split("-");
-    const startYear =
-      sessionParts && sessionParts.length > 1
-        ? parseInt(sessionParts[1])
-        : currentYear;
+    let startYear;
+
+    // Handle different session format patterns
+    if (sessionParts && sessionParts.length > 1) {
+      // Try to extract a 4-digit year
+      const yearMatch = sessionParts[1].match(/\d{4}/);
+      if (yearMatch) {
+        startYear = parseInt(yearMatch[0]);
+      } else if (sessionParts[1].startsWith("20")) {
+        // If it's like "Spring-202" (incomplete year), assume it's 2020s
+        startYear = parseInt("20" + sessionParts[1].substring(2));
+      } else {
+        startYear = currentYear - 1; // Default fallback
+      }
+    } else {
+      startYear = currentYear - 1; // Default if no valid session
+    }
 
     // Calculate years passed
     const yearsPassed = currentYear - startYear;
 
-    // Calculate semester number (assuming 3 semesters per year)
+    // Calculate semester number (assuming 2 semesters per year)
     let semesterNumber = yearsPassed * 2;
 
     // Add current semester based on month
-    if (currentMonth >= 0 && currentMonth <= 6) {
+    if (currentMonth >= 0 && currentMonth <= 5) {
       // Spring (January - June)
       semesterNumber += 1;
-    } else if (currentMonth >= 7 && currentMonth <= 12) {
+    } else {
       // Summer (July - December)
       semesterNumber += 2;
-    } 
+    }
 
     // Determine current semester name
     let currentSemester = "";
@@ -130,9 +143,21 @@ export async function GET(request: Request) {
 
     if (semesterMod === 1) {
       currentSemester = `Spring ${currentYear}`;
-    } else if (semesterMod === 2) {
+    } else {
       currentSemester = `Summer ${currentYear}`;
-    } 
+    }
+
+    // Calculate which numbered semester the student is in (1st, 2nd, etc.)
+    let semesterOrdinal = "";
+    if (semesterNumber === 1) {
+      semesterOrdinal = "1st";
+    } else if (semesterNumber === 2) {
+      semesterOrdinal = "2nd";
+    } else if (semesterNumber === 3) {
+      semesterOrdinal = "3rd";
+    } else {
+      semesterOrdinal = `${semesterNumber}th`;
+    }
 
     // Calculate CGPA from the results table
     const [gradeRows] = await db.execute<RowDataPacket[]>(
@@ -161,16 +186,16 @@ export async function GET(request: Request) {
           gradePoint = 3.5;
           break;
         case "B+":
-          gradePoint = 3.3;
+          gradePoint = 3.25;
           break;
         case "B":
           gradePoint = 3.0;
           break;
         case "B-":
-          gradePoint = 2.7;
+          gradePoint = 2.75;
           break;
         case "C+":
-          gradePoint = 2.3;
+          gradePoint = 2.5;
           break;
         case "C":
           gradePoint = 2.0;
@@ -194,6 +219,81 @@ export async function GET(request: Request) {
         ? (totalGradePoints / creditsAttempted).toFixed(2)
         : "0.00";
 
+    // Get important registration deadlines
+    const [deadlinesRows] = await db.execute<RowDataPacket[]>(
+      `SELECT 
+        course_registration_without_fine,
+        course_registration_with_fine,
+        admit_card_collection
+       FROM deadlines
+       WHERE department_id = ?
+       ORDER BY id DESC LIMIT 1`,
+      [student.DEPARTMENT_ID],
+    );
+
+    // Format the deadlines
+    const deadlines = deadlinesRows.length > 0 ? deadlinesRows[0] : null;
+
+    // Create an array of important dates
+    const importantDates = [];
+
+    if (deadlines) {
+      // Helper function to add days remaining to description
+      const addDaysRemaining = (date: Date | string | null): string => {
+        if (!date) return "";
+        const deadlineDate = new Date(date);
+        const today = new Date();
+        const timeDiff = deadlineDate.getTime() - today.getTime();
+        const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+        if (daysDiff > 0) {
+          return daysDiff === 1
+            ? " (Tomorrow)"
+            : ` (${daysDiff} days remaining)`;
+        } else if (daysDiff === 0) {
+          return " (Today)";
+        } else {
+          return " (Passed)";
+        }
+      };
+
+      if (deadlines.course_registration_without_fine) {
+        const date = new Date(deadlines.course_registration_without_fine);
+        importantDates.push({
+          title: "Course Registration (Regular)",
+          date: date.toISOString().split("T")[0],
+          description: `Last day to register without fine${addDaysRemaining(date)}`,
+          urgent:
+            date >= new Date() &&
+            date <= new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        });
+      }
+
+      if (deadlines.course_registration_with_fine) {
+        const date = new Date(deadlines.course_registration_with_fine);
+        importantDates.push({
+          title: "Course Registration (Late)",
+          date: date.toISOString().split("T")[0],
+          description: `Last day to register with fine${addDaysRemaining(date)}`,
+          urgent:
+            date >= new Date() &&
+            date <= new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+        });
+      }
+
+      if (deadlines.admit_card_collection) {
+        const date = new Date(deadlines.admit_card_collection);
+        importantDates.push({
+          title: "Admit Card Collection",
+          date: date.toISOString().split("T")[0],
+          description: `Last day to collect admit cards${addDaysRemaining(date)}`,
+          urgent:
+            date >= new Date() &&
+            date <= new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+        });
+      }
+    }
+
     return NextResponse.json({
       success: true,
       data: {
@@ -204,7 +304,9 @@ export async function GET(request: Request) {
         completedCredits,
         registeredCourses,
         currentSemester,
+        semesterOrdinal,
         cgpa,
+        importantDates,
       },
     });
   } catch (error) {

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   HiAcademicCap,
   HiClipboardCheck,
@@ -9,8 +9,16 @@ import {
   HiCheck,
   HiClock as HiPending,
   HiDocumentText,
+  HiRefresh,
 } from "react-icons/hi";
 import { useAuth } from "../../context/AuthContext";
+
+interface ImportantDate {
+  title: string;
+  date: string;
+  description: string;
+  urgent: boolean;
+}
 
 interface DashboardData {
   studentName: string;
@@ -20,8 +28,29 @@ interface DashboardData {
   completedCredits: number;
   registeredCourses: number;
   currentSemester: string;
+  semesterOrdinal: string;
   cgpa: string;
+  importantDates: ImportantDate[];
 }
+
+// Format date function with proper handling
+// const formatDate = (dateString: string | null): string => {
+//   if (!dateString) return "N/A";
+
+//   try {
+//     const date = new Date(dateString);
+//     if (isNaN(date.getTime())) return "Invalid Date";
+
+//     return date.toLocaleDateString("en-US", {
+//       year: "numeric",
+//       month: "short",
+//       day: "numeric",
+//     });
+//   } catch (e) {
+//     console.error("Date formatting error:", e);
+//     return "Error";
+//   }
+// };
 
 export default function StudentDashboard() {
   const { user } = useAuth();
@@ -29,11 +58,17 @@ export default function StudentDashboard() {
     null,
   );
   const [loading, setLoading] = useState<boolean>(true);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchDashboardData = async () => {
+  // Function to fetch dashboard data - wrapped in useCallback to prevent recreation on every render
+  const fetchDashboardData = useCallback(
+    async (isRefresh = false) => {
       if (!user) return;
+
+      if (isRefresh) {
+        setRefreshing(true);
+      }
 
       try {
         // Use the user ID as the token for authorization
@@ -41,6 +76,8 @@ export default function StudentDashboard() {
           headers: {
             Authorization: `Bearer ${user.id}`,
           },
+          // Add cache busting parameter when refreshing
+          cache: isRefresh ? "no-cache" : "default",
         });
 
         if (!response.ok) {
@@ -51,6 +88,7 @@ export default function StudentDashboard() {
         if (result.success) {
           setDashboardData(result.data);
           console.log("Dashboard Data:", result.data);
+          setError(null); // Clear any previous errors on successful fetch
         } else {
           setError(result.error || "Failed to fetch dashboard data");
         }
@@ -59,11 +97,22 @@ export default function StudentDashboard() {
         console.error(err);
       } finally {
         setLoading(false);
+        if (isRefresh) {
+          setRefreshing(false);
+        }
       }
-    };
+    },
+    [user, setRefreshing, setDashboardData, setError, setLoading],
+  );
 
+  // Handle manual refresh
+  const handleRefresh = () => {
+    fetchDashboardData(true);
+  };
+
+  useEffect(() => {
     fetchDashboardData();
-  }, [user]);
+  }, [fetchDashboardData]);
 
   // Define stats dynamically based on fetched data
   const stats = [
@@ -76,7 +125,7 @@ export default function StudentDashboard() {
       description: "Credits completed",
     },
     {
-      title: "Semester",
+      title: dashboardData ? dashboardData.semesterOrdinal : "...",
       value: dashboardData ? dashboardData.currentSemester : "Loading...",
       icon: HiCalendar,
       description: "Current Semester",
@@ -97,32 +146,28 @@ export default function StudentDashboard() {
     },
   ];
 
-  const importantDates = [
-    {
-      title: "Course Registration",
-      date: "April 30, 2024",
-      description: "Summer 2024 semester registration opens",
-      urgent: true,
-    },
-    {
-      title: "Registration Fee",
-      date: "May 1, 2024",
-      description: "Last date for registration payment",
-      urgent: true,
-    },
-    {
-      title: "Add/Drop Period",
-      date: "May 5, 2024",
-      description: "Last day to modify course selection",
-      urgent: false,
-    },
-    {
-      title: "Department Approval",
-      date: "May 10, 2024",
-      description: "Final course approval deadline",
-      urgent: false,
-    },
-  ];
+  // Use the dynamic importantDates from the API if available, otherwise show a fallback
+  const importantDates =
+    dashboardData?.importantDates && dashboardData.importantDates.length > 0
+      ? dashboardData.importantDates
+      : loading
+        ? [
+            {
+              title: "Loading...",
+              date: new Date().toISOString().split("T")[0],
+              description: "Loading deadlines information",
+              urgent: false,
+            },
+          ]
+        : [
+            {
+              title: "No Deadlines",
+              date: new Date().toISOString().split("T")[0],
+              description:
+                "No upcoming deadlines available for your department",
+              urgent: false,
+            },
+          ];
 
   const recentRegistrations = [
     {
@@ -179,10 +224,31 @@ export default function StudentDashboard() {
     <div className="mx-auto max-w-7xl space-y-8 px-4 py-8">
       {/* Welcome Section */}
       <div
-        className="mb-8 text-center"
+        className="relative mb-8 text-center"
         data-aos="fade-down"
         data-aos-duration="1000"
       >
+        <div className="absolute top-0 right-0 flex items-center lg:right-10">
+          {refreshing && (
+            <span className="mr-2 text-xs text-blue-400">Refreshing...</span>
+          )}
+          <button
+            onClick={handleRefresh}
+            className="text-gray-400 transition-colors hover:text-white"
+            disabled={refreshing}
+            aria-label="Refresh dashboard data"
+          >
+            <HiRefresh
+              className={`h-6 w-6 ${refreshing ? "animate-spin text-blue-500" : ""}`}
+            />
+          </button>
+        </div>
+        {importantDates.some((date) => date.urgent) && (
+          <div className="absolute -top-4 right-0 flex animate-pulse items-center gap-2 rounded-full bg-red-900 px-4 py-2 text-white lg:right-10">
+            <span className="h-2 w-2 rounded-full bg-red-400"></span>
+            <span className="text-sm">You have urgent deadlines!</span>
+          </div>
+        )}
         <h1 className="mb-2 text-4xl font-bold tracking-tight text-white lg:text-5xl">
           Welcome Back, {user?.name || dashboardData?.studentName || "Student"}
         </h1>
@@ -231,30 +297,41 @@ export default function StudentDashboard() {
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         {/* Important Registration Dates */}
         <div
-          className="rounded-lg border border-gray-800 bg-gray-900 p-6 shadow-xl"
+          className="relative overflow-hidden rounded-lg border border-gray-800 bg-gray-900 p-6 shadow-xl"
           data-aos="fade-right"
           data-aos-delay="400"
         >
-          <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold">
-            <HiClock className="text-[#92e3a9]" />
-            <span className="text-white">Important Registration Dates</span>
+          <div className="absolute top-0 right-0 -mt-8 -mr-8 h-24 w-24 rounded-full bg-gradient-to-br from-[#92e3a9] to-transparent opacity-20"></div>
+          <h2 className="relative mb-4 flex items-center gap-2 text-xl font-semibold">
+            <HiClock className="h-6 w-6 text-[#92e3a9]" />
+            <span className="text-white">Important Registration Deadlines</span>
           </h2>
           <div className="space-y-4">
             {importantDates.map((date, index) => (
               <div
                 key={index}
-                className="flex items-start gap-4 rounded-lg bg-gray-800 p-4 transition-transform hover:scale-105"
+                className={`flex items-start gap-4 rounded-lg ${date.urgent ? "bg-opacity-30 bg-red-900" : "bg-gray-800"} border p-4 transition-all hover:scale-105 hover:shadow-lg ${date.urgent ? "border-red-700" : "border-gray-700"}`}
                 data-aos="fade-up"
                 data-aos-delay={500 + index * 100}
               >
-                <div className="min-w-[40px] text-center">
-                  <div className="text-sm font-medium text-gray-400">
-                    {new Date(date.date).toLocaleDateString("en-US", {
-                      month: "short",
-                    })}
+                <div className="min-w-[52px] text-center">
+                  <div
+                    className={`${date.urgent ? "bg-red-800" : "bg-gray-700"} rounded-t-md py-1`}
+                  >
+                    <div className="text-xs font-medium text-gray-300">
+                      {date.date
+                        ? new Date(date.date).toLocaleDateString("en-US", {
+                            month: "short",
+                          })
+                        : "N/A"}
+                    </div>
                   </div>
-                  <div className="text-xl font-bold text-white">
-                    {new Date(date.date).getDate()}
+                  <div
+                    className={`${date.urgent ? "bg-red-900" : "bg-gray-900"} rounded-b-md py-1`}
+                  >
+                    <div className="text-xl font-bold text-white">
+                      {date.date ? new Date(date.date).getDate() : "--"}
+                    </div>
                   </div>
                 </div>
                 <div className="flex-1">
@@ -267,6 +344,18 @@ export default function StudentDashboard() {
                     )}
                   </h3>
                   <p className="text-sm text-gray-400">{date.description}</p>
+                  {date.date && new Date(date.date) > new Date() && (
+                    <div className="mt-2">
+                      <div className="h-1.5 w-full rounded-full bg-gray-700">
+                        <div
+                          className={`h-1.5 rounded-full ${date.urgent ? "bg-red-500" : "bg-blue-500"}`}
+                          style={{
+                            width: `${Math.min(100, Math.max(5, 100 - Math.floor(((new Date(date.date).getTime() - new Date().getTime()) / (24 * 60 * 60 * 1000)) * 10)))}%`,
+                          }}
+                        ></div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
@@ -317,38 +406,58 @@ export default function StudentDashboard() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-800">
-                  {recentRegistrations.map((course, index) => (
-                    <tr
-                      key={index}
-                      className="bg-gray-900 transition-colors hover:bg-gray-800"
-                    >
-                      <td className="px-4 py-2 text-sm whitespace-nowrap text-white">
-                        {course.courseCode}
-                      </td>
-                      <td className="px-4 py-2 text-sm text-white">
-                        {course.title}
-                      </td>
-                      <td className="px-4 py-2 text-sm whitespace-nowrap text-white">
-                        {course.credits}
-                      </td>
-                      <td className="px-4 py-2 whitespace-nowrap">
-                        <span
-                          className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${
-                            course.status === "Approved"
-                              ? "bg-opacity-20 bg-[#92e3a9] text-black"
-                              : "bg-yellow-900 text-yellow-300"
-                          }`}
-                        >
-                          {course.status === "Approved" ? (
-                            <HiCheck className="h-3 w-3" />
-                          ) : (
-                            <HiPending className="h-3 w-3" />
-                          )}
-                          {course.status}
-                        </span>
+                  {recentRegistrations.length > 0 ? (
+                    recentRegistrations.map((course, index) => (
+                      <tr
+                        key={index}
+                        className="bg-gray-900 transition-colors hover:bg-gray-800"
+                      >
+                        <td className="px-4 py-2 text-sm whitespace-nowrap text-white">
+                          {course.courseCode}
+                        </td>
+                        <td className="px-4 py-2 text-sm text-white">
+                          {course.title}
+                        </td>
+                        <td className="px-4 py-2 text-sm whitespace-nowrap text-white">
+                          {course.credits}
+                        </td>
+                        <td className="px-4 py-2 whitespace-nowrap">
+                          <span
+                            className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${
+                              course.status === "Approved"
+                                ? "bg-opacity-20 bg-[#92e3a9] text-white"
+                                : "bg-yellow-900 text-yellow-300"
+                            }`}
+                          >
+                            {course.status === "Approved" ? (
+                              <HiCheck className="h-3 w-3" />
+                            ) : (
+                              <HiPending className="h-3 w-3" />
+                            )}
+                            {course.status}
+                          </span>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td
+                        colSpan={4}
+                        className="px-4 py-8 text-center text-gray-400"
+                      >
+                        <div className="flex flex-col items-center justify-center">
+                          <HiDocumentText className="mb-3 h-10 w-10 text-gray-600" />
+                          <p>No course registrations found for this semester</p>
+                          <a
+                            href="/course-selection"
+                            className="mt-3 inline-block rounded-md bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700"
+                          >
+                            Register for Courses
+                          </a>
+                        </div>
                       </td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>

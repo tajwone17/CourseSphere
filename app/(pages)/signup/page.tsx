@@ -121,14 +121,14 @@ export default function Component() {
     fetchDepartments();
   }, []);
 
-  // Generate session options (last 5 years with Fall/Spring options)
+  // Generate session options (last 5 years with summer/Spring options)
   const generateSessionOptions = () => {
     const currentYear = 2025; // Current year
     const sessions = [];
 
     for (let year = currentYear; year >= currentYear - 5; year--) {
       sessions.push(`Spring-${year}`);
-      sessions.push(`Fall-${year - 1}`);
+    
       sessions.push(`Summer-${year - 1}`);
     }
 
