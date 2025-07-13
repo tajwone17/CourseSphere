@@ -667,8 +667,7 @@ export default function RegistrationStatusPage() {
                   <li
                     key={step.name}
                     className={`flex items-center ${index < steps.length - 1 ? "w-full" : ""}`}
-                  >
-                    <div
+                  >                      <div
                       className={`flex items-center justify-center ${
                         step.status === "completed"
                           ? "bg-green-600 ring-4 ring-green-600/20"
@@ -678,7 +677,9 @@ export default function RegistrationStatusPage() {
                               ? "bg-red-600 ring-4 ring-red-600/20"
                               : step.status === "in-progress"
                                 ? "bg-yellow-600 ring-4 ring-yellow-600/20"
-                                : "bg-gray-700"
+                                : step.status === "pending"
+                                  ? "bg-gray-700 ring-4 ring-gray-700/20"
+                                  : "bg-gray-700 ring-4 ring-gray-700/20"
                       } h-12 w-12 rounded-full shadow-md transition-all duration-300`}
                     >
                       <step.icon className="h-6 w-6 text-white" />
@@ -705,7 +706,7 @@ export default function RegistrationStatusPage() {
                             step.status === "completed"
                               ? "bg-gradient-to-r from-green-600 to-green-500"
                               : "bg-gray-700"
-                          } rounded-full transition-all duration-500`}
+                          } transition-all duration-500`}
                         ></div>
                       </div>
                     )}
