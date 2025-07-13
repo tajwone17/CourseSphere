@@ -386,12 +386,7 @@ export default function StudentDashboard() {
                     >
                       Credits
                     </th>
-                    <th
-                      scope="col"
-                      className="px-4 py-2 text-left text-xs font-medium whitespace-nowrap text-gray-400"
-                    >
-                      Status
-                    </th>
+                   
                     <th
                       scope="col"
                       className="px-4 py-2 text-left text-xs font-medium whitespace-nowrap text-gray-400"
@@ -416,19 +411,7 @@ export default function StudentDashboard() {
                         <td className="px-4 py-2 text-sm whitespace-nowrap text-white">
                           {course.credits}
                         </td>
-                        <td className="px-4 py-2 whitespace-nowrap">
-                          <span
-                            className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${
-                              course.status === "Approved"
-                                ? "bg-green-800 text-green-200"
-                                : course.status === "Registered"
-                                  ? "bg-blue-800 text-blue-200"
-                                  : "bg-yellow-800 text-yellow-200"
-                            }`}
-                          >
-                            {course.status}
-                          </span>
-                        </td>
+                     
                         <td className="px-4 py-2 text-sm whitespace-nowrap text-gray-400">
                           {course.date
                             ? new Date(course.date).toLocaleDateString()
