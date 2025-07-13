@@ -754,9 +754,6 @@ export default function RegistrationStatusPage() {
                 <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-400 uppercase">
                   Advisor
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-400 uppercase">
-                  Comments
-                </th>
                 {registration.STATUS === "COMPLETED" && (
                   <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-400 uppercase">
                     Registration
@@ -793,9 +790,6 @@ export default function RegistrationStatusPage() {
                   <td className="px-6 py-4 text-sm whitespace-nowrap text-white">
                     {course.advisor_name}
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-300">
-                    {course.ADVISOR_COMMENT || "-"}
-                  </td>
                   {registration.STATUS === "COMPLETED" && (
                     <td className="px-6 py-4 text-sm whitespace-nowrap">
                       {course.isRegistered ? (
@@ -814,6 +808,29 @@ export default function RegistrationStatusPage() {
             </tbody>
           </table>
         </div>
+        
+        {/* Advisor Comment Section - Single comment for all courses */}
+        {registration.courses.some(course => course.ADVISOR_COMMENT) && (
+          <div className="border-t border-gray-700 p-6">
+            <div className="rounded-lg bg-gray-900/40 p-4">
+              <h3 className="mb-3 flex items-center text-lg font-medium text-white">
+                <MdPerson className="mr-2 text-[#92e3a9]" />
+                Advisor Feedback
+              </h3>
+              
+              {registration.courses.find(course => course.ADVISOR_COMMENT)?.ADVISOR_COMMENT && (
+                <div className="rounded-lg border border-gray-700 bg-gray-800/50 p-4 text-gray-300">
+                  <p className="italic">
+                    &ldquo;{registration.courses.find(course => course.ADVISOR_COMMENT)?.ADVISOR_COMMENT}&rdquo;
+                  </p>
+                  <p className="mt-2 text-right text-sm text-gray-400">
+                    — {registration.courses.find(course => course.ADVISOR_COMMENT)?.advisor_name || "Advisor"}
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Payment History */}
