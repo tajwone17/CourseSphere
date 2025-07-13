@@ -235,13 +235,11 @@ export default function CourseSelectionPage() {
       let semester = "";
 
       const month = currentDate.getMonth() + 1; // 0-indexed
-      if (month >= 1 && month <= 4) {
+      if (month >= 1 && month <= 6) {
         semester = `Spring-${year}`;
-      } else if (month >= 5 && month <= 8) {
+      } else if (month >= 7 && month <= 12) {
         semester = `Summer-${year}`;
-      } else {
-        semester = `Fall-${year}`;
-      }
+      } 
 
       const response = await fetch("/api/registration/submit", {
         method: "POST",
