@@ -667,7 +667,9 @@ export default function RegistrationStatusPage() {
                   <li
                     key={step.name}
                     className={`flex items-center ${index < steps.length - 1 ? "w-full" : ""}`}
-                  >                      <div
+                  >
+                    {" "}
+                    <div
                       className={`flex items-center justify-center ${
                         step.status === "completed"
                           ? "bg-green-600 ring-4 ring-green-600/20"
@@ -728,7 +730,7 @@ export default function RegistrationStatusPage() {
           {registration.STATUS === "COMPLETED" && (
             <p className="mt-2 flex items-center text-sm text-green-400">
               <HiCheck className="mr-1 text-green-500" />
-              Your courses have been officially registered for{" "}
+              Your courses have been officially registered for
               <span className="ml-1 font-semibold">
                 {registration.SEMESTER}
               </span>
@@ -808,23 +810,33 @@ export default function RegistrationStatusPage() {
             </tbody>
           </table>
         </div>
-        
+
         {/* Advisor Comment Section - Single comment for all courses */}
-        {registration.courses.some(course => course.ADVISOR_COMMENT) && (
+        {registration.courses.some((course) => course.ADVISOR_COMMENT) && (
           <div className="border-t border-gray-700 p-6">
             <div className="rounded-lg bg-gray-900/40 p-4">
               <h3 className="mb-3 flex items-center text-lg font-medium text-white">
                 <MdPerson className="mr-2 text-[#92e3a9]" />
                 Advisor Feedback
               </h3>
-              
-              {registration.courses.find(course => course.ADVISOR_COMMENT)?.ADVISOR_COMMENT && (
+
+              {registration.courses.find((course) => course.ADVISOR_COMMENT)
+                ?.ADVISOR_COMMENT && (
                 <div className="rounded-lg border border-gray-700 bg-gray-800/50 p-4 text-gray-300">
                   <p className="italic">
-                    &ldquo;{registration.courses.find(course => course.ADVISOR_COMMENT)?.ADVISOR_COMMENT}&rdquo;
+                    &ldquo;
+                    {
+                      registration.courses.find(
+                        (course) => course.ADVISOR_COMMENT,
+                      )?.ADVISOR_COMMENT
+                    }
+                    &rdquo;
                   </p>
                   <p className="mt-2 text-right text-sm text-gray-400">
-                    — {registration.courses.find(course => course.ADVISOR_COMMENT)?.advisor_name || "Advisor"}
+                    —{" "}
+                    {registration.courses.find(
+                      (course) => course.ADVISOR_COMMENT,
+                    )?.advisor_name || "Advisor"}
                   </p>
                 </div>
               )}
