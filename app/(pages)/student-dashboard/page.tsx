@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   HiAcademicCap,
   HiClipboardCheck,
@@ -11,30 +11,89 @@ import {
   HiClock as HiPending,
   HiDocumentText,
 } from "react-icons/hi";
+import { useAuth } from "../../context/AuthContext";
+
+interface DashboardData {
+  studentName: string;
+  totalCredits: number;
+  completedCredits: number;
+  registeredCourses: number;
+  currentSemester: string;
+  pendingPayment: number;
+}
 
 export default function StudentDashboard() {
+  const { user } = useAuth();
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(
+    null,
+  );
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      if (!user) return;
+
+      try {
+        // Use the user ID as the token for authorization
+        const response = await fetch("/api/student-dashboard", {
+          headers: {
+            Authorization: `Bearer ${user.id}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch dashboard data");
+        }
+
+        const result = await response.json();
+        if (result.success) {
+          setDashboardData(result.data);
+          console.log("Dashboard Data:", result.data);
+        } else {
+          setError(result.error || "Failed to fetch dashboard data");
+        }
+      } catch (err) {
+        setError("An error occurred while fetching dashboard data");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, [user]);
+
+  // Define stats dynamically based on fetched data
   const stats = [
     {
       title: "Total Credits",
-      value: "45/160",
+      value: dashboardData
+        ? `${dashboardData.completedCredits}/${dashboardData.totalCredits}`
+        : "Loading...",
       icon: HiAcademicCap,
       description: "Credits completed",
     },
     {
-      title: "Current Semester",
-      value: "Fall 2024",
+      title:"Semester",
+      value: dashboardData ? dashboardData.currentSemester : "Loading...",
       icon: HiCalendar,
-     
+      description: "Current Semester",
     },
     {
       title: "Registered Courses",
-      value: "5",
+      value: dashboardData
+        ? dashboardData.registeredCourses.toString()
+        : "Loading...",
       icon: HiClipboardCheck,
       description: "This semester",
     },
     {
       title: "Pending Payment",
-      value: "$2,500",
+      value:
+        dashboardData && typeof dashboardData.pendingPayment === "number"
+          ? `$${dashboardData.pendingPayment.toFixed(2)}`
+          : "Loading...",
       icon: HiCurrencyDollar,
       description: "Registration fee",
     },
@@ -87,7 +146,37 @@ export default function StudentDashboard() {
       status: "Pending",
     },
   ];
- 
+
+  // Loading state
+  if (loading && !user) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="text-center">
+          <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-t-4 border-blue-500"></div>
+          <p className="text-lg text-white">Loading your dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error && !loading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="rounded-lg bg-red-100 p-6 text-center">
+          <h2 className="mb-2 text-2xl font-bold text-red-800">Error</h2>
+          <p className="text-red-700">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-4 rounded bg-red-700 px-4 py-2 text-white hover:bg-red-800"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="mx-auto max-w-7xl space-y-8 px-4 py-8">
       {/* Welcome Section */}
@@ -97,7 +186,7 @@ export default function StudentDashboard() {
         data-aos-duration="1000"
       >
         <h1 className="mb-2 text-4xl font-bold tracking-tight text-white lg:text-5xl">
-          Welcome Back, Tajwone Chowdhury
+          Welcome Back, {user?.name || dashboardData?.studentName || "Student"}
         </h1>
         <p className="mt-4 text-lg text-gray-400">
           Student ID: 0562310005101031 | Computer Science Engineering
@@ -202,16 +291,28 @@ export default function StudentDashboard() {
               <table className="min-w-full">
                 <thead>
                   <tr className="border-b border-gray-800 bg-gray-800">
-                    <th scope="col" className="whitespace-nowrap px-4 py-2 text-left text-xs font-medium text-gray-400">
+                    <th
+                      scope="col"
+                      className="px-4 py-2 text-left text-xs font-medium whitespace-nowrap text-gray-400"
+                    >
                       Code
                     </th>
-                    <th scope="col" className="whitespace-nowrap px-4 py-2 text-left text-xs font-medium text-gray-400">
+                    <th
+                      scope="col"
+                      className="px-4 py-2 text-left text-xs font-medium whitespace-nowrap text-gray-400"
+                    >
                       Title
                     </th>
-                    <th scope="col" className="whitespace-nowrap px-4 py-2 text-left text-xs font-medium text-gray-400">
+                    <th
+                      scope="col"
+                      className="px-4 py-2 text-left text-xs font-medium whitespace-nowrap text-gray-400"
+                    >
                       Credits
                     </th>
-                    <th scope="col" className="whitespace-nowrap px-4 py-2 text-left text-xs font-medium text-gray-400">
+                    <th
+                      scope="col"
+                      className="px-4 py-2 text-left text-xs font-medium whitespace-nowrap text-gray-400"
+                    >
                       Status
                     </th>
                   </tr>
@@ -222,20 +323,20 @@ export default function StudentDashboard() {
                       key={index}
                       className="bg-gray-900 transition-colors hover:bg-gray-800"
                     >
-                      <td className="whitespace-nowrap px-4 py-2 text-sm text-white">
+                      <td className="px-4 py-2 text-sm whitespace-nowrap text-white">
                         {course.courseCode}
                       </td>
                       <td className="px-4 py-2 text-sm text-white">
                         {course.title}
                       </td>
-                      <td className="whitespace-nowrap px-4 py-2 text-sm text-white">
+                      <td className="px-4 py-2 text-sm whitespace-nowrap text-white">
                         {course.credits}
                       </td>
-                      <td className="whitespace-nowrap px-4 py-2">
+                      <td className="px-4 py-2 whitespace-nowrap">
                         <span
                           className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${
                             course.status === "Approved"
-                              ? "bg-[#92e3a9] bg-opacity-20 text-black"
+                              ? "bg-opacity-20 bg-[#92e3a9] text-black"
                               : "bg-yellow-900 text-yellow-300"
                           }`}
                         >
