@@ -5,7 +5,6 @@ import {
   HiAcademicCap,
   HiClipboardCheck,
   HiClock,
-  HiCurrencyDollar,
   HiCalendar,
   HiCheck,
   HiClock as HiPending,
@@ -15,11 +14,13 @@ import { useAuth } from "../../context/AuthContext";
 
 interface DashboardData {
   studentName: string;
+  studentId: string;
+  departmentName: string;
   totalCredits: number;
   completedCredits: number;
   registeredCourses: number;
   currentSemester: string;
-  pendingPayment: number;
+  cgpa: string;
 }
 
 export default function StudentDashboard() {
@@ -75,7 +76,7 @@ export default function StudentDashboard() {
       description: "Credits completed",
     },
     {
-      title:"Semester",
+      title: "Semester",
       value: dashboardData ? dashboardData.currentSemester : "Loading...",
       icon: HiCalendar,
       description: "Current Semester",
@@ -89,13 +90,10 @@ export default function StudentDashboard() {
       description: "This semester",
     },
     {
-      title: "Pending Payment",
-      value:
-        dashboardData && typeof dashboardData.pendingPayment === "number"
-          ? `$${dashboardData.pendingPayment.toFixed(2)}`
-          : "Loading...",
-      icon: HiCurrencyDollar,
-      description: "Registration fee",
+      title: "CGPA",
+      value: dashboardData ? dashboardData.cgpa : "Loading...",
+      icon: HiAcademicCap,
+      description: "Cumulative GPA",
     },
   ];
 
@@ -189,7 +187,8 @@ export default function StudentDashboard() {
           Welcome Back, {user?.name || dashboardData?.studentName || "Student"}
         </h1>
         <p className="mt-4 text-lg text-gray-400">
-          Student ID: 0562310005101031 | Computer Science Engineering
+          Student ID: {dashboardData ? dashboardData.studentId : "Loading..."} |{" "}
+          {dashboardData ? dashboardData.departmentName : "Loading..."}
         </p>
         <p className="mt-4 text-lg text-gray-400">
           North East University Bangladesh

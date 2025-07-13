@@ -8,10 +8,12 @@ interface StudentRow extends RowDataPacket {
   NAME: string;
   DEPARTMENT_ID: number;
   SESSION: string;
+  REGISTRATION_NUMBER: string;
 }
 
 interface DepartmentRow extends RowDataPacket {
   TOTAL_CREDITS: number;
+  DEPARTMENT_NAME: string;
 }
 
 interface CompletedCreditsRow extends RowDataPacket {
@@ -20,10 +22,6 @@ interface CompletedCreditsRow extends RowDataPacket {
 
 interface CourseCountRow extends RowDataPacket {
   COURSE_COUNT: number | null;
-}
-
-interface PaymentRow extends RowDataPacket {
-  TOTAL_AMOUNT: number;
 }
 
 export async function GET(request: Request) {
@@ -43,7 +41,7 @@ export async function GET(request: Request) {
 
     // Get student's information including department
     const [studentRows] = await db.execute<StudentRow[]>(
-      `SELECT s.ID, s.NAME, s.DEPARTMENT_ID, s.SESSION 
+      `SELECT s.ID, s.NAME, s.DEPARTMENT_ID, s.SESSION, s.REGISTRATION_NUMBER
        FROM student s 
        WHERE s.ID = ?`,
       [studentId],
@@ -55,9 +53,9 @@ export async function GET(request: Request) {
 
     const student = studentRows[0];
 
-    // Get department's total credits
+    // Get department's total credits and name
     const [departmentRows] = await db.execute<DepartmentRow[]>(
-      `SELECT TOTAL_CREDITS 
+      `SELECT TOTAL_CREDITS, DEPARTMENT_NAME
        FROM department 
        WHERE ID = ?`,
       [student.DEPARTMENT_ID],
@@ -71,7 +69,7 @@ export async function GET(request: Request) {
     }
 
     const department = departmentRows[0];
-    const totalCredits = department.TOTAL_CREDITS;
+    const departmentTotalCredits = department.TOTAL_CREDITS;
 
     // Calculate completed credits by joining results with course table
     const [completedCreditsRows] = await db.execute<CompletedCreditsRow[]>(
@@ -115,54 +113,98 @@ export async function GET(request: Request) {
     const yearsPassed = currentYear - startYear;
 
     // Calculate semester number (assuming 3 semesters per year)
-    let semesterNumber = yearsPassed * 3;
+    let semesterNumber = yearsPassed * 2;
 
     // Add current semester based on month
-    if (currentMonth >= 0 && currentMonth <= 3) {
-      // Spring (January - April)
+    if (currentMonth >= 0 && currentMonth <= 6) {
+      // Spring (January - June)
       semesterNumber += 1;
-    } else if (currentMonth >= 4 && currentMonth <= 7) {
-      // Summer (May - August)
+    } else if (currentMonth >= 7 && currentMonth <= 12) {
+      // Summer (July - December)
       semesterNumber += 2;
-    } else {
-      // Fall (September - December)
-      semesterNumber += 3;
-    }
+    } 
 
     // Determine current semester name
     let currentSemester = "";
-    const semesterMod = semesterNumber % 3;
+    const semesterMod = semesterNumber % 2;
 
     if (semesterMod === 1) {
       currentSemester = `Spring ${currentYear}`;
     } else if (semesterMod === 2) {
       currentSemester = `Summer ${currentYear}`;
-    } else {
-      currentSemester = `Fall ${currentYear}`;
-    }
+    } 
 
-    // Get pending payment information
-    const [paymentRows] = await db.execute<PaymentRow[]>(
-      `SELECT rb.TOTAL_AMOUNT
-       FROM registration_bundle rb
-       WHERE rb.STUDENT_ID = ? AND rb.PAYMENT_STATUS = 'PENDING'
-       ORDER BY rb.CREATED_AT DESC
-       LIMIT 1`,
+    // Calculate CGPA from the results table
+    const [gradeRows] = await db.execute<RowDataPacket[]>(
+      `SELECT r.GRADE, c.CREDIT
+       FROM results r
+       JOIN course c ON r.COURSE_ID = c.ID
+       WHERE r.STUDENT_ID = ?`,
       [studentId],
     );
 
-    const pendingPayment =
-      paymentRows.length > 0 ? paymentRows[0].TOTAL_AMOUNT : 0;
+    // Convert letter grades to grade points
+    let totalGradePoints = 0;
+    let creditsAttempted = 0;
+
+    for (const row of gradeRows) {
+      let gradePoint = 0;
+
+      switch (row.GRADE) {
+        case "A+":
+          gradePoint = 4.0;
+          break;
+        case "A":
+          gradePoint = 3.75;
+          break;
+        case "A-":
+          gradePoint = 3.5;
+          break;
+        case "B+":
+          gradePoint = 3.3;
+          break;
+        case "B":
+          gradePoint = 3.0;
+          break;
+        case "B-":
+          gradePoint = 2.7;
+          break;
+        case "C+":
+          gradePoint = 2.3;
+          break;
+        case "C":
+          gradePoint = 2.0;
+          break;
+        case "D":
+          gradePoint = 1.0;
+          break;
+        case "F":
+          gradePoint = 0.0;
+          break;
+        default:
+          gradePoint = 0.0;
+      }
+
+      totalGradePoints += gradePoint * row.CREDIT;
+      creditsAttempted += row.CREDIT;
+    }
+
+    const cgpa =
+      creditsAttempted > 0
+        ? (totalGradePoints / creditsAttempted).toFixed(2)
+        : "0.00";
 
     return NextResponse.json({
       success: true,
       data: {
         studentName: student.NAME,
-        totalCredits,
+        studentId: student.REGISTRATION_NUMBER,
+        departmentName: department.DEPARTMENT_NAME,
+        totalCredits: departmentTotalCredits,
         completedCredits,
         registeredCourses,
         currentSemester,
-        pendingPayment,
+        cgpa,
       },
     });
   } catch (error) {
