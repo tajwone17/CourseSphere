@@ -29,6 +29,7 @@ export async function GET(request: NextRequest) {
     }
 
     let query = "";
+    //eslint-disable-next-line
     let params: any[] = [];
 
     // Different queries based on role to maintain hierarchy
@@ -119,7 +120,7 @@ export async function GET(request: NextRequest) {
       
       if (departmentId) params.push(departmentId);
     }
-
+     //eslint-disable-next-line
     const [registrations]: any = await db.query(query, params);
 
     return Response.json({ 
@@ -127,8 +128,11 @@ export async function GET(request: NextRequest) {
       registrations,
       counts: {
         total: registrations.length,
+         //eslint-disable-next-line
         pending: registrations.filter((reg: any) => reg.STATUS === 'PENDING').length,
+         //eslint-disable-next-line
         partiallyApproved: registrations.filter((reg: any) => reg.STATUS === 'PARTIALLY_APPROVED').length,
+         //eslint-disable-next-line
         rejected: registrations.filter((reg: any) => reg.STATUS === 'REJECTED').length
       }
     });
