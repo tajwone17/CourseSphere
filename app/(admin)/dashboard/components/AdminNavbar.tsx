@@ -106,7 +106,6 @@ export default function AdminNavbar() {
             href: "/dashboard/student-management",
             icon: HiUsers,
           },
-        
         ];
       case "accounts_admin":
         return [
@@ -136,27 +135,23 @@ export default function AdminNavbar() {
   return (
     <>
       <Navbar fluid className="border-b border-gray-800 bg-gray-900">
-        <div className="min-w-0 flex-1 flex items-center gap-2 truncate text-2xl font-semibold text-white">
-        
-            <HiAcademicCap className="flex-shrink-0 text-[#92e3a9] text-3xl" />
-            <span className="truncate">
-              {role === "admin"
-                ? "Super Admin"
-                : role === "hod"
-                  ? "HOD Portal"
-                  : role === "exam_controller"
-                    ? "Exam Controller Portal"
-                    : role === "accounts_admin"
-                      ? "Accounts Office Portal"
-                      : "Advisor Portal"}
-            </span>
-         
+        <div className="flex min-w-0 flex-1 items-center gap-2 truncate text-2xl font-semibold text-white">
+          <HiAcademicCap className="flex-shrink-0 text-3xl text-[#92e3a9]" />
+          <span className="truncate">
+            {role === "admin"
+              ? "Super Admin"
+              : role === "hod"
+                ? "HOD Portal"
+                : role === "exam_controller"
+                  ? "Exam Controller Portal"
+                  : role === "accounts_admin"
+                    ? "Accounts Office Portal"
+                    : "Advisor Portal"}
+          </span>
         </div>
 
-
-
         {/* Desktop menu */}
-        <div className="min-w-0 flex-wrap items-center justify-end gap-2 sm:gap-4 flex">
+        <div className="flex min-w-0 flex-wrap items-center justify-end gap-2 sm:gap-4">
           {menuItems.map((item) => (
             <Link
               key={item.name}
@@ -185,23 +180,29 @@ export default function AdminNavbar() {
           >
             <DropdownItem
               data-aos="zoom-in"
-               style={{ backgroundColor: "black", color: "#92E3A9 ",border: "1px solid #92E3A9" }}
+              style={{
+                backgroundColor: "black",
+                color: "#92E3A9 ",
+                border: "1px solid #92E3A9",
+              }}
               onClick={() => setOpenModal(!openModal)}
             >
-              <HiUser className="inline-block mr-2" />
+              <HiUser className="mr-2 inline-block" />
               Profile
             </DropdownItem>
             <DropdownItem
-              style={{ backgroundColor: "#DC3545",border: "1px solid #92E3A9" }}
+              style={{
+                backgroundColor: "#DC3545",
+                border: "1px solid #92E3A9",
+              }}
               onClick={handleLogout}
             >
-              <HiOutlineLogout className="inline-block mr-2" />
+              <HiOutlineLogout className="mr-2 inline-block" />
               Sign out
             </DropdownItem>
           </Dropdown>
         </div>
       </Navbar>
-
 
       {openModal && <ProfileModal onClose={() => setOpenModal(false)} />}
     </>
