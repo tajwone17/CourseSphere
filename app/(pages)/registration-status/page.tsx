@@ -818,14 +818,14 @@ export default function RegistrationStatusPage() {
       {/* Action Buttons */}
       <div className="mt-6 flex flex-wrap justify-center gap-4">
         <Link href="/courses">
-          <Button className="bg-gray-700 hover:bg-gray-600">
+          <button className="rounded-md bg-gray-700 px-4 py-2 text-white transition-colors hover:bg-gray-600">
             Browse Courses
-          </Button>
+          </button>
         </Link>
         <Link href="/course-selection">
-          <Button className="bg-[#92e3a9] text-black hover:bg-[#78c18f]">
+          <button className="rounded-md bg-[#92e3a9] px-4 py-2 text-black transition-colors hover:bg-[#78c18f]">
             Back to Course Selection
-          </Button>
+          </button>
         </Link>
       </div>
     </div>
