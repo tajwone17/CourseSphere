@@ -6,8 +6,7 @@ import {
   HiClipboardCheck,
   HiClock,
   HiCalendar,
-  HiCheck,
-  HiClock as HiPending,
+
   HiDocumentText,
   HiRefresh,
 } from "react-icons/hi";
@@ -397,12 +396,7 @@ export default function StudentDashboard() {
                     >
                       Credits
                     </th>
-                    <th
-                      scope="col"
-                      className="px-4 py-2 text-left text-xs font-medium whitespace-nowrap text-gray-400"
-                    >
-                      Status
-                    </th>
+                 
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-800">
@@ -421,22 +415,7 @@ export default function StudentDashboard() {
                         <td className="px-4 py-2 text-sm whitespace-nowrap text-white">
                           {course.credits}
                         </td>
-                        <td className="px-4 py-2 whitespace-nowrap">
-                          <span
-                            className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${
-                              course.status === "Approved"
-                                ? "bg-opacity-20 bg-[#92e3a9] text-white"
-                                : "bg-yellow-900 text-yellow-300"
-                            }`}
-                          >
-                            {course.status === "Approved" ? (
-                              <HiCheck className="h-3 w-3" />
-                            ) : (
-                              <HiPending className="h-3 w-3" />
-                            )}
-                            {course.status}
-                          </span>
-                        </td>
+                      
                       </tr>
                     ))
                   ) : (
