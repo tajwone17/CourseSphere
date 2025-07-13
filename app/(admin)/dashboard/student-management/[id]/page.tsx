@@ -68,6 +68,7 @@ export default function RegistrationReviewPage() {
   const [coursesApproval, setCoursesApproval] = useState<{
     [key: number]: { approved: boolean };
   }>({});
+  const [advisorComment, setAdvisorComment] = useState<string>("");
   const [totalAmount, setTotalAmount] = useState<string>("");
 
   // Fee adjustment state
@@ -184,6 +185,7 @@ export default function RegistrationReviewPage() {
           advisorId: user?.id,
           approved: approvalStatus,
           courseApprovals,
+          advisorComment,
         };
       } else if (userRole === "hod") {
         endpoint = "/api/registration/hod-approval";
@@ -699,6 +701,29 @@ export default function RegistrationReviewPage() {
                 </p>
               )}
             </div>
+
+            {/* Advisor Comment Section */}
+            {userRole === "advisor" && (
+              <div>
+                <Label
+                  htmlFor="advisorComment"
+                  className="mb-2 block text-sm font-medium text-gray-400"
+                >
+                  Advisor Comment
+                </Label>
+                <textarea
+                  id="advisorComment"
+                  className="block w-full rounded-md border border-gray-600 bg-gray-700 p-2.5 text-sm text-white focus:border-green-500 focus:ring-green-500"
+                  rows={3}
+                  placeholder="Add your comments here (optional). This will be visible to the student."
+                  value={advisorComment}
+                  onChange={(e) => setAdvisorComment(e.target.value)}
+                />
+                <p className="mt-1 text-xs text-gray-400">
+                  Provide feedback or reasons for your decision, especially if rejecting any courses.
+                </p>
+              </div>
+            )}
 
             {/* Accounts Admin - Fee Adjustments */}
             {userRole === "accounts_admin" && (
