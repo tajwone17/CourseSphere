@@ -720,7 +720,8 @@ export default function RegistrationReviewPage() {
                   onChange={(e) => setAdvisorComment(e.target.value)}
                 />
                 <p className="mt-1 text-xs text-gray-400">
-                  Provide feedback or reasons for your decision, especially if rejecting any courses.
+                  Provide feedback or reasons for your decision, especially if
+                  rejecting any courses.
                 </p>
               </div>
             )}

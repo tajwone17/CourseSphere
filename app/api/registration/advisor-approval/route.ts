@@ -4,18 +4,21 @@ import { RowDataPacket } from "mysql2";
 
 export async function POST(request: NextRequest) {
   try {
-    const { 
-      bundleId, 
+    const {
+      bundleId,
       advisorId,
-      approved, 
+      approved,
       courseApprovals, // Array of { courseId, approved }
-      advisorComment // Optional comment from the advisor
+      advisorComment, // Optional comment from the advisor
     } = await request.json();
-    
+
     if (!bundleId || !advisorId) {
-      return Response.json({ 
-        error: "Missing required fields: bundleId and advisorId" 
-      }, { status: 400 });
+      return Response.json(
+        {
+          error: "Missing required fields: bundleId and advisorId",
+        },
+        { status: 400 },
+      );
     }
 
     // Start a transaction
@@ -30,57 +33,57 @@ export async function POST(request: NextRequest) {
              SET STATUS = ?, ADVISOR_COMMENT = ? 
              WHERE BUNDLE_ID = ? AND COURSE_ID = ?`,
             [
-              approval.approved ? 'APPROVED' : 'REJECTED',
+              approval.approved ? "APPROVED" : "REJECTED",
               advisorComment || null,
-              bundleId, 
-              approval.courseId
-            ]
+              bundleId,
+              approval.courseId,
+            ],
           );
         }
       }
 
       // 2. Update the overall bundle status
-      let newStatus = 'PENDING';
-      
+      let newStatus = "PENDING";
+
       if (approved === true) {
         // Set advisor approval
         await db.query(
           `UPDATE registration_bundle SET ADVISOR_APPROVAL = 1 WHERE ID = ?`,
-          [bundleId]
+          [bundleId],
         );
-        
+
         // Update status to PARTIALLY_APPROVED
-        newStatus = 'PARTIALLY_APPROVED';
-        
+        newStatus = "PARTIALLY_APPROVED";
+
         // Update all pending courses to APPROVED if not specified individually
         if (!courseApprovals || courseApprovals.length === 0) {
           await db.query(
             `UPDATE course_registration 
              SET STATUS = 'APPROVED' 
              WHERE BUNDLE_ID = ? AND STATUS = 'PENDING'`,
-            [bundleId]
+            [bundleId],
           );
         }
       } else if (approved === false) {
         // If explicitly rejected, update status
-        newStatus = 'REJECTED';
-        
+        newStatus = "REJECTED";
+
         // Reject all pending courses if not specified individually
         if (!courseApprovals || courseApprovals.length === 0) {
           await db.query(
             `UPDATE course_registration 
              SET STATUS = 'REJECTED'
              WHERE BUNDLE_ID = ? AND STATUS = 'PENDING'`,
-            [bundleId]
+            [bundleId],
           );
         }
       }
 
       // Update the bundle status
-      await db.query(
-        `UPDATE registration_bundle SET STATUS = ? WHERE ID = ?`,
-        [newStatus, bundleId]
-      );
+      await db.query(`UPDATE registration_bundle SET STATUS = ? WHERE ID = ?`, [
+        newStatus,
+        bundleId,
+      ]);
 
       // Calculate new total amount based on approved courses only
       if (courseApprovals && courseApprovals.length > 0) {
@@ -93,33 +96,33 @@ export async function POST(request: NextRequest) {
            JOIN student s ON rb.STUDENT_ID = s.ID
            JOIN department d ON s.DEPARTMENT_ID = d.ID
            WHERE cr.BUNDLE_ID = ?`,
-          [bundleId]
+          [bundleId],
         );
-        
+
         // Calculate new total amount based on approved courses only
         let newTotalAmount = 0;
         for (const course of courseDetailsRows) {
-          if (course.STATUS === 'APPROVED') {
+          if (course.STATUS === "APPROVED") {
             newTotalAmount += course.CREDIT * course.AMOUNT_PER_CREDIT;
           }
         }
-        
+
         // Update the bundle with the new total
         await db.query(
           `UPDATE registration_bundle SET TOTAL_AMOUNT = ? WHERE ID = ?`,
-          [newTotalAmount, bundleId]
+          [newTotalAmount, bundleId],
         );
       }
 
       // Commit the transaction
       await db.query("COMMIT");
 
-      return Response.json({ 
-        success: true, 
-        message: approved ? 
-          "Registration approved by advisor" : 
-          "Registration rejected by advisor",
-        status: newStatus
+      return Response.json({
+        success: true,
+        message: approved
+          ? "Registration approved by advisor"
+          : "Registration rejected by advisor",
+        status: newStatus,
       });
     } catch (error) {
       // Rollback in case of any error
@@ -129,8 +132,13 @@ export async function POST(request: NextRequest) {
     }
   } catch (error) {
     console.error("Error processing advisor approval:", error);
-    return Response.json({ 
-      error: "Failed to process advisor approval: " + (error instanceof Error ? error.message : "Unknown error")
-    }, { status: 500 });
+    return Response.json(
+      {
+        error:
+          "Failed to process advisor approval: " +
+          (error instanceof Error ? error.message : "Unknown error"),
+      },
+      { status: 500 },
+    );
   }
 }
