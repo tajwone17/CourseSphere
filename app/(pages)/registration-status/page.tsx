@@ -7,11 +7,10 @@ import {
   MdDescription,
   MdPerson,
 } from "react-icons/md";
-import { HiCheck, HiClock as HiPending, HiExclamation } from "react-icons/hi";
+import { HiCheck, HiClock as HiPending, HiExclamation, HiBookOpen, HiArrowLeft } from "react-icons/hi";
 import Link from "next/link";
 import { useAuth } from "@/app/context/AuthContext";
 import { useSearchParams } from "next/navigation";
-import { Button } from "flowbite-react";
 
 interface RegistrationData {
   ID: number;
@@ -345,16 +344,18 @@ export default function RegistrationStatusPage() {
                 Submit your course selection for approval
               </li>
             </ol>
-            <div className="flex flex-wrap justify-center gap-4">
+            <div className="flex flex-wrap justify-center gap-6">
               <Link href="/courses">
-                <Button className="bg-gray-700 hover:bg-gray-600">
+                <button className="rounded-md bg-gray-700 px-6 py-3 text-white transition-all duration-200 hover:bg-gray-600 hover:shadow-lg shadow-md flex items-center font-medium">
+                  <HiBookOpen className="mr-2 text-lg" />
                   Browse Courses
-                </Button>
+                </button>
               </Link>
               <Link href="/course-selection">
-                <Button className="bg-[#92e3a9] text-black hover:bg-[#78c18f]">
+                <button className="rounded-md bg-[#92e3a9] px-6 py-3 text-black transition-all duration-200 hover:bg-[#78c18f] hover:shadow-lg shadow-md flex items-center font-medium">
+                  <HiCheck className="mr-2 text-lg" />
                   Select Courses
-                </Button>
+                </button>
               </Link>
             </div>
           </div>
@@ -374,23 +375,23 @@ export default function RegistrationStatusPage() {
   );
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6 px-4 py-8 sm:px-6 lg:px-8">
-      <h1 className="mb-6 text-center text-3xl font-bold text-white">
+    <div className="mx-auto max-w-6xl space-y-8 px-4 py-10 sm:px-6 lg:px-8">
+      <h1 className="mb-6 text-center text-4xl font-bold tracking-tight text-white">
         Course Registration Status
       </h1>
 
       {hasActiveRegistration && (
-        <div className="mb-6 rounded-md border border-yellow-500 bg-yellow-900/20 p-4">
+        <div className="mb-8 rounded-lg border-l-4 border-yellow-500 bg-yellow-900/20 p-5 shadow-md">
           <div className="flex">
             <div className="flex-shrink-0">
-              <HiExclamation className="h-5 w-5 text-yellow-400" />
+              <HiExclamation className="h-6 w-6 text-yellow-400" />
             </div>
-            <div className="ml-3">
-              <h3 className="text-sm font-medium text-yellow-400">
+            <div className="ml-4">
+              <h3 className="text-base font-semibold text-yellow-400">
                 Active Registration In Progress
               </h3>
               <div className="mt-2 text-sm text-yellow-300">
-                <p>
+                <p className="leading-relaxed">
                   You have an ongoing course registration that requires
                   approval. While this registration is in progress, you cannot
                   select additional courses or start a new registration. Please
@@ -404,26 +405,35 @@ export default function RegistrationStatusPage() {
       )}
 
       {paymentSuccess && (
-        <div className="mb-6 rounded-md border border-green-500 bg-green-900/20 p-4 text-green-300">
-          <p>Payment processed successfully!</p>
+        <div className="mb-8 rounded-lg border-l-4 border-green-500 bg-green-900/20 p-5 shadow-md">
+          <div className="flex items-center">
+            <div className="flex-shrink-0">
+              <HiCheck className="h-6 w-6 text-green-400" />
+            </div>
+            <div className="ml-4">
+              <p className="text-base font-semibold text-green-300">Payment processed successfully!</p>
+              <p className="mt-1 text-sm text-green-300/80">Your payment has been recorded and your registration is being updated.</p>
+            </div>
+          </div>
         </div>
       )}
 
       {/* Registration Summary */}
-      <div className="overflow-hidden rounded-lg border border-gray-700 bg-gray-800 shadow">
-        <div className="border-b border-gray-700 bg-gray-900 px-6 py-4">
-          <h2 className="text-lg font-medium text-white">
+      <div className="overflow-hidden rounded-lg border border-gray-700 bg-gray-800/80 shadow-lg backdrop-blur-sm transition-all hover:shadow-xl">
+        <div className="border-b border-gray-700 bg-gray-900 px-6 py-5">
+          <h2 className="text-xl font-semibold text-white flex items-center">
+            <MdDescription className="mr-2 text-[#92e3a9]" />
             Registration Details
           </h2>
         </div>
-        <div className="grid grid-cols-1 gap-4 p-6 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 p-6 md:grid-cols-2">
           <div>
             <dl className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
               <div>
                 <dt className="text-sm font-medium text-gray-400">
                   Student Name
                 </dt>
-                <dd className="mt-1 text-sm text-white">
+                <dd className="mt-1 text-base text-white">
                   {registration.student_name}
                 </dd>
               </div>
@@ -431,7 +441,7 @@ export default function RegistrationStatusPage() {
                 <dt className="text-sm font-medium text-gray-400">
                   Student ID
                 </dt>
-                <dd className="mt-1 text-sm text-white">
+                <dd className="mt-1 text-base text-white">
                   {registration.STUDENT_ID}
                 </dd>
               </div>
@@ -439,13 +449,13 @@ export default function RegistrationStatusPage() {
                 <dt className="text-sm font-medium text-gray-400">
                   Department
                 </dt>
-                <dd className="mt-1 text-sm text-white">
+                <dd className="mt-1 text-base text-white">
                   {registration.department_name}
                 </dd>
               </div>
               <div>
                 <dt className="text-sm font-medium text-gray-400">Semester</dt>
-                <dd className="mt-1 text-sm text-white">
+                <dd className="mt-1 text-base text-white font-medium">
                   {registration.SEMESTER}
                 </dd>
               </div>
@@ -453,14 +463,14 @@ export default function RegistrationStatusPage() {
                 <dt className="text-sm font-medium text-gray-400">
                   Submission Date
                 </dt>
-                <dd className="mt-1 text-sm text-white">
+                <dd className="mt-1 text-base text-white">
                   {formatDate(registration.SUBMITTED_AT)}
                 </dd>
               </div>
               <div>
                 <dt className="text-sm font-medium text-gray-400">Status</dt>
                 <dd
-                  className={`mt-1 flex items-center text-sm font-medium ${getStatusColor(registration.STATUS)}`}
+                  className={`mt-1 flex items-center text-base font-medium ${getStatusColor(registration.STATUS)}`}
                 >
                   {renderStatusIcon(registration.STATUS)}
                   <span className="ml-1">{registration.STATUS}</span>
@@ -468,39 +478,47 @@ export default function RegistrationStatusPage() {
               </div>
             </dl>
           </div>
-          <div className="border-t border-gray-700 pt-4 md:border-t-0 md:border-l md:pt-0 md:pl-6">
-            <div className="mb-4">
-              <h3 className="text-sm font-medium text-gray-400">
+          <div className="border-t border-gray-700 pt-4 md:border-t-0 md:border-l md:pt-0 md:pl-8">
+            <div className="mb-6">
+              <h3 className="text-base font-semibold text-gray-200 flex items-center">
+                <MdPerson className="mr-2 text-[#92e3a9]" />
                 Registration Progress
               </h3>
-              <p className="mt-1 text-sm text-white">
+              <p className="mt-3 text-base text-white leading-relaxed">
                 {registration.statusMessage}
               </p>
-              <p className="mt-2 text-sm font-medium text-[#92e3a9]">
+              <p className="mt-3 text-base font-medium text-[#92e3a9]">
                 {registration.nextStep}
               </p>
             </div>
 
-            <div className="mt-4">
-              <h3 className="text-sm font-medium text-gray-400">
+            <div className="mt-6">
+              <h3 className="text-base font-semibold text-gray-200 flex items-center">
+                <MdPayment className="mr-2 text-[#92e3a9]" />
                 Payment Status
               </h3>
-              <div className="mt-1 flex items-center justify-between">
-                <span className="text-sm text-white">
+              <div className="mt-3 flex items-center justify-between">
+                <span className={`text-base font-medium ${
+                  registration.PAYMENT_STATUS === "PAID"
+                    ? "text-green-400"
+                    : registration.PAYMENT_STATUS === "PARTIALLY_PAID"
+                      ? "text-yellow-400"
+                      : "text-gray-400"
+                }`}>
                   {registration.PAYMENT_STATUS === "PAID"
                     ? "Fully Paid"
                     : registration.PAYMENT_STATUS === "PARTIALLY_PAID"
                       ? "Partially Paid"
                       : "Payment Pending"}
                 </span>
-                <span className="text-sm font-medium text-white">
+                <span className="text-base font-medium text-white">
                   ${totalPaid.toFixed(2)} / $
                   {Number(registration.TOTAL_AMOUNT).toFixed(2)}
                 </span>
               </div>
-              <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-gray-700">
+              <div className="mt-3 h-3 w-full overflow-hidden rounded-full bg-gray-700 shadow-inner">
                 <div
-                  className="h-full bg-[#92e3a9]"
+                  className="h-full bg-[#92e3a9] transition-all duration-500 ease-in-out"
                   style={{
                     width: `${Math.min(100, (totalPaid / Number(registration.TOTAL_AMOUNT)) * 100)}%`,
                   }}
@@ -513,14 +531,16 @@ export default function RegistrationStatusPage() {
                   {!showPaymentForm ? (
                     <button
                       onClick={() => setShowPaymentForm(true)}
-                      className="w-full rounded-md bg-[#92e3a9] px-4 py-2 text-center text-sm font-medium text-black hover:bg-[#78c18f]"
+                      className="w-full rounded-md bg-[#92e3a9] px-4 py-3 text-center font-medium text-black hover:bg-[#78c18f] transition-colors shadow-md hover:shadow-lg mt-3 flex items-center justify-center"
                     >
+                      <MdPayment className="mr-2 text-lg" />
                       Make Payment
                     </button>
                   ) : (
-                    <form onSubmit={handlePayment} className="mt-4 space-y-4">
+                    <form onSubmit={handlePayment} className="mt-6 space-y-5 bg-gray-800/50 rounded-lg p-5 border border-gray-700 shadow-lg">
+                      <h4 className="font-medium text-white text-base mb-2">Payment Details</h4>
                       <div>
-                        <label className="block text-sm font-medium text-gray-400">
+                        <label className="block text-sm font-medium text-gray-300 mb-1">
                           Payment Amount ($)
                         </label>
                         <input
@@ -531,18 +551,18 @@ export default function RegistrationStatusPage() {
                           max={remainingAmount}
                           step="0.01"
                           required
-                          className="mt-1 block w-full rounded-md border border-gray-600 bg-gray-700 px-3 py-2 text-white focus:border-[#92e3a9] focus:ring-[#92e3a9] focus:outline-none"
+                          className="mt-1 block w-full rounded-md border border-gray-600 bg-gray-700 px-3 py-2.5 text-white focus:border-[#92e3a9] focus:ring-[#92e3a9] focus:outline-none shadow-sm"
                           placeholder={`Amount (Max: $${remainingAmount.toFixed(2)})`}
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-400">
+                        <label className="block text-sm font-medium text-gray-300 mb-1">
                           Payment Method
                         </label>
                         <select
                           value={paymentMethod}
                           onChange={(e) => setPaymentMethod(e.target.value)}
-                          className="mt-1 block w-full rounded-md border border-gray-600 bg-gray-700 px-3 py-2 text-white focus:border-[#92e3a9] focus:ring-[#92e3a9] focus:outline-none"
+                          className="mt-1 block w-full rounded-md border border-gray-600 bg-gray-700 px-3 py-2.5 text-white focus:border-[#92e3a9] focus:ring-[#92e3a9] focus:outline-none shadow-sm"
                         >
                           <option value="Credit Card">Credit Card</option>
                           <option value="Bank Transfer">Bank Transfer</option>
@@ -550,38 +570,48 @@ export default function RegistrationStatusPage() {
                         </select>
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-400">
+                        <label className="block text-sm font-medium text-gray-300 mb-1">
                           Transaction ID (Optional)
                         </label>
                         <input
                           type="text"
                           value={transactionId}
                           onChange={(e) => setTransactionId(e.target.value)}
-                          className="mt-1 block w-full rounded-md border border-gray-600 bg-gray-700 px-3 py-2 text-white focus:border-[#92e3a9] focus:ring-[#92e3a9] focus:outline-none"
+                          className="mt-1 block w-full rounded-md border border-gray-600 bg-gray-700 px-3 py-2.5 text-white focus:border-[#92e3a9] focus:ring-[#92e3a9] focus:outline-none shadow-sm"
                           placeholder="Transaction ID if applicable"
                         />
                       </div>
 
                       {paymentError && (
-                        <div className="rounded-md border border-red-500 bg-red-900/20 p-3 text-sm text-red-300">
-                          {paymentError}
+                        <div className="rounded-md border-l-4 border-red-500 bg-red-900/20 p-4 text-sm text-red-300 shadow-md">
+                          <div className="flex">
+                            <HiExclamation className="h-5 w-5 text-red-400 mt-0.5" />
+                            <div className="ml-3">
+                              <p className="font-medium">{paymentError}</p>
+                            </div>
+                          </div>
                         </div>
                       )}
 
-                      <div className="flex gap-2">
+                      <div className="flex gap-3 pt-2">
                         <button
                           type="submit"
                           disabled={processingPayment}
-                          className="flex-1 rounded-md bg-[#92e3a9] px-4 py-2 text-sm font-medium text-black hover:bg-[#78c18f] disabled:cursor-not-allowed disabled:opacity-50"
+                          className="flex-1 rounded-md bg-[#92e3a9] px-4 py-2.5 text-base font-medium text-black hover:bg-[#78c18f] disabled:cursor-not-allowed disabled:opacity-50 shadow-md hover:shadow-lg transition-all flex items-center justify-center"
                         >
-                          {processingPayment
-                            ? "Processing..."
-                            : "Submit Payment"}
+                          {processingPayment ? (
+                            <>
+                              <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-b-transparent border-black"></div>
+                              Processing...
+                            </>
+                          ) : (
+                            "Submit Payment"
+                          )}
                         </button>
                         <button
                           type="button"
                           onClick={() => setShowPaymentForm(false)}
-                          className="rounded-md border border-gray-600 bg-transparent px-4 py-2 text-sm font-medium text-white hover:bg-gray-700"
+                          className="rounded-md border border-gray-600 bg-transparent px-4 py-2.5 text-base font-medium text-white hover:bg-gray-700 transition-colors"
                         >
                           Cancel
                         </button>
@@ -596,13 +626,14 @@ export default function RegistrationStatusPage() {
       </div>
 
       {/* Registration Progress Steps */}
-      <div className="overflow-hidden rounded-lg border border-gray-700 bg-gray-800 shadow">
-        <div className="border-b border-gray-700 bg-gray-900 px-6 py-4">
-          <h2 className="text-lg font-medium text-white">
+      <div className="overflow-hidden rounded-lg border border-gray-700 bg-gray-800/80 shadow-lg backdrop-blur-sm transition-all hover:shadow-xl">
+        <div className="border-b border-gray-700 bg-gray-900 px-6 py-5">
+          <h2 className="text-xl font-semibold text-white flex items-center">
+            <MdCheckCircle className="mr-2 text-[#92e3a9]" />
             Registration Progress
           </h2>
         </div>
-        <div className="p-6">
+        <div className="p-8">
           <div className="overflow-hidden">
             <div className="mb-8 flex items-center justify-center">
               <ol className="flex w-full items-center">
@@ -614,20 +645,20 @@ export default function RegistrationStatusPage() {
                     <div
                       className={`flex items-center justify-center ${
                         step.status === "completed"
-                          ? "bg-green-600"
+                          ? "bg-green-600 ring-4 ring-green-600/20"
                           : step.status === "current"
-                            ? "bg-blue-600"
+                            ? "bg-blue-600 ring-4 ring-blue-600/20"
                             : step.status === "rejected"
-                              ? "bg-red-600"
+                              ? "bg-red-600 ring-4 ring-red-600/20"
                               : step.status === "in-progress"
-                                ? "bg-yellow-600"
+                                ? "bg-yellow-600 ring-4 ring-yellow-600/20"
                                 : "bg-gray-700"
-                      } h-10 w-10 rounded-full`}
+                      } h-12 w-12 rounded-full shadow-md transition-all duration-300`}
                     >
-                      <step.icon className="h-5 w-5 text-white" />
+                      <step.icon className="h-6 w-6 text-white" />
                     </div>
                     <div
-                      className={`hidden sm:ml-2 sm:block ${
+                      className={`hidden sm:ml-3 sm:block ${
                         step.status === "completed"
                           ? "text-green-400"
                           : step.status === "current"
@@ -639,16 +670,16 @@ export default function RegistrationStatusPage() {
                                 : "text-gray-400"
                       }`}
                     >
-                      <p className="text-sm">{step.name}</p>
+                      <p className="text-sm font-medium">{step.name}</p>
                     </div>
                     {index < steps.length - 1 && (
                       <div className="flex w-full items-center">
                         <div
-                          className={`h-0.5 w-full ${
+                          className={`h-1 w-full ${
                             step.status === "completed"
-                              ? "bg-green-600"
+                              ? "bg-gradient-to-r from-green-600 to-green-500"
                               : "bg-gray-700"
-                          }`}
+                          } rounded-full transition-all duration-500`}
                         ></div>
                       </div>
                     )}
@@ -661,13 +692,17 @@ export default function RegistrationStatusPage() {
       </div>
 
       {/* Course Registration Details */}
-      <div className="overflow-hidden rounded-lg border border-gray-700 bg-gray-800 shadow">
-        <div className="border-b border-gray-700 bg-gray-900 px-6 py-4">
-          <h2 className="text-lg font-medium text-white">Registered Courses</h2>
+      <div className="overflow-hidden rounded-lg border border-gray-700 bg-gray-800/80 shadow-lg backdrop-blur-sm transition-all hover:shadow-xl">
+        <div className="border-b border-gray-700 bg-gray-900 px-6 py-5">
+          <h2 className="text-xl font-semibold text-white flex items-center">
+            <HiBookOpen className="mr-2 text-[#92e3a9]" />
+            Registered Courses
+          </h2>
           {registration.STATUS === "COMPLETED" && (
-            <p className="mt-1 text-sm text-green-400">
+            <p className="mt-2 text-sm text-green-400 flex items-center">
+              <HiCheck className="mr-1 text-green-500" />
               Your courses have been officially registered for{" "}
-              {registration.SEMESTER}
+              <span className="font-semibold ml-1">{registration.SEMESTER}</span>
             </p>
           )}
         </div>
@@ -754,9 +789,12 @@ export default function RegistrationStatusPage() {
 
       {/* Payment History */}
       {registration.payments.length > 0 && (
-        <div className="overflow-hidden rounded-lg border border-gray-700 bg-gray-800 shadow">
-          <div className="border-b border-gray-700 bg-gray-900 px-6 py-4">
-            <h2 className="text-lg font-medium text-white">Payment History</h2>
+        <div className="overflow-hidden rounded-lg border border-gray-700 bg-gray-800/80 shadow-lg backdrop-blur-sm transition-all hover:shadow-xl">
+          <div className="border-b border-gray-700 bg-gray-900 px-6 py-5">
+            <h2 className="text-xl font-semibold text-white flex items-center">
+              <MdPayment className="mr-2 text-[#92e3a9]" />
+              Payment History
+            </h2>
           </div>
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-700">
@@ -816,14 +854,16 @@ export default function RegistrationStatusPage() {
       )}
 
       {/* Action Buttons */}
-      <div className="mt-6 flex flex-wrap justify-center gap-4">
+      <div className="mt-10 flex flex-wrap justify-center gap-6">
         <Link href="/courses">
-          <button className="rounded-md bg-gray-700 px-4 py-2 text-white transition-colors hover:bg-gray-600">
+          <button className="rounded-md bg-gray-700 px-6 py-3 text-white transition-all duration-200 hover:bg-gray-600 hover:shadow-lg shadow-md flex items-center font-medium">
+            <HiBookOpen className="mr-2 text-lg" />
             Browse Courses
           </button>
         </Link>
         <Link href="/course-selection">
-          <button className="rounded-md bg-[#92e3a9] px-4 py-2 text-black transition-colors hover:bg-[#78c18f]">
+          <button className="rounded-md bg-[#92e3a9] px-6 py-3 text-black transition-all duration-200 hover:bg-[#78c18f] hover:shadow-lg shadow-md flex items-center font-medium">
+            <HiArrowLeft className="mr-2 text-lg" />
             Back to Course Selection
           </button>
         </Link>
