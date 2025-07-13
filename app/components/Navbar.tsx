@@ -2,7 +2,7 @@
 
 import { FaRocket } from "react-icons/fa";
 import {
-  HiAcademicCap,
+
   HiHome,
   HiBookOpen,
   HiClipboardCheck,
@@ -10,10 +10,11 @@ import {
   HiInformationCircle,
   HiMail,
   HiUser,
+  HiOutlineLogout,
 } from "react-icons/hi";
 import {
 
-  Badge,
+ 
   Button,
   Dropdown,
   DropdownItem,
@@ -95,9 +96,9 @@ export function MyNavbar() {
               {link.name}
             </Link>
           ))}
+      
         </NavbarCollapse>
-
-        <div className="flex items-center gap-4">
+     <div className="flex items-center gap-4">
 
           {isAuthenticated && user.role === "student" ? (
             <Dropdown
@@ -110,19 +111,22 @@ export function MyNavbar() {
               }
               className="w-30"
               dismissOnClick={false}
+              style={{ backgroundColor: "black",color:"black" }}
             >
               <DropdownItem
-                style={{ backgroundColor: "gray-100", color: "#92E3A9 " }}
+                style={{ backgroundColor: "black", color: "#92E3A9 ",border: "1px solid #92E3A9" }}
                 onClick={() => {
                   setOpenModal(!openModal);
                 }}
               >
+                <HiUser className="inline-block mr-2" />
                 Profile
               </DropdownItem>
               <DropdownItem
-                style={{ backgroundColor: "#DC3545" }}
+                style={{ backgroundColor: "#DC3545",border: "1px solid #92E3A9" }}
                 onClick={handleSignOut}
               >
+                <HiOutlineLogout className="inline-block mr-2" />
                 Sign out
               </DropdownItem>
             </Dropdown>
@@ -144,6 +148,7 @@ export function MyNavbar() {
             </Link>
           )}
         </div>
+       
       </Navbar>
 
       {openModal && <ProfileModal onClose={() => setOpenModal(false)} />}

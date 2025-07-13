@@ -1,6 +1,6 @@
 "use client";
 
-import { Avatar, Button, Dropdown, DropdownItem, Navbar } from "flowbite-react";
+import { Dropdown, DropdownItem, Navbar } from "flowbite-react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import {
@@ -9,9 +9,9 @@ import {
   HiUsers,
   HiAcademicCap,
   HiSpeakerphone,
-  HiMenu,
   HiCash,
   HiUser,
+  HiOutlineLogout,
 } from "react-icons/hi";
 import { useEffect, useState } from "react";
 
@@ -25,8 +25,6 @@ export default function AdminNavbar() {
   const { user } = useAuth();
   const [role, setRole] = useState<string | null>(null);
   const [openModal, setOpenModal] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
-
   useEffect(() => {
     // const adminRole = localStorage.getItem("adminRole");
     // const token = localStorage.getItem("adminToken");
@@ -155,17 +153,10 @@ export default function AdminNavbar() {
          
         </div>
 
-        {/* Hamburger menu for mobile */}
-        <button
-          className="ml-2 flex items-center justify-center rounded-md p-2 text-gray-300 hover:bg-gray-800 focus:ring-2 focus:ring-[#92e3a9] focus:outline-none md:hidden"
-          onClick={() => setMenuOpen((open) => !open)}
-          aria-label="Open main menu"
-        >
-          <HiMenu className="h-6 w-6" />
-        </button>
+
 
         {/* Desktop menu */}
-        <div className="hidden min-w-0 flex-wrap items-center justify-end gap-2 sm:gap-4 md:flex">
+        <div className="min-w-0 flex-wrap items-center justify-end gap-2 sm:gap-4 flex">
           {menuItems.map((item) => (
             <Link
               key={item.name}
@@ -177,7 +168,7 @@ export default function AdminNavbar() {
               } max-w-full truncate`}
             >
               <item.icon className="h-5 w-5 flex-shrink-0" />
-              <span className="hidden truncate md:inline">{item.name}</span>
+              <span className="truncate">{item.name}</span>
             </Link>
           ))}
 
@@ -194,73 +185,24 @@ export default function AdminNavbar() {
           >
             <DropdownItem
               data-aos="zoom-in"
-              data-aos-delay="400"
-              style={{ backgroundColor: "gray-100", color: "#92E3A9 " }}
+               style={{ backgroundColor: "black", color: "#92E3A9 ",border: "1px solid #92E3A9" }}
               onClick={() => setOpenModal(!openModal)}
             >
+              <HiUser className="inline-block mr-2" />
               Profile
             </DropdownItem>
             <DropdownItem
-              style={{ backgroundColor: "#DC3545" }}
+              style={{ backgroundColor: "#DC3545",border: "1px solid #92E3A9" }}
               onClick={handleLogout}
             >
+              <HiOutlineLogout className="inline-block mr-2" />
               Sign out
             </DropdownItem>
           </Dropdown>
         </div>
       </Navbar>
 
-      {/* Mobile menu */}
-      {menuOpen && (
-        <div className="z-50 border-b border-gray-800 bg-gray-900 px-4 py-2 md:hidden">
-          <div className="flex flex-col gap-2">
-            {menuItems.map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                className={`flex items-center gap-2 rounded-lg px-3 py-2 transition-colors hover:bg-gray-800 hover:text-[#92e3a9] ${
-                  pathname === item.href
-                    ? "bg-gray-800 text-[#92e3a9]"
-                    : "text-gray-300"
-                }`}
-                onClick={() => setMenuOpen(false)}
-              >
-                <item.icon className="h-5 w-5 flex-shrink-0" />
-                <span>{item.name}</span>
-              </Link>
-            ))}
-            <div className="mt-2 flex items-center gap-2">
-              <Avatar
-                alt="User settings"
-                img="https://scontent.fzyl6-1.fna.fbcdn.net/v/t39.30808-6/372624737_3640915932896748_4744980592238643195_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=a5f93a&_nc_eui2=AeGUvmZnTEIB81Zzlg7HWNr50lPTtsFdLpzSU9O2wV0unKpLICPXB36mmKbTqmMDKwj2H2Wvy3HoZgbvSztt3mLD&_nc_ohc=je1Q2Zu5XIMQ7kNvwEHpa_b&_nc_oc=Adlx8h4yz_M36L65UGkdvIopzNIyLtRaLb4hSzRNKyO1NHR_jbPw9LHSHzN99WNpHUA&_nc_zt=23&_nc_ht=scontent.fzyl6-1.fna&_nc_gid=2SMSTQw7H8gehkRiZHT0xg&oh=00_AfEdhQHt-MbK7tjuhZLPFzM_wpDl1M9LhaOKfwCYQ5lUDQ&oe=6816E171"
-                bordered
-                rounded
-                className="h-8 w-8"
-              />
-              <Button
-                color="gray"
-                size="xs"
-                onClick={() => {
-                  setOpenModal(!openModal);
-                  setMenuOpen(false);
-                }}
-              >
-                Profile
-              </Button>
-              <Button
-                color="failure"
-                size="xs"
-                onClick={() => {
-                  handleLogout();
-                  setMenuOpen(false);
-                }}
-              >
-                Sign out
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+
       {openModal && <ProfileModal onClose={() => setOpenModal(false)} />}
     </>
   );
