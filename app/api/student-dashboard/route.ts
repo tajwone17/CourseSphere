@@ -322,10 +322,12 @@ export async function GET(request: Request) {
         rc.REGISTRATION_DATE as REGISTRATION_DATE
        FROM registered_courses rc
        JOIN course c ON rc.COURSE_ID = c.ID
-       WHERE rc.STUDENT_ID = ? AND rc.SEMESTER = ?
+       WHERE rc.STUDENT_ID = ? AND rc.SEMESTER = (
+         SELECT MAX(SEMESTER) FROM registered_courses WHERE STUDENT_ID = ?
+       )
        ORDER BY rc.REGISTRATION_DATE DESC
        LIMIT 10`,
-      [studentId, currentSemesterName],
+      [studentId, studentId],
     );
 
     // Log the first row to see what's returned (for debugging)
@@ -338,8 +340,7 @@ export async function GET(request: Request) {
       console.log(
         "No registered courses found for student ID:",
         studentId,
-        "and semester:",
-        currentSemesterName,
+        "for current semester",
       );
     }
 
