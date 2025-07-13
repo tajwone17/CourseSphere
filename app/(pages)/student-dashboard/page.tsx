@@ -24,7 +24,7 @@ export default function StudentDashboard() {
       title: "Current Semester",
       value: "Fall 2024",
       icon: HiCalendar,
-      description: "3rd semester",
+     
     },
     {
       title: "Registered Courses",

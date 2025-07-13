@@ -184,6 +184,7 @@ CREATE TABLE `department` (
   `ID` int(11) NOT NULL,
   `DEPARTMENT_NAME` varchar(100) NOT NULL,
   `AMOUNT_PER_CREDIT` decimal(10,2) NOT NULL,
+  `TOTAL_CREDITS` int(11) DEFAULT 0,
   `CREATED_AT` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -191,11 +192,11 @@ CREATE TABLE `department` (
 -- Dumping data for table `department`
 --
 
-INSERT INTO `department` (`ID`, `DEPARTMENT_NAME`, `AMOUNT_PER_CREDIT`, `CREATED_AT`) VALUES
-(1, 'CSE', 1500.00, '2025-05-13 19:47:22'),
-(2, 'EEE', 1400.00, '2025-05-13 19:47:22'),
-(3, 'BBA', 1300.00, '2025-05-13 19:47:22'),
-(4, 'English', 1200.00, '2025-05-13 19:47:22');
+INSERT INTO `department` (`ID`, `DEPARTMENT_NAME`, `AMOUNT_PER_CREDIT`, `TOTAL_CREDITS`, `CREATED_AT`) VALUES
+(1, 'CSE', 1500.00, 160, '2025-05-13 19:47:22'),
+(2, 'EEE', 1400.00, 155, '2025-05-13 19:47:22'),
+(3, 'BBA', 1300.00, 140, '2025-05-13 19:47:22'),
+(4, 'English', 1200.00, 135, '2025-05-13 19:47:22');
 
 -- --------------------------------------------------------
 
