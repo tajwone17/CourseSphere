@@ -2,11 +2,19 @@
 
 import { useState, useEffect } from "react";
 import { Select } from "flowbite-react";
-import { HiBookOpen, HiUser, HiOfficeBuilding, HiSearch, HiShoppingCart } from "react-icons/hi";
+import {
+  HiBookOpen,
+  HiUser,
+  HiOfficeBuilding,
+  HiSearch,
+  HiShoppingCart,
+  HiExclamation,
+} from "react-icons/hi";
 import ReactSelect from "react-select";
 import { useAuth } from "@/app/context/AuthContext";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import useActiveRegistration from "@/app/hooks/useActiveRegistration";
 
 interface Course {
   id: number;
@@ -35,6 +43,9 @@ export default function CourseCatalogTable() {
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
+
+  // Check if user has an active registration
+  const { hasActiveRegistration } = useActiveRegistration();
 
   // Fetch courses on component mount and filter by user's department
   useEffect(() => {
@@ -77,14 +88,16 @@ export default function CourseCatalogTable() {
   useEffect(() => {
     const fetchCartItems = async () => {
       if (!isAuthenticated || !user?.id) return;
-      
+
       try {
-        const response = await fetch(`/api/course-selection/get-cart?userId=${user.id}`);
-        
+        const response = await fetch(
+          `/api/course-selection/get-cart?userId=${user.id}`,
+        );
+
         if (!response.ok) {
           throw new Error("Failed to fetch cart items");
         }
-        
+
         const data = await response.json();
         if (data.success && data.cartItems) {
           /* eslint-disable-next-line */
@@ -96,7 +109,7 @@ export default function CourseCatalogTable() {
         console.error("Error fetching cart items:", err);
       }
     };
-    
+
     fetchCartItems();
   }, [isAuthenticated, user?.id]);
 
@@ -107,14 +120,21 @@ export default function CourseCatalogTable() {
       router.push("/signin");
       return;
     }
-    
+
     if (!user?.id) {
       setError("User information not available. Please sign in again.");
       return;
     }
 
+    if (hasActiveRegistration) {
+      setError(
+        "You have an active registration in progress. You cannot select courses until it's completed.",
+      );
+      return;
+    }
+
     setAddingCourse(courseId);
-    
+
     try {
       const response = await fetch("/api/course-selection/add", {
         method: "POST",
@@ -126,16 +146,16 @@ export default function CourseCatalogTable() {
           courseId,
         }),
       });
-      
+
       if (!response.ok) {
         throw new Error("Failed to add course to cart");
       }
-      
+
       const data = await response.json();
-      
+
       if (data.success || data.exists) {
-        setSelectedCourses(prev => [...prev, courseId]);
-        setCartCount(prev => prev + 1);
+        setSelectedCourses((prev) => [...prev, courseId]);
+        setCartCount((prev) => prev + 1);
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
@@ -191,15 +211,20 @@ export default function CourseCatalogTable() {
   return (
     <div className="mx-auto max-w-7xl space-y-8 px-4 py-8">
       <div
-        className="mb-8 text-center relative"
+        className="relative mb-8 text-center"
         data-aos="fade-down"
         data-aos-duration="1000"
       >
         {isAuthenticated && (
-          <div className="absolute right-0 top-0">
-            <Link href="/course-selection" className="flex items-center gap-2 px-4 py-2 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors">
-              <HiShoppingCart className="text-[#92e3a9] text-xl" />
-              <span className="text-white">{cartCount} {cartCount === 1 ? 'Course' : 'Courses'}</span>
+          <div className="absolute top-0 right-0">
+            <Link
+              href="/course-selection"
+              className="flex items-center gap-2 rounded-lg bg-gray-800 px-4 py-2 transition-colors hover:bg-gray-700"
+            >
+              <HiShoppingCart className="text-xl text-[#92e3a9]" />
+              <span className="text-white">
+                {cartCount} {cartCount === 1 ? "Course" : "Courses"}
+              </span>
             </Link>
           </div>
         )}
@@ -210,6 +235,34 @@ export default function CourseCatalogTable() {
           Browse and select courses for your upcoming semester
         </p>
       </div>
+      {hasActiveRegistration && isAuthenticated && (
+        <div className="mb-6 rounded-md border border-yellow-500 bg-yellow-900/20 p-4">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <HiExclamation className="h-5 w-5 text-yellow-400" />
+            </div>
+            <div className="ml-3">
+              <h3 className="text-sm font-medium text-yellow-400">
+                Active Registration In Progress
+              </h3>
+              <div className="mt-2 text-sm text-yellow-300">
+                <p>
+                  You have an ongoing course registration that requires
+                  approval. While this registration is in progress, you cannot
+                  select additional courses or start a new registration.
+                </p>
+                <div className="mt-4">
+                  <Link href="/registration-status">
+                    <button className="rounded bg-yellow-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-yellow-700">
+                      View Registration Status
+                    </button>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       <div
         className="rounded-lg border border-gray-800 bg-gray-900 p-6 shadow-xl"
         data-aos="fade-up"
@@ -224,7 +277,6 @@ export default function CourseCatalogTable() {
           style={{ position: "relative", zIndex: 100 }}
         >
           <div className="relative">
-          
             <Select
               value={selectedCredit}
               onChange={(e) => setSelectedCredit(e.target.value)}
@@ -512,20 +564,33 @@ export default function CourseCatalogTable() {
                         <td className="px-4 py-4 whitespace-nowrap">
                           <div className="flex justify-center">
                             {selectedCourses.includes(course.id) ? (
-                              <Link href="/course-selection" className="inline-block min-w-[100px] rounded-md border border-[#92e3a9] bg-[#92e3a9]/10 px-3 py-2 text-center text-[#92e3a9] hover:bg-[#92e3a9]/20 transition-colors">
+                              <Link
+                                href="/course-selection"
+                                className="inline-block min-w-[100px] rounded-md border border-[#92e3a9] bg-[#92e3a9]/10 px-3 py-2 text-center text-[#92e3a9] transition-colors hover:bg-[#92e3a9]/20"
+                              >
                                 View in Cart
                               </Link>
                             ) : (
                               <button
                                 className="inline-flex w-full min-w-[100px] justify-center rounded-md bg-[#92e3a9] px-3 py-2 text-sm font-medium text-black transition-all hover:scale-105 hover:bg-[#7acc91] hover:shadow-lg disabled:opacity-50 disabled:hover:scale-100"
                                 onClick={() => handleSelectCourse(course.id)}
-                                disabled={addingCourse === course.id}
+                                disabled={
+                                  addingCourse === course.id ||
+                                  hasActiveRegistration
+                                }
+                                title={
+                                  hasActiveRegistration
+                                    ? "You have an active registration in progress"
+                                    : ""
+                                }
                               >
                                 {addingCourse === course.id ? (
                                   <div className="flex items-center">
                                     <div className="mr-2 h-4 w-4 animate-spin rounded-full border-t-2 border-b-2 border-black"></div>
                                     Adding...
                                   </div>
+                                ) : hasActiveRegistration ? (
+                                  "Unavailable"
                                 ) : (
                                   "Select Course"
                                 )}

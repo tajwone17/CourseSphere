@@ -6,10 +6,12 @@ import {
   HiCurrencyDollar,
   HiTrash,
   HiArrowLeft,
+  HiExclamation,
 } from "react-icons/hi";
 import Link from "next/link";
 import { useAuth } from "@/app/context/AuthContext";
 import { useRouter } from "next/navigation";
+import useActiveRegistration from "@/app/hooks/useActiveRegistration";
 
 interface CartItem {
   cartId: number;
@@ -48,7 +50,10 @@ export default function CourseSelectionPage() {
     null,
   );
 
- 
+  // Check if user has an active registration process
+  //eslint-disable-next-line
+  const { hasActiveRegistration, loading: checkingActiveRegistration } =
+    useActiveRegistration();
 
   // Calculate cost per course
   const getCostPerCredit = (departmentId: number) => {
@@ -203,6 +208,13 @@ export default function CourseSelectionPage() {
       return;
     }
 
+    if (hasActiveRegistration) {
+      setRegistrationError(
+        "You already have an active registration in progress. Please wait for it to complete before submitting a new one.",
+      );
+      return;
+    }
+
     if (!selectedAdvisor) {
       setRegistrationError("Please select an advisor before proceeding");
       return;
@@ -239,7 +251,7 @@ export default function CourseSelectionPage() {
         semester = `Spring-${year}`;
       } else if (month >= 7 && month <= 12) {
         semester = `Summer-${year}`;
-      } 
+      }
 
       const response = await fetch("/api/registration/submit", {
         method: "POST",
@@ -262,6 +274,25 @@ export default function CourseSelectionPage() {
 
       if (data.success) {
         setRegistrationSuccess(true);
+
+        // Clear the cart after successful registration
+        try {
+          await fetch("/api/course-selection/clear-cart", {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              userId: user.id,
+            }),
+          });
+
+          // Clear the selected courses from state as well
+          setSelectedCourses([]);
+        } catch (clearError) {
+          console.error("Error clearing cart:", clearError);
+          // Continue with redirect even if clearing cart fails
+        }
 
         // Redirect to registration status page after a delay
         setTimeout(() => {
@@ -294,6 +325,35 @@ export default function CourseSelectionPage() {
           Review your selected courses before proceeding with registration
         </p>
       </div>
+
+      {hasActiveRegistration && (
+        <div className="mb-6 rounded-md border border-yellow-500 bg-yellow-900/20 p-4">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <HiExclamation className="h-5 w-5 text-yellow-400" />
+            </div>
+            <div className="ml-3">
+              <h3 className="text-sm font-medium text-yellow-400">
+                Active Registration In Progress
+              </h3>
+              <div className="mt-2 text-sm text-yellow-300">
+                <p>
+                  You already have a course registration in progress that
+                  requires approval. You cannot select new courses or submit a
+                  new registration until your current registration is completed.
+                </p>
+                <div className="mt-4">
+                  <Link href="/registration-status">
+                    <Button className="bg-yellow-600 hover:bg-yellow-700">
+                      View Registration Status
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {loading ? (
         <div className="flex items-center justify-center py-20">
@@ -517,7 +577,8 @@ export default function CourseSelectionPage() {
                           !acceptedTerms ||
                           selectedAdvisor === "" ||
                           selectedCourses.length === 0 ||
-                          submitting
+                          submitting ||
+                          hasActiveRegistration
                         }
                         className="flex items-center gap-2"
                         style={{
@@ -525,14 +586,16 @@ export default function CourseSelectionPage() {
                             acceptedTerms &&
                             selectedAdvisor &&
                             selectedCourses.length > 0 &&
-                            !submitting
+                            !submitting &&
+                            !hasActiveRegistration
                               ? "#92e3a9"
                               : "#4B5563",
                           color:
                             acceptedTerms &&
                             selectedAdvisor &&
                             selectedCourses.length > 0 &&
-                            !submitting
+                            !submitting &&
+                            !hasActiveRegistration
                               ? "black"
                               : "white",
                         }}
