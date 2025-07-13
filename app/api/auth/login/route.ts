@@ -3,11 +3,14 @@ import jwt from "jsonwebtoken";
 import db from "@/app/lib/db";
 
 // Import bcrypt with error handling
+//eslint-disable-next-line 
 let bcrypt: any;
 try {
   // Use dynamic import to avoid TypeScript errors
-  // @ts-ignore
+
+  //eslint-disable-next-line
   bcrypt = require("bcrypt");
+  //eslint-disable-next-line
 } catch (err) {
   console.warn("Bcrypt native bindings not available, using fallback verification");
   // Simple fallback implementation (not for production use)

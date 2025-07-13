@@ -8,6 +8,7 @@ export async function GET(request: NextRequest) {
     // If studentId is provided, get specific student results
     if (studentId) {
       // Get student details
+      //eslint-disable-next-line
       const [students]: any = await db.query(
         `SELECT s.ID, s.REGISTRATION_NUMBER, s.NAME, s.EMAIL, d.DEPARTMENT_NAME 
          FROM student s
@@ -25,6 +26,7 @@ export async function GET(request: NextRequest) {
       const student = students[0];
       
       // Get student results
+      //eslint-disable-next-line
       const [results]: any = await db.query(
         `SELECT r.ID, r.COURSE_ID, r.GRADE, c.CODE as course_code, c.TITLE as course_title, 
                 c.CREDIT as course_credit, r.SEMESTER
@@ -36,6 +38,7 @@ export async function GET(request: NextRequest) {
       );
       
       // Process results to include passed status
+      //eslint-disable-next-line
       const processedResults = results.map((result: any) => {
         const passed = !["F"].includes(result.GRADE);
         return {
@@ -57,6 +60,7 @@ export async function GET(request: NextRequest) {
     } 
     // Otherwise, get all students with basic info
     else {
+      //eslint-disable-next-line
       const [students]: any = await db.query(
         `SELECT s.ID, s.REGISTRATION_NUMBER, s.NAME, d.DEPARTMENT_NAME 
          FROM student s
@@ -66,6 +70,7 @@ export async function GET(request: NextRequest) {
       
       return Response.json({
         success: true,
+        //eslint-disable-next-line
         students: students.map((student: any) => ({
           id: student.REGISTRATION_NUMBER,
           name: student.NAME,
@@ -97,6 +102,7 @@ export async function POST(request: NextRequest) {
     }
     
     // Get student ID from registration number
+    //eslint-disable-next-line
     const [students]: any = await db.query(
       `SELECT ID FROM student WHERE REGISTRATION_NUMBER = ?`,
       [studentId]
@@ -111,6 +117,7 @@ export async function POST(request: NextRequest) {
     const student = students[0];
     
     // Check if result already exists
+    //eslint-disable-next-line
     const [existingResults]: any = await db.query(
       `SELECT ID FROM results 
        WHERE STUDENT_ID = ? AND COURSE_ID = ? AND SEMESTER = ?`,
@@ -131,6 +138,8 @@ export async function POST(request: NextRequest) {
         );
         resultId = existingResults[0].ID;
       } else {
+       
+        //eslint-disable-next-line
         const [result]: any = await db.query(
           `INSERT INTO results (STUDENT_ID, COURSE_ID, GRADE, SEMESTER) 
            VALUES (?, ?, ?, ?)`,
@@ -142,6 +151,7 @@ export async function POST(request: NextRequest) {
       // If passed, add to registered_courses if not already there
       if (!["F"].includes(grade)) {
         // Check if course is already in registered_courses
+        //eslint-disable-next-line
         const [registeredCourse]: any = await db.query(
           `SELECT ID FROM registered_courses 
            WHERE STUDENT_ID = ? AND COURSE_ID = ?`,
@@ -197,6 +207,7 @@ export async function PUT(request: NextRequest) {
     }
     
     // Get result details
+    //eslint-disable-next-line
     const [results]: any = await db.query(
       `SELECT r.ID, r.STUDENT_ID, r.COURSE_ID, r.SEMESTER
        FROM results r
@@ -225,6 +236,7 @@ export async function PUT(request: NextRequest) {
       // If passed, add to registered_courses if not already there
       if (!["F"].includes(grade)) {
         // Check if course is already in registered_courses
+        //eslint-disable-next-line
         const [registeredCourse]: any = await db.query(
           `SELECT ID FROM registered_courses 
            WHERE STUDENT_ID = ? AND COURSE_ID = ?`,

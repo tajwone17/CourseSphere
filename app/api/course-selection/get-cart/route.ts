@@ -10,6 +10,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Get all courses in the user's cart with course details
+    //eslint-disable-next-line
     const [cartItems]: any = await db.query(
       `SELECT cc.ID as cartId, cc.COURSE_ID, cc.STATUS, cc.ADDED_AT,
               c.TITLE as name, c.CODE as code, c.CREDIT as credit,

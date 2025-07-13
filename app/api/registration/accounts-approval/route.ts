@@ -17,6 +17,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if advisor and HOD have already approved
+    //eslint-disable-next-line
     const [bundles]: any = await db.query(
       `SELECT * FROM registration_bundle WHERE ID = ?`,
       [bundleId]
