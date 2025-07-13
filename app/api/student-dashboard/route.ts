@@ -24,6 +24,24 @@ interface CourseCountRow extends RowDataPacket {
   COURSE_COUNT: number | null;
 }
 
+interface RegisteredCourseRow extends RowDataPacket {
+  // Define all possible case variations of column names
+  COURSE_CODE?: string;
+  course_code?: string;
+  Course_Code?: string;
+  COURSE_TITLE?: string;
+  course_title?: string;
+  Title?: string;
+  COURSE_CREDIT?: number;
+  course_credit?: number;
+  Credit?: number;
+  STATUS?: string;
+  status?: string;
+  Status?: string;
+  REGISTRATION_DATE?: string;
+  registration_date?: string;
+}
+
 export async function GET(request: Request) {
   try {
     const authHeader = request.headers.get("authorization");
@@ -94,7 +112,7 @@ export async function GET(request: Request) {
     );
 
     const currentSemesterData = currentSemesterRows[0];
-    const registeredCourses = currentSemesterData.COURSE_COUNT || 0;
+    const registeredCoursesCount = currentSemesterData.COURSE_COUNT || 0;
 
     // Calculate current semester based on the student's session
     const session = student.SESSION;
@@ -138,13 +156,13 @@ export async function GET(request: Request) {
     }
 
     // Determine current semester name
-    let currentSemester = "";
+    let currentSemesterName = "";
     const semesterMod = semesterNumber % 2;
 
     if (semesterMod === 1) {
-      currentSemester = `Spring ${currentYear}`;
+      currentSemesterName = `Spring ${currentYear}`;
     } else {
-      currentSemester = `Summer ${currentYear}`;
+      currentSemesterName = `Summer ${currentYear}`;
     }
 
     // Calculate which numbered semester the student is in (1st, 2nd, etc.)
@@ -294,6 +312,82 @@ export async function GET(request: Request) {
       }
     }
 
+    // Get registered courses for the current semester
+    const [registeredCoursesRows] = await db.execute<RegisteredCourseRow[]>(
+      `SELECT 
+        c.CODE as COURSE_CODE, 
+        c.TITLE as COURSE_TITLE, 
+        c.CREDIT as COURSE_CREDIT,
+        'Registered' as STATUS, -- Assuming all courses are registered
+        rc.REGISTRATION_DATE as REGISTRATION_DATE
+       FROM registered_courses rc
+       JOIN course c ON rc.COURSE_ID = c.ID
+       WHERE rc.STUDENT_ID = ? AND rc.SEMESTER = ?
+       ORDER BY rc.REGISTRATION_DATE DESC
+       LIMIT 10`,
+      [studentId, currentSemesterName],
+    );
+
+    // Log the first row to see what's returned (for debugging)
+    if (registeredCoursesRows.length > 0) {
+      console.log(
+        "First registered course row:",
+        JSON.stringify(registeredCoursesRows[0]),
+      );
+    } else {
+      console.log(
+        "No registered courses found for student ID:",
+        studentId,
+        "and semester:",
+        currentSemesterName,
+      );
+    }
+
+    // Format the registered courses
+    const recentRegistrations = Array.isArray(registeredCoursesRows)
+      ? registeredCoursesRows.map((course) => {
+          // MySQL column names might be case-sensitive or not depending on settings
+          // Check all possible case variations for course code
+          const courseCode =
+            course.COURSE_CODE ||
+            course.course_code ||
+            course.Course_Code ||
+            null;
+
+          // Add additional logging to debug any issues
+          if (!courseCode) {
+            console.warn(
+              "Missing course code in registered course data:",
+              course,
+            );
+          }
+
+          return {
+            courseCode: courseCode || "N/A",
+            title:
+              course.COURSE_TITLE ||
+              course.course_title ||
+              course.Title ||
+              "Unknown Course",
+            credits:
+              course.COURSE_CREDIT ||
+              course.course_credit ||
+              course.Credit ||
+              0,
+            status:
+              course.STATUS || course.status || course.Status || "Pending",
+            date:
+              course.REGISTRATION_DATE || course.registration_date
+                ? new Date(
+                    course.REGISTRATION_DATE || course.registration_date || "",
+                  )
+                    .toISOString()
+                    .split("T")[0]
+                : new Date().toISOString().split("T")[0],
+          };
+        })
+      : [];
+
     return NextResponse.json({
       success: true,
       data: {
@@ -302,11 +396,12 @@ export async function GET(request: Request) {
         departmentName: department.DEPARTMENT_NAME,
         totalCredits: departmentTotalCredits,
         completedCredits,
-        registeredCourses,
-        currentSemester,
+        registeredCourses: registeredCoursesCount,
+        currentSemester: currentSemesterName,
         semesterOrdinal,
         cgpa,
         importantDates,
+        recentRegistrations,
       },
     });
   } catch (error) {

@@ -6,7 +6,6 @@ import {
   HiClipboardCheck,
   HiClock,
   HiCalendar,
-
   HiDocumentText,
   HiRefresh,
 } from "react-icons/hi";
@@ -17,6 +16,14 @@ interface ImportantDate {
   date: string;
   description: string;
   urgent: boolean;
+}
+
+interface RegisteredCourse {
+  courseCode: string;
+  title: string;
+  credits: number;
+  status: string;
+  date: string;
 }
 
 interface DashboardData {
@@ -30,6 +37,7 @@ interface DashboardData {
   semesterOrdinal: string;
   cgpa: string;
   importantDates: ImportantDate[];
+  recentRegistrations: RegisteredCourse[];
 }
 
 // Format date function with proper handling
@@ -168,26 +176,8 @@ export default function StudentDashboard() {
             },
           ];
 
-  const recentRegistrations = [
-    {
-      courseCode: "CSE301",
-      title: "Database Management Systems",
-      credits: 3,
-      status: "Approved",
-    },
-    {
-      courseCode: "CSE311",
-      title: "Computer Networks",
-      credits: 3,
-      status: "Pending",
-    },
-    {
-      courseCode: "CSE325",
-      title: "Operating Systems",
-      credits: 3,
-      status: "Pending",
-    },
-  ];
+  // Use dynamic registrations from the API if available, otherwise use an empty array
+  const recentRegistrations = dashboardData?.recentRegistrations || [];
 
   // Loading state
   if (loading && !user) {
@@ -396,7 +386,18 @@ export default function StudentDashboard() {
                     >
                       Credits
                     </th>
-                 
+                    <th
+                      scope="col"
+                      className="px-4 py-2 text-left text-xs font-medium whitespace-nowrap text-gray-400"
+                    >
+                      Status
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-4 py-2 text-left text-xs font-medium whitespace-nowrap text-gray-400"
+                    >
+                      Date
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-800">
@@ -415,18 +416,41 @@ export default function StudentDashboard() {
                         <td className="px-4 py-2 text-sm whitespace-nowrap text-white">
                           {course.credits}
                         </td>
-                      
+                        <td className="px-4 py-2 whitespace-nowrap">
+                          <span
+                            className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${
+                              course.status === "Approved"
+                                ? "bg-green-800 text-green-200"
+                                : course.status === "Registered"
+                                  ? "bg-blue-800 text-blue-200"
+                                  : "bg-yellow-800 text-yellow-200"
+                            }`}
+                          >
+                            {course.status}
+                          </span>
+                        </td>
+                        <td className="px-4 py-2 text-sm whitespace-nowrap text-gray-400">
+                          {course.date
+                            ? new Date(course.date).toLocaleDateString()
+                            : "N/A"}
+                        </td>
                       </tr>
                     ))
                   ) : (
                     <tr>
                       <td
-                        colSpan={4}
+                        colSpan={5}
                         className="px-4 py-8 text-center text-gray-400"
                       >
                         <div className="flex flex-col items-center justify-center">
                           <HiDocumentText className="mb-3 h-10 w-10 text-gray-600" />
-                          <p>No course registrations found for this semester</p>
+                          <p>
+                            No course registrations found for{" "}
+                            {dashboardData?.currentSemester || "this semester"}
+                          </p>
+                          <p className="mt-2 text-sm text-gray-500">
+                            Register for courses to see them listed here
+                          </p>
                           <a
                             href="/course-selection"
                             className="mt-3 inline-block rounded-md bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700"
