@@ -288,7 +288,7 @@ export default function RegistrationReviewPage() {
           <h1 className="mb-4 text-2xl font-bold text-red-400">Error</h1>
           <p className="mb-4 text-red-300">{error}</p>
           <Link href="/dashboard/student-management">
-            <Button className="mt-4 bg-gray-700">
+            <Button color="gray" className="mt-4 !bg-gray-700">
               <HiArrowLeft className="mr-2" /> Back to List
             </Button>
           </Link>
@@ -308,7 +308,7 @@ export default function RegistrationReviewPage() {
             The requested registration could not be found.
           </p>
           <Link href="/dashboard/student-management">
-            <Button className="mt-4 bg-gray-700">
+            <Button color="gray" className="mt-4 !bg-gray-700">
               <HiArrowLeft className="mr-2" /> Back to List
             </Button>
           </Link>
@@ -330,7 +330,7 @@ export default function RegistrationReviewPage() {
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-white">Registration Review</h1>
         <Link href="/dashboard/student-management">
-          <Button className="bg-gray-700">
+          <Button color="gray" className="!bg-gray-700">
             <HiArrowLeft className="mr-2" /> Back to List
           </Button>
         </Link>
@@ -670,10 +670,11 @@ export default function RegistrationReviewPage() {
               <div className="flex space-x-4">
                 <Button
                   type="button"
+                  color="gray"
                   className={`flex items-center ${
                     approvalStatus === true
-                      ? "bg-green-600 hover:bg-green-700"
-                      : "bg-gray-700 hover:bg-gray-600"
+                      ? "border-green-500 !bg-green-600 hover:!bg-green-700"
+                      : "!bg-gray-700 hover:!bg-gray-600"
                   }`}
                   onClick={() => setApprovalStatus(true)}
                 >
@@ -681,10 +682,11 @@ export default function RegistrationReviewPage() {
                 </Button>
                 <Button
                   type="button"
+                  color="gray"
                   className={`flex items-center ${
                     approvalStatus === false
-                      ? "bg-red-600 hover:bg-red-700"
-                      : "bg-gray-700 hover:bg-gray-600"
+                      ? "border-red-500 !bg-red-600 hover:!bg-red-700"
+                      : "!bg-gray-700 hover:!bg-gray-600"
                   }`}
                   onClick={() => setApprovalStatus(false)}
                 >
@@ -910,8 +912,9 @@ export default function RegistrationReviewPage() {
           <div className="flex justify-end">
             <Button
               type="submit"
+              color="gray"
               disabled={processing || approvalStatus === null}
-              className="bg-[#92e3a9] text-black hover:bg-[#78c18f] disabled:bg-gray-600 disabled:text-gray-400"
+              className="!bg-[#92e3a9] text-black hover:!bg-[#78c18f] disabled:!bg-gray-600 disabled:text-gray-400"
             >
               {processing ? (
                 <>
