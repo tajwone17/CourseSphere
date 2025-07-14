@@ -229,9 +229,9 @@ export async function GET(request: Request) {
       }
 
       totalGradePoints += gradePoint * row.CREDIT;
-      creditsAttempted += row.CREDIT;
+      creditsAttempted += Number(row.CREDIT);
     }
-
+console.log(totalGradePoints, creditsAttempted);
     const cgpa =
       creditsAttempted > 0
         ? (totalGradePoints / creditsAttempted).toFixed(2)
