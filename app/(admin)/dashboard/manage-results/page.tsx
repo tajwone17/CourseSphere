@@ -35,6 +35,7 @@ interface Student {
   name: string;
   department: string;
   email: string;
+  session: string; // Added session property
   results: SubjectResult[];
 }
 
@@ -55,7 +56,7 @@ interface SearchFilters {
   name: string;
   id: string;
   department: string;
-  semester: string;
+  session: string;
 }
 
 export default function ManageResults() {
@@ -69,7 +70,7 @@ export default function ManageResults() {
     name: "",
     id: "",
     department: "",
-    semester: "",
+    session: "",
   });
 
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
@@ -319,10 +320,13 @@ export default function ManageResults() {
           .includes(filters.department.toLowerCase())
       : true;
 
-    // We don't have semester in the student list view, but you can add if needed
-    // Or we can fetch this information if required
+    // Session filter - student.session contains the student's session
+    const sessionMatch = filters.session
+      ? student.session &&
+        student.session.toLowerCase().includes(filters.session.toLowerCase())
+      : true;
 
-    return nameMatch && idMatch && departmentMatch;
+    return nameMatch && idMatch && departmentMatch && sessionMatch;
   });
 
   const grades = ["A+", "A", "A-", "B+", "B", "B-", "C+", "C", "D", "F"];
@@ -427,20 +431,20 @@ export default function ManageResults() {
             </Select>
           </div>
 
-          {/* Semester Filter */}
+          {/* Session Filter */}
           <div className="relative">
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
               <HiAcademicCap className="h-5 w-5 text-gray-400" />
             </div>
             <Select
               sizing="md"
-              value={filters.semester}
+              value={filters.session}
               onChange={(e) =>
-                setFilters({ ...filters, semester: e.target.value })
+                setFilters({ ...filters, session: e.target.value })
               }
               className="border-gray-600 bg-gray-700 pl-10 text-white"
             >
-              <option value="">All Semesters</option>
+              <option value="">All Sessions</option>
               {semesters.map((sem) => (
                 <option key={sem} value={sem}>
                   {sem}

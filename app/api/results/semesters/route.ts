@@ -5,7 +5,7 @@ export async function GET() {
   try {
     // Get unique semesters from student results table
     const [semestersResult] = await db.execute(
-      "SELECT DISTINCT SEMESTER FROM results ORDER BY SEMESTER DESC",
+      "SELECT DISTINCT SESSION FROM STUDENT ORDER BY SESSION DESC",
     );
 
     if (!semestersResult) {
@@ -16,15 +16,16 @@ export async function GET() {
     }
 
     // Extract semester values
-    const rows = semestersResult as Array<{ SEMESTER: string }>;
-    const existingSemesters = rows.map((row) => row.SEMESTER);
+    const rows = semestersResult as Array<{ SESSION: string }>;
+    const existingSemesters = rows.map((row) => row.SESSION);
 
     // Get current year and determine current semester
     const currentDate = new Date();
     const currentYear = currentDate.getFullYear();
 
     // Add future semesters (current year + 1 year ahead) if not already in the list
-    const seasonSemesters = ["Spring", "Summer", "Fall"];
+    // Only including Spring and Summer as these are the only semesters used
+    const seasonSemesters = ["Spring", "Summer"];
     const futureSemesters = [];
 
     for (let year = currentYear; year <= currentYear + 1; year++) {
@@ -48,8 +49,8 @@ export async function GET() {
         return parseInt(bYear) - parseInt(aYear); // More recent years first
       }
 
-      // Within the same year, sort by season: Spring -> Summer -> Fall
-      const seasonOrder = { Spring: 1, Summer: 2, Fall: 3 };
+      // Within the same year, sort by season: Spring -> Summer
+      const seasonOrder = { Spring: 1, Summer: 2 };
       return (
         seasonOrder[bSeason as keyof typeof seasonOrder] -
         seasonOrder[aSeason as keyof typeof seasonOrder]
