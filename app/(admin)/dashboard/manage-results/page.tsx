@@ -770,12 +770,12 @@ export default function ManageResults() {
                     </div>
                     <div className="ml-4">
                       <p className="text-sm text-gray-400">
-                        Total Credit Completed
+                      Total Credit Completed
                       </p>
                       <p className="text-xl font-bold text-blue-400">
-                        {selectedStudent.results
-                          .filter((r) => r.passed)
-                          .reduce((acc, curr) => acc + curr.course_credit, 0)}
+                      {selectedStudent.results
+                        .filter((r) => r.passed)
+                        .reduce((acc, curr) => acc + Number(curr.course_credit), 0)}
                       </p>
                     </div>
                   </div>
