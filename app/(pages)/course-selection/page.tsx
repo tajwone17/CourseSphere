@@ -12,6 +12,7 @@ import Link from "next/link";
 import { useAuth } from "@/app/context/AuthContext";
 import { useRouter } from "next/navigation";
 import useActiveRegistration from "@/app/hooks/useActiveRegistration";
+import { useDepartmentDeadlines } from "@/app/hooks/useDepartmentDeadlines";
 
 interface CartItem {
   cartId: number;
@@ -42,6 +43,8 @@ export default function CourseSelectionPage() {
   const [selectedAdvisor, setSelectedAdvisor] = useState("");
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [advisorOptions, setAdvisorOptions] = useState<Advisor[]>([]);
+  const [isDeadlineValid, setIsDeadlineValid] = useState(false);
+  const [deadlineMessage, setDeadlineMessage] = useState<string | null>(null);
 
   // Registration state
   const [submitting, setSubmitting] = useState(false);
@@ -54,6 +57,47 @@ export default function CourseSelectionPage() {
   //eslint-disable-next-line
   const { hasActiveRegistration, loading: checkingActiveRegistration } =
     useActiveRegistration();
+
+  // Get department deadlines
+  const { deadlines, loading: loadingDeadlines } = useDepartmentDeadlines();
+
+  // Check if registration is allowed based on deadlines
+  useEffect(() => {
+    if (loadingDeadlines || !deadlines) {
+      setIsDeadlineValid(false);
+      setDeadlineMessage(
+        "Registration deadlines have not been set yet. Please contact your department office.",
+      );
+      return;
+    }
+
+    const currentDate = new Date();
+    // Parse the date string from the format YYYY-MM-DD
+    const withFineDeadline = deadlines.course_registration_with_fine
+      ? new Date(deadlines.course_registration_with_fine)
+      : null;
+
+    if (!withFineDeadline) {
+      setIsDeadlineValid(false);
+      setDeadlineMessage(
+        "Registration deadlines have not been properly set. Please contact your department office.",
+      );
+      return;
+    }
+
+    // Set time to end of day to include the deadline day fully
+    withFineDeadline.setHours(23, 59, 59, 999);
+
+    if (currentDate > withFineDeadline) {
+      setIsDeadlineValid(false);
+      setDeadlineMessage(
+        `Course registration deadline has passed (${deadlines.course_registration_with_fine}). Registration is closed.`,
+      );
+    } else {
+      setIsDeadlineValid(true);
+      setDeadlineMessage(null);
+    }
+  }, [deadlines, loadingDeadlines]);
 
   // Calculate cost per course
   const getCostPerCredit = (departmentId: number) => {
@@ -215,6 +259,13 @@ export default function CourseSelectionPage() {
       return;
     }
 
+    if (!isDeadlineValid) {
+      setRegistrationError(
+        deadlineMessage || "Course registration is currently not available",
+      );
+      return;
+    }
+
     if (!selectedAdvisor) {
       setRegistrationError("Please select an advisor before proceeding");
       return;
@@ -355,7 +406,25 @@ export default function CourseSelectionPage() {
         </div>
       )}
 
-      {loading ? (
+      {!hasActiveRegistration && !isDeadlineValid && deadlineMessage && (
+        <div className="mb-6 rounded-md border border-red-500 bg-red-900/20 p-4">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <HiExclamation className="h-5 w-5 text-red-400" />
+            </div>
+            <div className="ml-3">
+              <h3 className="text-sm font-medium text-red-400">
+                Registration Not Available
+              </h3>
+              <div className="mt-2 text-sm text-red-300">
+                <p>{deadlineMessage}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {loading || loadingDeadlines ? (
         <div className="flex items-center justify-center py-20">
           <div className="h-12 w-12 animate-spin rounded-full border-t-2 border-b-2 border-[#92e3a9]"></div>
         </div>
@@ -368,6 +437,18 @@ export default function CourseSelectionPage() {
           >
             Try Again
           </button>
+        </div>
+      ) : !isDeadlineValid ? (
+        <div className="rounded-lg border border-gray-800 bg-gray-900 p-6 shadow-xl">
+          <h2 className="mb-4 text-xl font-semibold text-white">
+            Course Selection Unavailable
+          </h2>
+          <p className="text-gray-400">
+           Course Registration for this semester has not been started yet.
+          </p>
+          <p className="mt-2 text-gray-400">
+            Please contact your department office for more information.
+          </p>
         </div>
       ) : (
         <>
@@ -578,7 +659,8 @@ export default function CourseSelectionPage() {
                           selectedAdvisor === "" ||
                           selectedCourses.length === 0 ||
                           submitting ||
-                          hasActiveRegistration
+                          hasActiveRegistration ||
+                          !isDeadlineValid
                         }
                         className="flex items-center gap-2"
                         style={{

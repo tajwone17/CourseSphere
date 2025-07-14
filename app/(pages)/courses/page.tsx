@@ -15,6 +15,7 @@ import { useAuth } from "@/app/context/AuthContext";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import useActiveRegistration from "@/app/hooks/useActiveRegistration";
+import { useDepartmentDeadlines } from "@/app/hooks/useDepartmentDeadlines";
 
 interface Course {
   id: number;
@@ -46,6 +47,49 @@ export default function CourseCatalogTable() {
 
   // Check if user has an active registration
   const { hasActiveRegistration } = useActiveRegistration();
+
+  // Get department deadlines
+  const { deadlines, loading: loadingDeadlines } = useDepartmentDeadlines();
+  const [isDeadlineValid, setIsDeadlineValid] = useState(false);
+  const [deadlineMessage, setDeadlineMessage] = useState<string | null>(null);
+
+  // Check if registration is allowed based on deadlines
+  useEffect(() => {
+    if (loadingDeadlines || !deadlines) {
+      setIsDeadlineValid(false);
+      setDeadlineMessage(
+        "Course Registration for this semester hasn`t been started yet.",
+      );
+      return;
+    }
+
+    const currentDate = new Date();
+    // Parse the date string from the format YYYY-MM-DD
+    const withFineDeadline = deadlines.course_registration_with_fine
+      ? new Date(deadlines.course_registration_with_fine)
+      : null;
+
+    if (!withFineDeadline) {
+      setIsDeadlineValid(false);
+      setDeadlineMessage(
+        "Course Registration for this semester hasn`t been started yet. Please contact your department office.",
+      );
+      return;
+    }
+
+    // Set time to end of day to include the deadline day fully
+    withFineDeadline.setHours(23, 59, 59, 999);
+
+    if (currentDate > withFineDeadline) {
+      setIsDeadlineValid(false);
+      setDeadlineMessage(
+        `Course registration deadline has passed (${deadlines.course_registration_with_fine}). Registration is closed.`,
+      );
+    } else {
+      setIsDeadlineValid(true);
+      setDeadlineMessage(null);
+    }
+  }, [deadlines, loadingDeadlines]);
 
   // Fetch courses on component mount and filter by user's department
   useEffect(() => {
@@ -129,6 +173,14 @@ export default function CourseCatalogTable() {
     if (hasActiveRegistration) {
       setError(
         "You have an active registration in progress. You cannot select courses until it's completed.",
+      );
+      return;
+    }
+
+    if (!isDeadlineValid) {
+      setError(
+        deadlineMessage ||
+          "Course registration is currently not available. Please check with your department for registration deadlines.",
       );
       return;
     }
@@ -263,6 +315,26 @@ export default function CourseCatalogTable() {
           </div>
         </div>
       )}
+      {!hasActiveRegistration &&
+        isAuthenticated &&
+        !isDeadlineValid &&
+        deadlineMessage && (
+          <div className="mb-6 rounded-md border border-red-500 bg-red-900/20 p-4">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <HiExclamation className="h-5 w-5 text-red-400" />
+              </div>
+              <div className="ml-3">
+                <h3 className="text-sm font-medium text-red-400">
+                  Course Selection Not Available
+                </h3>
+                <div className="mt-2 text-sm text-red-300">
+                  <p>{deadlineMessage}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       <div
         className="rounded-lg border border-gray-800 bg-gray-900 p-6 shadow-xl"
         data-aos="fade-up"
@@ -576,12 +648,16 @@ export default function CourseCatalogTable() {
                                 onClick={() => handleSelectCourse(course.id)}
                                 disabled={
                                   addingCourse === course.id ||
-                                  hasActiveRegistration
+                                  hasActiveRegistration ||
+                                  !isDeadlineValid
                                 }
                                 title={
                                   hasActiveRegistration
                                     ? "You have an active registration in progress"
-                                    : ""
+                                    : !isDeadlineValid
+                                      ? deadlineMessage ||
+                                        "Course registration is not available"
+                                      : ""
                                 }
                               >
                                 {addingCourse === course.id ? (
@@ -591,6 +667,8 @@ export default function CourseCatalogTable() {
                                   </div>
                                 ) : hasActiveRegistration ? (
                                   "Unavailable"
+                                ) : !isDeadlineValid ? (
+                                  "Registration Closed"
                                 ) : (
                                   "Select Course"
                                 )}
