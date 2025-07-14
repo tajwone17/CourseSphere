@@ -129,7 +129,7 @@ export default function ProfileModal({
           <div className="flex items-center gap-2 text-2xl font-bold text-white">
             <HiIdentification className="text-[#92e3a9]" /> {userProfile.name}
           </div>
-          {userProfile.role != "admin" && (
+          {userProfile.role != "admin" && userProfile.role != "exam_controller" && (
             <div className="flex items-center gap-2 text-lg text-gray-400">
               <HiOfficeBuilding className="text-[#92e3a9]" />{" "}
               {userProfile.department}
