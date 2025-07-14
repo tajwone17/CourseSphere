@@ -62,7 +62,7 @@ export async function GET(request: NextRequest) {
     else {
       //eslint-disable-next-line
       const [students]: any = await db.query(
-        `SELECT s.ID, s.REGISTRATION_NUMBER, s.NAME, d.DEPARTMENT_NAME 
+        `SELECT s.ID, s.REGISTRATION_NUMBER, s.NAME, d.DEPARTMENT_NAME,s.SESSION 
          FROM student s
          JOIN department d ON s.DEPARTMENT_ID = d.ID
          ORDER BY s.NAME`
@@ -74,7 +74,8 @@ export async function GET(request: NextRequest) {
         students: students.map((student: any) => ({
           id: student.REGISTRATION_NUMBER,
           name: student.NAME,
-          department: student.DEPARTMENT_NAME
+          department: student.DEPARTMENT_NAME,
+          session:student.SESSION
         }))
       });
     }

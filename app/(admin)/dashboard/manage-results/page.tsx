@@ -102,7 +102,7 @@ export default function ManageResults() {
         // Fetch students
         const studentsResponse = await fetch("/api/results");
         const studentsData = await studentsResponse.json();
-
+        console.log(studentsData);
         if (studentsData.success) {
           setStudents(studentsData.students || []);
         } else {
@@ -119,6 +119,7 @@ export default function ManageResults() {
         // Fetch semesters
         const semestersResponse = await fetch("/api/results/semesters");
         const semestersData = await semestersResponse.json();
+        console.log(semestersData);
         if (semestersData.success) {
           setSemesters(semestersData.semesters);
         }
@@ -471,13 +472,28 @@ export default function ManageResults() {
               <thead className="bg-gray-800">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
-                    Student ID
+                    <div className="flex items-center">
+                      <HiDocumentText className="mr-1 h-4 w-4" />
+                      Student ID
+                    </div>
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
-                    Name
+                    <div className="flex items-center">
+                      <HiUserCircle className="mr-1 h-4 w-4" />
+                      Name
+                    </div>
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
-                    Department
+                    <div className="flex items-center">
+                      <HiOfficeBuilding className="mr-1 h-4 w-4" />
+                      Department
+                    </div>
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+                    <div className="flex items-center">
+                      <HiAcademicCap className="mr-1 h-4 w-4" />
+                      Session
+                    </div>
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                     Action
@@ -488,7 +504,7 @@ export default function ManageResults() {
                 {filteredStudents.length === 0 && (
                   <tr>
                     <td
-                      colSpan={4}
+                      colSpan={5}
                       className="px-6 py-4 text-center text-gray-400"
                     >
                       <div className="flex flex-col items-center py-5">
@@ -503,10 +519,27 @@ export default function ManageResults() {
                     key={student.id}
                     className="transition-colors duration-150 hover:bg-gray-700"
                   >
-                    <td className="px-6 py-4 text-white">{student.id}</td>
-                    <td className="px-6 py-4 text-white">{student.name}</td>
                     <td className="px-6 py-4 text-white">
-                      {student.department}
+                      <div className="flex items-center">
+                        <span className="font-medium">{student.id}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-white">
+                      <div className="flex items-center">{student.name}</div>
+                    </td>
+                    <td className="px-6 py-4 text-white">
+                      <div className="flex items-center">
+                        <span className="rounded-full bg-blue-900/30 px-2 py-1 text-xs text-blue-300">
+                          {student.department}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-white">
+                      <div className="flex items-center">
+                        <span className="rounded-full bg-green-900/30 px-2 py-1 text-xs text-green-300">
+                          {student.session || "N/A"}
+                        </span>
+                      </div>
                     </td>
                     <td className="px-6 py-4">
                       <Button
@@ -535,32 +568,102 @@ export default function ManageResults() {
 
           {selectedStudent && (
             <>
-              <div className="mb-4 text-gray-300">
-                <p>
-                  <strong>Student ID:</strong> {selectedStudent.id}
-                </p>
-                <p>
-                  <strong>Name:</strong> {selectedStudent.name}
-                </p>
-                <p>
-                  <strong>Department:</strong> {selectedStudent.department}
-                </p>
-                <p>
-                  <strong>Email:</strong> {selectedStudent.email}
-                </p>
+              <div className="mb-4 grid grid-cols-1 gap-3 text-gray-300 sm:grid-cols-2">
+                <Card className="border-gray-600 bg-gray-700">
+                  <div className="flex items-center">
+                    <HiDocumentText className="mr-3 h-6 w-6 text-blue-400" />
+                    <div>
+                      <p className="text-sm text-gray-400">Student ID</p>
+                      <p className="text-lg font-medium">
+                        {selectedStudent.id}
+                      </p>
+                    </div>
+                  </div>
+                </Card>
+
+                <Card className="border-gray-600 bg-gray-700">
+                  <div className="flex items-center">
+                    <HiUserCircle className="mr-3 h-6 w-6 text-purple-400" />
+                    <div>
+                      <p className="text-sm text-gray-400">Name</p>
+                      <p className="text-lg font-medium">
+                        {selectedStudent.name}
+                      </p>
+                    </div>
+                  </div>
+                </Card>
+
+                <Card className="border-gray-600 bg-gray-700">
+                  <div className="flex items-center">
+                    <HiOfficeBuilding className="mr-3 h-6 w-6 text-yellow-400" />
+                    <div>
+                      <p className="text-sm text-gray-400">Department</p>
+                      <p className="text-lg font-medium">
+                        {selectedStudent.department}
+                      </p>
+                    </div>
+                  </div>
+                </Card>
+
+                <Card className="border-gray-600 bg-gray-700">
+                  <div className="flex items-center">
+                    <HiAcademicCap className="mr-3 h-6 w-6 text-green-400" />
+                    <div>
+                      <p className="text-sm text-gray-400">Session</p>
+                      <p className="text-lg font-medium">
+                        {selectedStudent.session || "N/A"}
+                      </p>
+                    </div>
+                  </div>
+                </Card>
               </div>
 
               <div className="mb-6 overflow-x-auto">
                 <table className="w-full divide-y divide-gray-700 text-white">
                   <thead>
                     <tr className="text-left text-gray-400">
-                      <th className="px-3 py-2">Code</th>
-                      <th className="px-3 py-2">Title</th>
-                      <th className="px-3 py-2">Credit</th>
-                      <th className="px-3 py-2">Semester</th>
-                      <th className="px-3 py-2">Grade</th>
-                      <th className="px-3 py-2">Status</th>
-                      <th className="px-3 py-2">Action</th>
+                      <th className="px-3 py-2">
+                        <div className="flex items-center">
+                          <HiDocumentText className="mr-1 h-4 w-4" />
+                          Code
+                        </div>
+                      </th>
+                      <th className="px-3 py-2">
+                        <div className="flex items-center">
+                          <HiDocumentText className="mr-1 h-4 w-4" />
+                          Title
+                        </div>
+                      </th>
+                      <th className="px-3 py-2">
+                        <div className="flex items-center">
+                          <HiDocumentText className="mr-1 h-4 w-4" />
+                          Credit
+                        </div>
+                      </th>
+                      <th className="px-3 py-2">
+                        <div className="flex items-center">
+                          <HiAcademicCap className="mr-1 h-4 w-4" />
+                          Semester
+                        </div>
+                      </th>
+                      <th className="px-3 py-2">
+                        <div className="flex items-center">
+                          <HiDocumentText className="mr-1 h-4 w-4" />
+                          Grade
+                        </div>
+                      </th>
+                      <th className="px-3 py-2">
+                        <div className="flex items-center">
+                          <HiDocumentText className="mr-1 h-4 w-4" />
+                          Status
+                        </div>
+                      </th>
+                      <th className="px-3 py-2">
+                        <div className="flex items-center">
+                          <HiPencil className="mr-1 h-4 w-4" />
+                          Action
+                        </div>
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -605,26 +708,63 @@ export default function ManageResults() {
                 </table>
               </div>
 
-              <div className="mt-4 text-gray-300">
-                <p>
-                  <strong>Subjects Passed:</strong>{" "}
-                  {selectedStudent.results.filter((r) => r.passed).length}
-                </p>
-                <p>
-                  <strong>Subjects Failed:</strong>{" "}
-                  {selectedStudent.results.filter((r) => !r.passed).length}
-                </p>
-                <p>
-                  <strong>Total Credit Completed:</strong>{" "}
-                  {selectedStudent.results
-                    .filter((r) => r.passed)
-                    .reduce((acc, curr) => acc + curr.course_credit, 0)}
-                </p>
+              <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
+                <Card className="border-gray-600 bg-gray-700">
+                  <div className="flex items-center">
+                    <div className="rounded-md bg-green-900/30 p-3">
+                      <HiDocumentText className="h-6 w-6 text-green-400" />
+                    </div>
+                    <div className="ml-4">
+                      <p className="text-sm text-gray-400">Subjects Passed</p>
+                      <p className="text-xl font-bold text-green-400">
+                        {selectedStudent.results.filter((r) => r.passed).length}
+                      </p>
+                    </div>
+                  </div>
+                </Card>
+
+                <Card className="border-gray-600 bg-gray-700">
+                  <div className="flex items-center">
+                    <div className="rounded-md bg-red-900/30 p-3">
+                      <HiDocumentText className="h-6 w-6 text-red-400" />
+                    </div>
+                    <div className="ml-4">
+                      <p className="text-sm text-gray-400">Subjects Failed</p>
+                      <p className="text-xl font-bold text-red-400">
+                        {
+                          selectedStudent.results.filter((r) => !r.passed)
+                            .length
+                        }
+                      </p>
+                    </div>
+                  </div>
+                </Card>
+
+                <Card className="border-gray-600 bg-gray-700">
+                  <div className="flex items-center">
+                    <div className="rounded-md bg-blue-900/30 p-3">
+                      <HiAcademicCap className="h-6 w-6 text-blue-400" />
+                    </div>
+                    <div className="ml-4">
+                      <p className="text-sm text-gray-400">
+                        Total Credit Completed
+                      </p>
+                      <p className="text-xl font-bold text-blue-400">
+                        {selectedStudent.results
+                          .filter((r) => r.passed)
+                          .reduce((acc, curr) => acc + curr.course_credit, 0)}
+                      </p>
+                    </div>
+                  </div>
+                </Card>
               </div>
 
               {/* Add Result Form */}
               <div className="mt-6 border-t border-gray-700 pt-4">
-                <h3 className="mb-4 text-lg font-semibold text-white">
+                <h3 className="mb-4 flex items-center text-lg font-semibold text-white">
+                  <div className="mr-2 rounded-md bg-[#92e3a9] p-1">
+                    <HiDocumentText className="h-5 w-5 text-gray-900" />
+                  </div>
                   Add New Result
                 </h3>
 

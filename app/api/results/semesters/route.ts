@@ -3,9 +3,9 @@ import db from "../../../lib/db";
 
 export async function GET() {
   try {
-    // Get unique semesters from student results table
+   
     const [semestersResult] = await db.execute(
-      "SELECT DISTINCT SESSION FROM STUDENT ORDER BY SESSION DESC",
+      "SELECT DISTINCT SESSION FROM student ORDER BY SESSION DESC",
     );
 
     if (!semestersResult) {
