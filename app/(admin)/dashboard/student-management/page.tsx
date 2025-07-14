@@ -502,13 +502,7 @@ export default function StudentManagement() {
                   Status
                 </span>
               </th>
-              <th className="px-2 py-2 text-center text-xs font-medium sm:px-4 sm:py-3 md:px-6 md:py-3">
-                <span className="flex items-center justify-center gap-1">
-                  <HiAcademicCap className="h-3 w-3 text-[#92e3a9] sm:h-4 sm:w-4" />
-                  <span className="xs:inline hidden">Courses</span>
-                  <span className="xs:hidden">#</span>
-                </span>
-              </th>
+            
               <th className="px-2 py-2 text-center text-xs font-medium sm:px-4 sm:py-3 md:px-6 md:py-3">
                 Actions
               </th>
@@ -559,9 +553,7 @@ export default function StudentManagement() {
                   <td className="px-2 py-2 sm:px-4 sm:py-3 md:px-6 md:py-4">
                     {getStatus(reg.STATUS)}
                   </td>
-                  <td className="px-2 py-2 text-center sm:px-4 sm:py-3 md:px-6 md:py-4">
-                    {reg.course_count}
-                  </td>
+                 
                   <td className="px-2 py-2 text-center sm:px-4 sm:py-3 md:px-6 md:py-4">
                     <div className="flex justify-center gap-2">
                       <Link
