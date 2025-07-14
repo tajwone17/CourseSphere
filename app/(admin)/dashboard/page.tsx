@@ -8,9 +8,11 @@ import {
   HiClipboardCheck,
   HiClock,
   HiCalendar,
+  HiOfficeBuilding,
 } from "react-icons/hi";
 import { useAuth } from "@/app/context/AuthContext";
 import { useDepartmentDeadlines } from "@/app/hooks/useDepartmentDeadlines";
+import { useAllDepartmentDeadlines } from "@/app/hooks/useAllDepartmentDeadlines";
 import { useDashboardData } from "@/app/hooks/useDashboardData";
 
 export default function AdminDashboard() {
@@ -20,6 +22,11 @@ export default function AdminDashboard() {
     loading: deadlinesLoading,
     error: deadlinesError,
   } = useDepartmentDeadlines();
+  const {
+    departmentDeadlines,
+    loading: allDeadlinesLoading,
+    error: allDeadlinesError,
+  } = useAllDepartmentDeadlines();
   const {
     stats,
     urgentApprovals,
@@ -113,12 +120,68 @@ export default function AdminDashboard() {
     return items;
   };
 
+  // Generate all department deadlines for accounts admin
+  const generateAllDepartmentDeadlines = () => {
+    if (!departmentDeadlines || departmentDeadlines.length === 0) return {};
+
+    // Group deadlines by department
+    const deadlinesByDepartment = departmentDeadlines.reduce(
+      (acc, deadline) => {
+        const deptName = deadline.DEPARTMENT_NAME;
+        if (!acc[deptName]) {
+          acc[deptName] = [];
+        }
+
+        // Add course registration without fine deadline if it exists
+        if (deadline.course_registration_without_fine) {
+          acc[deptName].push({
+            id: `${deadline.id}-1`,
+            title: "Course Registration (Without Fine)",
+            date: formatDate(deadline.course_registration_without_fine),
+            description:
+              "Last date for students to submit course registration forms without fine",
+          });
+        }
+
+        // Add course registration with fine deadline if it exists
+        if (deadline.course_registration_with_fine) {
+          acc[deptName].push({
+            id: `${deadline.id}-2`,
+            title: "Course Registration (With Fine)",
+            date: formatDate(deadline.course_registration_with_fine),
+            description:
+              "Last date for students to submit course registration forms with fine",
+          });
+        }
+
+        // Add admit card collection deadline if it exists
+        if (deadline.admit_card_collection) {
+          acc[deptName].push({
+            id: `${deadline.id}-3`,
+            title: "Admit Card Collection",
+            date: formatDate(deadline.admit_card_collection),
+            description: "Deadline for collecting admit cards",
+          });
+        }
+
+        return acc;
+      },
+      {} as Record<
+        string,
+        Array<{ id: string; title: string; date: string; description: string }>
+      >,
+    );
+
+    return deadlinesByDepartment;
+  };
+
   // Use dynamic deadlines from the database
   const importantDeadlines = generateDeadlineItems();
+  const allDepartmentDeadlines: Record<string, { id: string; title: string; date: string; description: string }[]> = generateAllDepartmentDeadlines();
 
   // Loading state for all data
-  const isLoading = deadlinesLoading || statsLoading;
-  const hasError = deadlinesError || statsError;
+  const isLoading = deadlinesLoading || statsLoading || allDeadlinesLoading;
+  const hasError = deadlinesError || statsError || allDeadlinesError;
 
   return (
     <div className="mx-auto max-w-7xl p-8">
@@ -281,50 +344,120 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* Important Deadlines Section */}
-      <div data-aos="fade-right" data-aos-delay="400">
-        <h2 className="mb-4 text-2xl font-bold text-white">
-          Important Deadlines
-        </h2>
+      {/* All Departments Deadlines Section (Only for Accounts Admin) */}
+      {user && user.role === "accounts_admin" && (
+        <div className="mb-12" data-aos="fade-up" data-aos-delay="600">
+          <h2 className="mb-6 border-b border-gray-700 pb-2 text-3xl font-bold text-white">
+            All Department Deadlines
+          </h2>
 
-        {deadlinesLoading ? (
-          <div className="text-white">Loading deadlines...</div>
-        ) : deadlinesError ? (
-          <div className="text-red-400">
-            Failed to load deadlines: {deadlinesError}
-          </div>
-        ) : importantDeadlines.length === 0 ? (
-          <div className="rounded-lg border border-gray-700 bg-gray-800 p-4 text-gray-400">
-            No deadlines have been set for your department.
-          </div>
-        ) : (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {importantDeadlines.map((deadline) => (
-              <Card
-                key={deadline.id}
-                className="border-gray-700 bg-gray-800 transition-transform hover:scale-[1.02]"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="rounded-lg bg-[#92e3a9] p-3">
-                    <HiCalendar className="h-6 w-6 text-gray-900" />
+          {allDeadlinesLoading ? (
+            <div className="text-white">
+              Loading all department deadlines...
+            </div>
+          ) : allDeadlinesError ? (
+            <div className="text-red-400">
+              Failed to load deadlines: {allDeadlinesError}
+            </div>
+          ) : Object.keys(allDepartmentDeadlines).length === 0 ? (
+            <div className="rounded-lg border border-gray-700 bg-gray-800 p-4 text-gray-400">
+              No deadlines have been set for any department.
+            </div>
+          ) : (
+            <div className="space-y-8">
+              {Object.keys(allDepartmentDeadlines).map((deptName) => {
+                const deadlines = allDepartmentDeadlines[deptName];
+                return (
+                  <div
+                    key={deptName}
+                    className="rounded-lg border border-gray-700 bg-gray-800 p-4"
+                  >
+                    <div className="mb-4 flex items-center gap-3">
+                      <HiOfficeBuilding className="h-6 w-6 text-[#92e3a9]" />
+                      <h3 className="text-2xl font-semibold text-white">
+                        {deptName} Department
+                      </h3>
+                    </div>
+
+                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                      {deadlines.map((deadline) => (
+                        <Card
+                          key={deadline.id}
+                          className="border-gray-700 bg-gray-900 transition-transform hover:scale-[1.02]"
+                        >
+                          <div className="flex items-center gap-4">
+                            <div className="rounded-lg bg-[#92e3a9] p-3">
+                              <HiCalendar className="h-6 w-6 text-gray-900" />
+                            </div>
+                            <div>
+                              <h4 className="text-lg font-semibold text-white">
+                                {deadline.title}
+                              </h4>
+                              <p className="text-sm text-gray-400">
+                                {deadline.description}
+                              </p>
+                              <p className="mt-2 text-sm font-medium text-[#92e3a9]">
+                                Due: {deadline.date}
+                              </p>
+                            </div>
+                          </div>
+                        </Card>
+                      ))}
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-white">
-                      {deadline.title}
-                    </h3>
-                    <p className="text-sm text-gray-400">
-                      {deadline.description}
-                    </p>
-                    <p className="mt-2 text-sm font-medium text-[#92e3a9]">
-                      Due: {deadline.date}
-                    </p>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Important Deadlines Section - Visible for non-accounts-admin roles */}
+      {(!user || user.role !== "accounts_admin") && (
+        <div data-aos="fade-right" data-aos-delay="400">
+          <h2 className="mb-4 text-2xl font-bold text-white">
+            Important Deadlines
+          </h2>
+
+          {deadlinesLoading ? (
+            <div className="text-white">Loading deadlines...</div>
+          ) : deadlinesError ? (
+            <div className="text-red-400">
+              Failed to load deadlines: {deadlinesError}
+            </div>
+          ) : importantDeadlines.length === 0 ? (
+            <div className="rounded-lg border border-gray-700 bg-gray-800 p-4 text-gray-400">
+              No deadlines have been set for your department.
+            </div>
+          ) : (
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {importantDeadlines.map((deadline) => (
+                <Card
+                  key={deadline.id}
+                  className="border-gray-700 bg-gray-800 transition-transform hover:scale-[1.02]"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="rounded-lg bg-[#92e3a9] p-3">
+                      <HiCalendar className="h-6 w-6 text-gray-900" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-white">
+                        {deadline.title}
+                      </h3>
+                      <p className="text-sm text-gray-400">
+                        {deadline.description}
+                      </p>
+                      <p className="mt-2 text-sm font-medium text-[#92e3a9]">
+                        Due: {deadline.date}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              </Card>
-            ))}
-          </div>
-        )}
-      </div>
+                </Card>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
