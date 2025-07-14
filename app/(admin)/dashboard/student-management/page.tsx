@@ -313,7 +313,7 @@ export default function StudentManagement() {
       </div>
 
       {/* Statistics Cards */}
-      <div className="xs:grid-cols-3 mb-4 grid grid-cols-1 gap-3 sm:mb-6 sm:gap-4 md:mb-8">
+      <div className="mb-4 grid gap-3 sm:mb-6 sm:grid-cols-3 sm:gap-4 md:mb-8">
         <div className="rounded-lg border border-gray-700 bg-gray-800 p-3 shadow sm:p-4">
           <div className="flex items-center">
             <div className="mr-3 rounded-full bg-yellow-900/30 p-2 sm:mr-4 sm:p-3">
@@ -373,14 +373,14 @@ export default function StudentManagement() {
       </div>
 
       {/* Filter Section */}
-      <div className="xs:grid-cols-2 mb-4 grid grid-cols-1 gap-3 sm:mb-6 sm:gap-4 md:mb-8 md:grid-cols-3 lg:grid-cols-4">
+      <div className="mb-4 grid grid-cols-1 gap-3 sm:mb-6 sm:grid-cols-2 sm:gap-4 md:mb-8 md:grid-cols-3 lg:grid-cols-4">
         <div>
           <div className="relative">
             <TextInput
               type="text"
               placeholder="Search by name"
               icon={HiUserGroup}
-              className="border-gray-700 bg-gray-800 text-sm pl-10 text-white sm:text-base"
+              className="border-gray-700 bg-gray-800 pl-10 text-sm text-white sm:text-base"
               value={searchName}
               onChange={(e) => setSearchName(e.target.value)}
               style={{ paddingLeft: "2.5rem" }}
