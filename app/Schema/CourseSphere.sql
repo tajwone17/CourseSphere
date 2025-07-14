@@ -90,11 +90,16 @@ CREATE TABLE `advisor` (
 --
 
 INSERT INTO `advisor` (`ID`, `NAME`, `EMAIL`, `PASSWORD`, `DEPARTMENT_ID`, `CREATED_AT`, `STATUS`, `PHONE`) VALUES
-(1, 'Tajwone Chowdhury', 'aoli23511@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 4, '2025-05-20 18:45:30', 0, '01720671208'),
-(4, 'Tajwone Chowdhury', 'dgcvsdg@gmail.cpm', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 3, '2025-06-09 19:15:58', 1, '01765921728'),
-(5, 'Jakaria Chowdhury Tajwone', 'kkabirsingh2510@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 3, '2025-06-09 19:25:17', 1, '01720671208'),
-(7, 'Tajwone Chowdhury', 'tajwone248tc@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 3, '2025-06-09 19:57:32', 1, '01765921728'),
-(8, 'Mohammad Aksar', '0562310005101031@neub.edu.bd', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 3, '2025-06-10 06:38:30', 1, '01765921728');
+(1, 'Khadem Asifuzzaman', 'asif@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 3, '2025-05-20 18:45:30', 1, '01720671208'),
+(4, 'Parvej Ahmed', 'parvez@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 3, '2025-06-09 19:15:58', 1, '01765921728'),
+(5, 'Razorshi Prozzwal Taluker', 'rajorshee@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 3, '2025-06-09 19:25:17', 1, '01720671208'),
+(7, 'Rathindra Gope', 'Rathindra@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 3, '2025-06-09 19:57:32', 1, '01765921728'),
+(8, 'Md. Abdul Karim', 'karim@neub.edu.bd', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 2, '2025-07-10 09:00:00', 1, '01711112222'),
+(9, 'Mohammad Hasan', 'hasan@neub.edu.bd', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 3, '2025-07-10 09:05:00', 1, '01722223333'),
+(10, 'Md. Shafiqul Islam', 'shafiqul@neub.edu.bd', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 4, '2025-07-10 09:10:00', 1, '01733334444'),
+(11, 'Abdul Matin', 'matin@neub.edu.bd', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 2, '2025-07-10 09:15:00', 1, '01744445555'),
+(12, 'Md. Nurul Islam', 'nurul@neub.edu.bd', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 4, '2025-07-10 09:20:00', 1, '01755556666');
+
 
 -- --------------------------------------------------------
 
@@ -118,10 +123,31 @@ CREATE TABLE `course` (
 --
 
 INSERT INTO `course` (`ID`, `TITLE`, `CODE`, `CREDIT`, `DEPARTMENT_ID`, `STATUS`, `INSTRUCTOR_NAME`, `CREATED_AT`) VALUES
-(1, 'dms', 'CSE-012', 3.0, 3, 1, 'TAJWONE VAI', '2025-06-11 18:47:31'),
-(4, 'SEDP', 'CSE-012', 3.0, 3, 1, 'SCP', '2025-06-11 19:23:58'),
-(5, 'Ai', 'CSE-019', 3.0, 3, 1, 'TAJWONE', '2025-07-09 08:54:01'),
-(6, 'SEDP', 'CSE-112', 3.0, 1, 1, 'Sabuj Chandra Paul', '2025-07-09 14:25:31');
+(1, 'Software Engineering', 'CSE-0123456', 3.0, 3, 1, 'Mr. Sabuj Chandra Paul', '2025-06-11 18:47:31'),
+-- CSE Courses (department_id = 1)
+(2, 'Data Structures', 'CSE-1001', 3.0, 1, 1, 'Prof. Nusrat Jahan', '2025-07-10 09:00:00'),
+(3, 'Algorithms', 'CSE-1002', 3.0, 1, 1, 'Prof. Mahmudul Hasan', '2025-07-10 09:05:00'),
+(4, 'Operating Systems', 'CSE-1003', 3.0, 1, 1, 'Prof. Shamsul Alam', '2025-07-10 09:10:00'),
+(5, 'Computer Lab', 'CSE-1101L', 1.5, 1, 1, 'Prof. Farhana Islam', '2025-07-10 09:15:00'),
+
+-- Law Courses (department_id = 2)
+(6, 'Constitutional Law', 'LAW-5001', 3.0, 2, 1, 'Prof. Kamrul Hasan', '2025-07-10 09:20:00'),
+(7, 'Criminal Law', 'LAW-5002', 3.0, 2, 1, 'Prof. Rasheda Begum', '2025-07-10 09:25:00'),
+(8, 'Civil Procedure', 'LAW-5003', 3.0, 2, 1, 'Prof. Tanvir Ahmed', '2025-07-10 09:30:00'),
+(9, 'Law Lab', 'LAW-5101L', 1.5, 2, 1, 'Prof. Shafiqul Islam', '2025-07-10 09:35:00'),
+
+-- BBA Courses (department_id = 3)
+(10, 'Principles of Management', 'BBA-3001', 3.0, 3, 1, 'Parvej Ahmed', '2025-07-10 09:40:00'),
+(11, 'Marketing Fundamentals', 'BBA-3002', 3.0, 3, 1, 'Razorshee Prozzwal Talukder', '2025-07-10 09:45:00'),
+(12, 'Financial Accounting', 'BBA-3003', 3.0, 3, 1, 'Khadem Asifuzzaman', '2025-07-10 09:50:00'),
+(13, 'Business Lab', 'BBA-3101L', 1.5, 3, 1, 'Md. Abdul Karim', '2025-07-10 09:55:00'),
+
+-- English Courses (department_id = 4)
+(14, 'English Literature', 'ENG-4001', 3.0, 4, 1, 'Md. Shafiqul Islam', '2025-07-10 10:00:00'),
+(15, 'Linguistics', 'ENG-4002', 3.0, 4, 1, 'Md. Nurul Islam', '2025-07-10 10:05:00'),
+(16, 'Creative Writing', 'ENG-4003', 3.0, 4, 1, 'Abdul Matin', '2025-07-10 10:10:00'),
+(17, 'Language Lab', 'ENG-4101L', 1.5, 4, 1, 'Md. Shafiqul Islam', '2025-07-10 10:15:00');
+
 
 -- --------------------------------------------------------
 
@@ -171,8 +197,7 @@ CREATE TABLE `deadlines` (
 -- Dumping data for table `deadlines`
 --
 
-INSERT INTO `deadlines` (`id`, `department_id`, `course_registration_without_fine`, `course_registration_with_fine`, `admit_card_collection`) VALUES
-(1, 3, '2025-06-13', '2025-06-14', '2025-07-03');
+
 
 -- --------------------------------------------------------
 
@@ -193,10 +218,10 @@ CREATE TABLE `department` (
 --
 
 INSERT INTO `department` (`ID`, `DEPARTMENT_NAME`, `AMOUNT_PER_CREDIT`, `TOTAL_CREDITS`, `CREATED_AT`) VALUES
-(1, 'CSE', 1500.00, 160, '2025-05-13 19:47:22'),
-(2, 'EEE', 1400.00, 155, '2025-05-13 19:47:22'),
-(3, 'BBA', 1300.00, 140, '2025-05-13 19:47:22'),
-(4, 'English', 1200.00, 135, '2025-05-13 19:47:22');
+(1, 'CSE', 3000.00, 160, '2025-05-13 19:47:22'),
+(2, 'LLB', 2500.00, 155, '2025-05-13 19:47:22'),
+(3, 'BBA', 2000.00, 140, '2025-05-13 19:47:22'),
+(4, 'English', 1500.00, 135, '2025-05-13 19:47:22');
 
 -- --------------------------------------------------------
 
@@ -219,9 +244,9 @@ CREATE TABLE `exam_controller` (
 --
 
 INSERT INTO `exam_controller` (`ID`, `NAME`, `EMAIL`, `PASSWORD`, `PHONE`, `STATUS`, `CREATED_AT`) VALUES
-(2, 'Jakaria Chowdhury Tajwone', '0562310005101031@neub.edu.bd', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', '083749494', 0, '2025-05-20 19:05:57'),
-(3, 'Tajwone Chowdhury', 'tajwone248tc@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', '01765921728', 0, '2025-06-10 16:56:37'),
-(5, 'Mr salman Khan', 'tajwone249@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', '01765921728', 1, '2025-07-03 17:41:37');
+(2, 'Shakib Al Hasan', 'shakib@neub.edu.bd', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', '0183749494', 1, '2025-05-20 19:05:57'),
+(3, 'Tajwone Chowdhury', 'tajwone248tc@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', '01765921728', 1, '2025-06-10 16:56:37'),
+(5, 'Mr Abdul Karim', 'karim249@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', '01765921728', 1, '2025-07-03 17:41:37');
 
 -- --------------------------------------------------------
 
@@ -245,12 +270,10 @@ CREATE TABLE `hod` (
 --
 
 INSERT INTO `hod` (`ID`, `NAME`, `EMAIL`, `PASSWORD`, `DEPARTMENT_ID`, `STATUS`, `PHONE`, `CREATED_AT`) VALUES
-(1, 'Tajwone Chowdhury', '0562310005101031@neub.edu.bd', '08168200d5149fb1', 1, 0, '947463303', '2025-05-20 14:55:40'),
-(7, 'mst.fahimajjaman jaina', 'fahimajaina765@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 1, 1, '01765921728', '2025-05-21 05:13:26'),
-(8, 'Sathi Akter', '0562310005101045@neub.edu.bd', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 2, 1, '01765921728', '2025-05-21 05:14:58'),
-(9, 'Tajwone Chowdhury', 'kkabirsingh2510@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 1, 1, '01765921728', '2025-06-10 08:07:17'),
-(10, 'Tajwone Chowdhury', 'tajwone249@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 3, 1, '01765921728', '2025-06-10 08:10:14'),
-(11, 'Tajwone Chowdhury', 'tajwone248tc@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 1, 1, '01765921728', '2025-07-09 14:23:57');
+(1, 'Dr. Arif Ahmed', 'arifahmed.cse@neub.edu.bd', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 1, 1, '01711112222', '2025-07-10 09:00:00'),
+(2, 'Dr. Fatema Begum', 'fatemabegum.llb@neub.edu.bd', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 2, 1, '01722223333', '2025-07-10 09:05:00'),
+(3, 'Dr. Mohammad Hasan', 'mhasan.bba@neub.edu.bd', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 3, 1, '01733334444', '2025-07-10 09:10:00'),
+(4, 'Dr. Nurul Islam', 'nurulislam.eng@neub.edu.bd', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 4, 1, '01744445555', '2025-07-10 09:15:00');
 
 -- --------------------------------------------------------
 
@@ -266,12 +289,8 @@ CREATE TABLE `notice` (
   `CREATED_AT` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `notice`
---
 
-INSERT INTO `notice` (`ID`, `TITLE`, `DESCRIPTION`, `CREATOR_ID`, `CREATED_AT`) VALUES
-(10, 'SHeikh Hasina palay na', '5 th July sheikh hasina polaise', 11, '2025-07-09 14:28:08');
+
 
 -- --------------------------------------------------------
 
@@ -303,12 +322,7 @@ CREATE TABLE `prerequisite` (
   `CREATED_AT` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `prerequisite`
---
 
-INSERT INTO `prerequisite` (`ID`, `COURSE_ID`, `PREREQ_COURSE_ID`, `CREATED_AT`) VALUES
-(1, 5, 1, '2025-07-09 08:54:01');
 
 -- --------------------------------------------------------
 
@@ -396,12 +410,11 @@ CREATE TABLE `student` (
 --
 
 INSERT INTO `student` (`ID`, `REGISTRATION_NUMBER`, `NAME`, `EMAIL`, `PASSWORD`, `DEPARTMENT_ID`, `SESSION`, `MOBILE`, `STATUS`, `CREATED_AT`) VALUES
-(1, '0562310005101031', 'Jakaria Chowdhury Tajwone', 'tajwone248tc@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 1, 'Fall-2022', '01703758327', 1, '2025-05-13 19:48:50'),
-(2, '0562310005101003', 'Tajwone Chowdhury', 'tajwone249@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 3, 'Spring-202', '01703758327', 0, '2025-05-13 20:14:04'),
-(3, '0562310005101019', 'tajwone17', '0562310005101031@neub.edu.bd', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 2, 'Spring-202', NULL, 0, '2025-05-13 20:53:54'),
-(4, '0562310005101018', 'mohammed oli', 'dgcvsdg@gmail.cpm', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 1, 'Summer-202', '01703758327', 0, '2025-05-16 21:08:31'),
-(5, '0562310005101005', 'Masum Pradhania', 'masumbillah@neub.edu.bd', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 3, 'Fall-2020', '01702383920', 1, '2025-05-19 17:47:13'),
-(6, '056231000037', 'Jakaria', 'tajwoe247tc@gmai.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 1, 'Spring-202', '01703758327', 0, '2025-05-20 18:11:15');
+(1, '0562310005101031', 'Jakaria Chowdhury Tajwone', 'tajwone248tc@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 1, 'spring-2024', '01703758327', 1, '2025-05-13 19:48:50'),
+(2, '0562310005101003', 'MD Masum Prodhania', 'masum@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 3, 'Spring-2024', '01703758327', 1, '2025-05-13 20:14:04'),
+(3, '0562310005101001', 'Amir Hamza', 'amir@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 2, 'Spring-2025', '01873950392', 0, '2025-05-13 20:53:54'),
+(4, '0562310005101018', 'mohammed oli', 'oli@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 1, 'Spring-2025', '01703758327', 1, '2025-05-16 21:08:31');
+
 
 -- --------------------------------------------------------
 
@@ -423,12 +436,30 @@ CREATE TABLE `verification` (
 -- Dumping data for table `verification`
 --
 
-INSERT INTO `verification` (`ID`, `EMAIL`, `TYPE`, `OTP`, `EXPIRES_AT`, `CREATED_AT`, `IS_USED`) VALUES
-(1, 'tajwone248tc@gmail.com', 'PASSWORD_RESET', '481056', '2025-07-09 07:02:51', '2025-07-09 07:01:30', 1);
 
 --
--- Indexes for dumped tables
+-- Dumping data for table `prerequisite`
 --
+
+INSERT INTO `prerequisite` (`ID`, `COURSE_ID`, `PREREQ_COURSE_ID`, `CREATED_AT`) VALUES
+-- CSE prerequisites
+(1, 3, 2, '2025-07-15 09:00:00'),  -- Algorithms requires Data Structures
+(2, 4, 3, '2025-07-15 09:01:00'),  -- Operating Systems requires Algorithms
+
+-- BBA prerequisites
+(3, 11, 10, '2025-07-15 09:02:00'),  -- Marketing Fundamentals requires Principles of Management
+(4, 12, 10, '2025-07-15 09:03:00'),  -- Financial Accounting requires Principles of Management
+(5, 13, 12, '2025-07-15 09:04:00'),  -- Business Lab requires Financial Accounting
+
+-- English prerequisites
+(6, 15, 14, '2025-07-15 09:05:00'),  -- Linguistics requires English Literature
+(7, 16, 15, '2025-07-15 09:06:00'),  -- Creative Writing requires Linguistics
+(8, 17, 14, '2025-07-15 09:07:00'),  -- Language Lab requires English Literature
+
+-- Law prerequisites
+(9, 7, 6, '2025-07-15 09:08:00'),   -- Criminal Law requires Constitutional Law
+(10, 8, 6, '2025-07-15 09:09:00'),   -- Civil Procedure requires Constitutional Law
+(11, 9, 8, '2025-07-15 09:10:00');   -- Law Lab requires Civil Procedure
 
 --
 -- Indexes for table `accounts_admin`
@@ -651,7 +682,7 @@ ALTER TABLE `payment`
 -- AUTO_INCREMENT for table `prerequisite`
 --
 ALTER TABLE `prerequisite`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `registered_courses`
