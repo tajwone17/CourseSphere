@@ -281,7 +281,7 @@ export default function AdminDashboard() {
               </p>
               {stats?.nextDeadline && (
                 <p className="mt-1 max-w-[150px] truncate text-xs text-gray-400 sm:max-w-none">
-                  {stats.nextDeadline.type}:{" "}
+                  {stats.nextDeadline.type}:<br />
                   {formatDate(stats.nextDeadline.date)}
                 </p>
               )}

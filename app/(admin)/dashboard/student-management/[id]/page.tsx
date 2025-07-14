@@ -191,13 +191,33 @@ export default function RegistrationReviewPage() {
         rejected: coursesApproval[parseInt(courseId)].rejected,
       }));
 
+      // Check if all courses are rejected individually
+      const allCoursesRejected = courseApprovals.every(
+        (course) => course.rejected,
+      );
+      const anyCoursesApproved = courseApprovals.some(
+        (course) => course.approved,
+      );
+
       // Different payloads based on user role
       if (userRole === "advisor") {
         endpoint = "/api/registration/advisor-approval";
+
+        // If all courses are individually rejected, auto-reject the entire registration
+        // If the user selected "Approve" but didn't approve any courses, show error
+        if (approvalStatus === true && !anyCoursesApproved) {
+          throw new Error(
+            "You must approve at least one course to approve this registration",
+          );
+        }
+
+        // If all courses are rejected individually, force overall status to rejected
+        const finalApprovalStatus = allCoursesRejected ? false : approvalStatus;
+
         payload = {
           ...payload,
           advisorId: user?.id,
-          approved: approvalStatus,
+          approved: finalApprovalStatus,
           courseApprovals,
           advisorComment,
         };
@@ -740,6 +760,32 @@ export default function RegistrationReviewPage() {
                   Please select whether to approve or reject this registration
                 </p>
               )}
+              {userRole === "advisor" && courses.length > 0 && (
+                <div className="mt-2">
+                  {Object.keys(coursesApproval).length > 0 && (
+                    <>
+                      {Object.keys(coursesApproval).every(
+                        (id) => coursesApproval[parseInt(id)].rejected,
+                      ) ? (
+                        <p className="text-xs text-amber-400">
+                          <strong>Warning:</strong> All courses are currently
+                          marked for rejection. This will automatically reject
+                          the entire registration.
+                        </p>
+                      ) : approvalStatus === true &&
+                        !Object.keys(coursesApproval).some(
+                          (id) => coursesApproval[parseInt(id)].approved,
+                        ) ? (
+                        <p className="text-xs text-amber-400">
+                          <strong>Warning:</strong> You&apos;ve selected
+                          &quot;Approve&quot; but haven&apos;t approved any
+                          individual courses yet.
+                        </p>
+                      ) : null}
+                    </>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Advisor Comment Section */}
@@ -762,6 +808,11 @@ export default function RegistrationReviewPage() {
                 <p className="mt-1 text-xs text-gray-400">
                   Provide feedback or reasons for your decision, especially if
                   rejecting any courses.
+                </p>
+                <p className="mt-2 text-xs text-amber-400">
+                  <strong>Note:</strong> If you reject all courses individually,
+                  the entire registration will be automatically rejected and
+                  will not be forwarded to HOD.
                 </p>
               </div>
             )}
@@ -973,6 +1024,83 @@ export default function RegistrationReviewPage() {
               </div>
             )}
           </div>
+
+          {/* Decision Summary - For Advisor only */}
+          {userRole === "advisor" && (
+            <div className="rounded-lg border border-gray-700 bg-gray-900 p-4">
+              <h3 className="mb-2 text-sm font-medium text-gray-300">
+                Decision Summary
+              </h3>
+
+              {Object.keys(coursesApproval).length > 0 ? (
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-400">
+                      Overall Decision:
+                    </span>
+                    {approvalStatus === true ? (
+                      <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
+                        {Object.keys(coursesApproval).every(
+                          (id) => coursesApproval[parseInt(id)].rejected,
+                        )
+                          ? "Forced Rejection"
+                          : "Approval"}
+                      </span>
+                    ) : approvalStatus === false ? (
+                      <span className="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800">
+                        Rejection
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">
+                        Pending Decision
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-400">
+                      Courses Approved:
+                    </span>
+                    <span className="font-medium text-green-400">
+                      {
+                        Object.values(coursesApproval).filter((c) => c.approved)
+                          .length
+                      }{" "}
+                      / {courses.length}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-400">
+                      Courses Rejected:
+                    </span>
+                    <span className="font-medium text-red-400">
+                      {
+                        Object.values(coursesApproval).filter((c) => c.rejected)
+                          .length
+                      }{" "}
+                      / {courses.length}
+                    </span>
+                  </div>
+
+                  {Object.keys(coursesApproval).every(
+                    (id) => coursesApproval[parseInt(id)].rejected,
+                  ) && (
+                    <div className="mt-2 rounded-md border border-amber-600 bg-amber-900/20 p-2 text-xs text-amber-300">
+                      <strong>Note:</strong> All courses are marked for
+                      rejection. The registration will be automatically rejected
+                      and will not proceed to HOD.
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <p className="text-xs text-gray-400">
+                  No course decisions have been made yet. Please approve or
+                  reject individual courses above.
+                </p>
+              )}
+            </div>
+          )}
 
           {/* Submit Button */}
           <div className="flex justify-end">
