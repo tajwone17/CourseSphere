@@ -56,14 +56,12 @@ export default function StudentManagement() {
   const [userRole, setUserRole] = useState<string | null>(null);
   const [departmentId, setDepartmentId] = useState<string | null>(null);
   const [counts, setCounts] = useState<{
-    total: number;
     pending: number;
-    partiallyApproved: number;
+    approved: number;
     rejected: number;
   }>({
-    total: 0,
     pending: 0,
-    partiallyApproved: 0,
+    approved: 0,
     rejected: 0,
   });
 
@@ -109,8 +107,15 @@ export default function StudentManagement() {
 
     if (searchStatus) {
       filtered = filtered.filter((reg: RegistrationRequest) => {
-        if (searchStatus === "approved")
+        if (searchStatus === "approved") {
+          if (userRole === "advisor")
+            return reg.STATUS !== "PENDING" && reg.STATUS !== "REJECTED";
+          else if (userRole === "hod")
+            return reg.STATUS !== "PENDING" && reg.STATUS !== "REJECTED";
+          else if (userRole === "accounts_admin")
+            return reg.STATUS !== "PENDING" && reg.STATUS !== "REJECTED";
           return reg.STATUS === "PARTIALLY_APPROVED";
+        }
         if (searchStatus === "pending") return reg.STATUS === "PENDING";
         if (searchStatus === "rejected") return reg.STATUS === "REJECTED";
         return true;
@@ -125,6 +130,7 @@ export default function StudentManagement() {
     searchStatus,
     searchDepartment,
     registrations,
+    userRole,
   ]);
 
   // Fetch registration requests based on user role
@@ -299,28 +305,19 @@ export default function StudentManagement() {
       </div>
 
       {/* Statistics Cards */}
-      <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
-        <div className="rounded-lg border border-gray-700 bg-gray-800 p-4 shadow">
-          <div className="flex items-center">
-            <div className="mr-4 rounded-full bg-blue-900/30 p-3">
-              <HiUserGroup className="h-6 w-6 text-blue-400" />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-gray-400">
-                Total Requests
-              </p>
-              <p className="text-2xl font-bold text-white">{counts.total}</p>
-            </div>
-          </div>
-        </div>
-
+      <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
         <div className="rounded-lg border border-gray-700 bg-gray-800 p-4 shadow">
           <div className="flex items-center">
             <div className="mr-4 rounded-full bg-yellow-900/30 p-3">
               <HiPending className="h-6 w-6 text-yellow-400" />
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-400">Pending</p>
+              <p className="text-sm font-medium text-gray-400">
+                {userRole === "advisor" && "Pending Approval"}
+                {userRole === "hod" && "Pending HOD Review"}
+                {userRole === "accounts_admin" && "Pending Accounts Review"}
+                {!userRole && "Pending"}
+              </p>
               <p className="text-2xl font-bold text-white">{counts.pending}</p>
             </div>
           </div>
@@ -333,11 +330,12 @@ export default function StudentManagement() {
             </div>
             <div>
               <p className="text-sm font-medium text-gray-400">
-                Partially Approved
+                {userRole === "advisor" && "Advisor Approved"}
+                {userRole === "hod" && "HOD Approved"}
+                {userRole === "accounts_admin" && "Accounts Approved"}
+                {!userRole && "Approved"}
               </p>
-              <p className="text-2xl font-bold text-white">
-                {counts.partiallyApproved}
-              </p>
+              <p className="text-2xl font-bold text-white">{counts.approved}</p>
             </div>
           </div>
         </div>
@@ -348,7 +346,12 @@ export default function StudentManagement() {
               <FaTimesCircle className="h-6 w-6 text-red-400" />
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-400">Rejected</p>
+              <p className="text-sm font-medium text-gray-400">
+                {userRole === "advisor" && "Rejected by Advisor"}
+                {userRole === "hod" && "Rejected by HOD"}
+                {userRole === "accounts_admin" && "Rejected by Accounts"}
+                {!userRole && "Rejected"}
+              </p>
               <p className="text-2xl font-bold text-white">{counts.rejected}</p>
             </div>
           </div>
@@ -432,9 +435,24 @@ export default function StudentManagement() {
                 onChange={(e) => setSearchStatus(e.target.value)}
               >
                 <option value="">All Status</option>
-                <option value="approved">Partially Approved</option>
-                <option value="pending">Pending</option>
-                <option value="rejected">Rejected</option>
+                <option value="pending">
+                  {userRole === "advisor" && "Pending Approval"}
+                  {userRole === "hod" && "Pending HOD Review"}
+                  {userRole === "accounts_admin" && "Pending Accounts Review"}
+                  {!userRole && "Pending"}
+                </option>
+                <option value="approved">
+                  {userRole === "advisor" && "Advisor Approved"}
+                  {userRole === "hod" && "HOD Approved"}
+                  {userRole === "accounts_admin" && "Accounts Approved"}
+                  {!userRole && "Approved"}
+                </option>
+                <option value="rejected">
+                  {userRole === "advisor" && "Rejected by Advisor"}
+                  {userRole === "hod" && "Rejected by HOD"}
+                  {userRole === "accounts_admin" && "Rejected by Accounts"}
+                  {!userRole && "Rejected"}
+                </option>
               </Select>
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                 <HiAcademicCap className="h-5 w-5 text-[#92e3a9]" />
