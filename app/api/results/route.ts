@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
       // Get student details
       //eslint-disable-next-line
       const [students]: any = await db.query(
-        `SELECT s.ID, s.REGISTRATION_NUMBER, s.NAME, s.EMAIL, d.DEPARTMENT_NAME 
+        `SELECT s.ID, s.REGISTRATION_NUMBER, s.NAME, s.EMAIL, d.DEPARTMENT_NAME,s.SESSION 
          FROM student s
          JOIN department d ON s.DEPARTMENT_ID = d.ID
          WHERE s.REGISTRATION_NUMBER = ?`,
@@ -54,6 +54,7 @@ export async function GET(request: NextRequest) {
           name: student.NAME,
           email: student.EMAIL,
           department: student.DEPARTMENT_NAME,
+          session: student.SESSION,
           results: processedResults
         }
       });
