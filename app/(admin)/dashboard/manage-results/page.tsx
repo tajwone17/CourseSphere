@@ -93,6 +93,21 @@ export default function ManageResults() {
   const [success, setSuccess] = useState("");
   const [processing, setProcessing] = useState(false);
 
+  // Helper functions for notifications with auto-dismiss and fade-out animation
+  const showSuccessMessage = (message: string) => {
+    setSuccess(message);
+    setTimeout(() => {
+      setSuccess("");
+    }, 2000); // Display for 2 seconds total
+  };
+
+  const showErrorMessage = (message: string) => {
+    setError(message);
+    setTimeout(() => {
+      setError("");
+    }, 2000); // Display for 2 seconds total
+  };
+
   // Fetch students, departments, and semesters when component mounts
   useEffect(() => {
     const fetchData = async () => {
@@ -125,7 +140,9 @@ export default function ManageResults() {
         }
       } catch (err) {
         console.error("Error fetching data:", err);
-        setError(err instanceof Error ? err.message : "An error occurred");
+        showErrorMessage(
+          err instanceof Error ? err.message : "An error occurred",
+        );
       } finally {
         setLoading(false);
       }
@@ -159,7 +176,9 @@ export default function ManageResults() {
       }
     } catch (err) {
       console.error("Error fetching student details:", err);
-      setError(err instanceof Error ? err.message : "An error occurred");
+      showErrorMessage(
+        err instanceof Error ? err.message : "An error occurred",
+      );
     } finally {
       setLoading(false);
     }
@@ -191,7 +210,7 @@ export default function ManageResults() {
       const data = await response.json();
 
       if (data.success) {
-        setSuccess("Result updated successfully");
+        showSuccessMessage("Result updated successfully");
 
         // Update the result in the UI
         if (selectedStudent) {
@@ -213,7 +232,9 @@ export default function ManageResults() {
       }
     } catch (err) {
       console.error("Error updating result:", err);
-      setError(err instanceof Error ? err.message : "An error occurred");
+      showErrorMessage(
+        err instanceof Error ? err.message : "An error occurred",
+      );
     } finally {
       setProcessing(false);
     }
@@ -223,7 +244,7 @@ export default function ManageResults() {
     if (!selectedStudent) return;
 
     if (!newResult.courseId || !newResult.semester || !newResult.grade) {
-      setError("All fields are required");
+      showErrorMessage("All fields are required");
       return;
     }
 
@@ -246,7 +267,7 @@ export default function ManageResults() {
       const data = await response.json();
 
       if (data.success) {
-        setSuccess("Result added successfully");
+        showSuccessMessage("Result added successfully");
 
         // Find the course details
         const courseId = parseInt(newResult.courseId);
@@ -297,7 +318,9 @@ export default function ManageResults() {
       }
     } catch (err) {
       console.error("Error adding result:", err);
-      setError(err instanceof Error ? err.message : "An error occurred");
+      showErrorMessage(
+        err instanceof Error ? err.message : "An error occurred",
+      );
     } finally {
       setProcessing(false);
     }
@@ -347,7 +370,7 @@ export default function ManageResults() {
       </div>
 
       {error && (
-        <div className="mb-4 rounded-md border border-red-500 bg-red-900/20 p-3 text-red-300">
+        <div className="animate-fade-in mb-4 rounded-md border border-red-500 bg-red-900/20 p-3 text-red-300 transition-opacity duration-300">
           {error}
           <button
             className="float-right text-red-300 hover:text-red-100"
@@ -359,7 +382,7 @@ export default function ManageResults() {
       )}
 
       {success && (
-        <div className="mb-4 rounded-md border border-green-500 bg-green-900/20 p-3 text-green-300">
+        <div className="animate-fade-in mb-4 rounded-md border border-green-500 bg-green-900/20 p-3 text-green-300 transition-opacity duration-300">
           {success}
           <button
             className="float-right text-green-300 hover:text-green-100"
@@ -383,7 +406,7 @@ export default function ManageResults() {
           {/* Student Name Search */}
           <div className="relative">
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-              <HiUserCircle className="h-5 w-5 text-gray-400" />
+              <HiUserCircle className="h-5 w-5 text-[#92e3a9]" />
             </div>
             <TextInput
               type="text"
@@ -398,7 +421,7 @@ export default function ManageResults() {
           {/* Student ID Search */}
           <div className="relative">
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-              <HiDocumentText className="h-5 w-5 text-gray-400" />
+              <HiDocumentText className="h-5 w-5 text-[#92e3a9]" />
             </div>
             <TextInput
               type="text"
@@ -413,7 +436,7 @@ export default function ManageResults() {
           {/* Department Filter */}
           <div className="relative">
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-              <HiOfficeBuilding className="h-5 w-5 text-gray-400" />
+              <HiOfficeBuilding className="h-5 w-5 text-[#92e3a9]" />
             </div>
             <Select
               sizing="md"
@@ -435,7 +458,7 @@ export default function ManageResults() {
           {/* Session Filter */}
           <div className="relative">
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-              <HiAcademicCap className="h-5 w-5 text-gray-400" />
+              <HiAcademicCap className="h-5 w-5 text-[#92e3a9]" />
             </div>
             <Select
               sizing="md"
@@ -473,25 +496,25 @@ export default function ManageResults() {
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                     <div className="flex items-center">
-                      <HiDocumentText className="mr-1 h-4 w-4" />
+                      <HiDocumentText className="mr-1 h-4 w-4 text-[#92e3a9]" />
                       Student ID
                     </div>
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                     <div className="flex items-center">
-                      <HiUserCircle className="mr-1 h-4 w-4" />
+                      <HiUserCircle className="mr-1 h-4 w-4 text-[#92e3a9]" />
                       Name
                     </div>
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                     <div className="flex items-center">
-                      <HiOfficeBuilding className="mr-1 h-4 w-4" />
+                      <HiOfficeBuilding className="mr-1 h-4 w-4 text-[#92e3a9]" />
                       Department
                     </div>
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                     <div className="flex items-center">
-                      <HiAcademicCap className="mr-1 h-4 w-4" />
+                      <HiAcademicCap className="mr-1 h-4 w-4 text-[#92e3a9]" />
                       Session
                     </div>
                   </th>
