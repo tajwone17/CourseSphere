@@ -261,9 +261,9 @@ export default function CourseCatalogTable() {
   }));
 
   return (
-    <div className="mx-auto max-w-7xl space-y-8 px-4 py-8">
+    <div className="mx-auto max-w-7xl space-y-4 px-3 py-5 sm:space-y-8 sm:px-4 sm:py-8">
       <div
-        className="relative mb-8 text-center"
+        className="relative mb-6 text-center sm:mb-8"
         data-aos="fade-down"
         data-aos-duration="1000"
       >
@@ -271,41 +271,41 @@ export default function CourseCatalogTable() {
           <div className="absolute top-0 right-0">
             <Link
               href="/course-selection"
-              className="flex items-center gap-2 rounded-lg bg-gray-800 px-4 py-2 transition-colors hover:bg-gray-700"
+              className="flex items-center gap-1 rounded-lg bg-gray-800 px-2 py-1.5 transition-colors hover:bg-gray-700 sm:gap-2 sm:px-4 sm:py-2"
             >
-              <HiShoppingCart className="text-xl text-[#92e3a9]" />
-              <span className="text-white">
+              <HiShoppingCart className="text-lg text-[#92e3a9] sm:text-xl" />
+              <span className="text-sm text-white sm:text-base">
                 {cartCount} {cartCount === 1 ? "Course" : "Courses"}
               </span>
             </Link>
           </div>
         )}
-        <h1 className="mb-2 text-3xl font-bold tracking-tight text-gray-200 lg:text-5xl">
+        <h1 className="mb-1 text-2xl font-bold tracking-tight text-gray-200 sm:mb-2 sm:text-3xl md:text-4xl lg:text-5xl">
           Course Catalog
         </h1>
-        <p className="mt-4 text-lg text-gray-400">
+        <p className="mt-2 text-sm text-gray-400 sm:mt-4 sm:text-base md:text-lg">
           Browse and select courses for your upcoming semester
         </p>
       </div>
       {hasActiveRegistration && isAuthenticated && (
-        <div className="mb-6 rounded-md border border-yellow-500 bg-yellow-900/20 p-4">
-          <div className="flex">
-            <div className="flex-shrink-0">
+        <div className="mb-4 rounded-md border border-yellow-500 bg-yellow-900/20 p-3 sm:mb-6 sm:p-4">
+          <div className="flex flex-col sm:flex-row sm:items-start">
+            <div className="mb-2 flex-shrink-0 sm:mb-0">
               <HiExclamation className="h-5 w-5 text-yellow-400" />
             </div>
-            <div className="ml-3">
+            <div className="sm:ml-3">
               <h3 className="text-sm font-medium text-yellow-400">
                 Active Registration In Progress
               </h3>
-              <div className="mt-2 text-sm text-yellow-300">
+              <div className="mt-1.5 text-xs text-yellow-300 sm:mt-2 sm:text-sm">
                 <p>
                   You have an ongoing course registration that requires
                   approval. While this registration is in progress, you cannot
                   select additional courses or start a new registration.
                 </p>
-                <div className="mt-4">
+                <div className="mt-3 sm:mt-4">
                   <Link href="/registration-status">
-                    <button className="rounded bg-yellow-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-yellow-700">
+                    <button className="rounded bg-yellow-600 px-2 py-1 text-xs font-medium text-white hover:bg-yellow-700 sm:px-3 sm:py-1.5 sm:text-sm">
                       View Registration Status
                     </button>
                   </Link>
@@ -319,16 +319,16 @@ export default function CourseCatalogTable() {
         isAuthenticated &&
         !isDeadlineValid &&
         deadlineMessage && (
-          <div className="mb-6 rounded-md border border-red-500 bg-red-900/20 p-4">
-            <div className="flex">
-              <div className="flex-shrink-0">
+          <div className="mb-4 rounded-md border border-red-500 bg-red-900/20 p-3 sm:mb-6 sm:p-4">
+            <div className="flex flex-col sm:flex-row sm:items-start">
+              <div className="mb-2 flex-shrink-0 sm:mb-0">
                 <HiExclamation className="h-5 w-5 text-red-400" />
               </div>
-              <div className="ml-3">
+              <div className="sm:ml-3">
                 <h3 className="text-sm font-medium text-red-400">
                   Course Selection Not Available
                 </h3>
-                <div className="mt-2 text-sm text-red-300">
+                <div className="mt-1.5 text-xs text-red-300 sm:mt-2 sm:text-sm">
                   <p>{deadlineMessage}</p>
                 </div>
               </div>
@@ -336,23 +336,22 @@ export default function CourseCatalogTable() {
           </div>
         )}
       <div
-        className="rounded-lg border border-gray-800 bg-gray-900 p-6 shadow-xl"
+        className="rounded-lg border border-gray-800 bg-gray-900 p-4 shadow-xl sm:p-6"
         data-aos="fade-up"
         data-aos-duration="800"
       >
-        {" "}
-        <h2 className="mb-4 text-xl font-semibold text-white">
+        <h2 className="mb-3 text-lg font-semibold text-white sm:mb-4 sm:text-xl">
           Search & Filter
         </h2>
         <div
-          className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"
+          className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4"
           style={{ position: "relative", zIndex: 100 }}
         >
           <div className="relative">
             <Select
               value={selectedCredit}
               onChange={(e) => setSelectedCredit(e.target.value)}
-              className="w-full"
+              className="w-full text-sm sm:text-base"
             >
               <option value="all">All Credits</option>
               <option value="1">1 Credit</option>
@@ -416,6 +415,8 @@ export default function CourseCatalogTable() {
           </div>
 
           <div className="relative z-50">
+               <HiSearch className="absolute top-3.5 left-3 text-gray-500" />
+            
             <ReactSelect
               options={courseTitleOptions}
               placeholder="Search by title"
@@ -520,18 +521,18 @@ export default function CourseCatalogTable() {
         </div>
       </div>{" "}
       <div
-        className="rounded-lg border border-gray-800 bg-gray-900 p-6 shadow-xl"
+        className="rounded-lg border border-gray-800 bg-gray-900 p-4 shadow-xl sm:p-6"
         data-aos="fade-up"
         data-aos-delay="200"
         style={{ maxWidth: "100%", position: "relative", zIndex: 10 }}
       >
-        <h2 className="mb-4 text-xl font-semibold text-white">
+        <h2 className="mb-4 text-lg font-semibold text-white sm:text-xl">
           Available Courses
         </h2>
 
         {loading && (
-          <div className="flex items-center justify-center py-20">
-            <div className="h-12 w-12 animate-spin rounded-full border-t-2 border-b-2 border-[#92e3a9]"></div>
+          <div className="flex items-center justify-center py-10 sm:py-20">
+            <div className="h-10 w-10 animate-spin rounded-full border-t-2 border-b-2 border-[#92e3a9] sm:h-12 sm:w-12"></div>
           </div>
         )}
 
@@ -551,7 +552,8 @@ export default function CourseCatalogTable() {
           <div className="max-w-full overflow-x-auto">
             <div className="w-full">
               <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-                <table className="w-full table-auto text-left text-sm">
+                {/* Desktop view - Table */}
+                <table className="hidden w-full table-auto text-left text-sm md:table">
                   <thead>
                     <tr>
                       <th className="px-4 py-3 text-xs font-medium text-gray-400 uppercase">
@@ -668,7 +670,7 @@ export default function CourseCatalogTable() {
                                 ) : hasActiveRegistration ? (
                                   "Unavailable"
                                 ) : !isDeadlineValid ? (
-                                  "Registration Closed"
+                                  "Closed"
                                 ) : (
                                   "Select Course"
                                 )}
@@ -690,6 +692,118 @@ export default function CourseCatalogTable() {
                     )}
                   </tbody>
                 </table>
+
+                {/* Mobile view - Cards */}
+                <div className="space-y-4 md:hidden">
+                  {currentCourses.map((course) => (
+                    <div
+                      key={course.id}
+                      className="rounded-lg border border-gray-800 bg-gray-900 p-4 transition-colors hover:bg-gray-800"
+                    >
+                      <div className="mb-3 flex items-start justify-between">
+                        <div className="flex items-center gap-2">
+                          <HiBookOpen className="text-[#92e3a9]" />
+                          <span className="font-medium text-white">
+                            {course.code}
+                          </span>
+                        </div>
+                        <div className="text-right text-white">
+                          {course.credit} credits
+                        </div>
+                      </div>
+
+                      <h3 className="mb-2 font-medium text-white">
+                        {course.name}
+                      </h3>
+
+                      <div className="mb-3 space-y-2">
+                        <div className="flex items-center gap-2 text-sm text-gray-300">
+                          <HiUser className="text-[#92e3a9]" />
+                          <span>{course.instructor}</span>
+                        </div>
+
+                        <div className="flex items-start gap-2 text-sm text-gray-300">
+                          <HiOfficeBuilding className="mt-1 text-[#92e3a9]" />
+                          <div>
+                            <span>{course.department_name || "Unknown"}</span>
+                            {isAuthenticated &&
+                              user?.departmentId &&
+                              course.department_id.toString() ===
+                                user.departmentId.toString() && (
+                                <span className="ml-2 inline-block rounded-full bg-[#92e3a9]/20 px-2 py-0.5 text-xs text-[#92e3a9]">
+                                  My Department
+                                </span>
+                              )}
+                          </div>
+                        </div>
+
+                        <div className="flex items-start gap-2 text-sm text-gray-300">
+                          <span className="font-medium text-white">
+                            Prerequisites:
+                          </span>
+                          <div>
+                            {course.prerequisites &&
+                            course.prerequisites.length > 0 ? (
+                              <div className="space-y-1">
+                                {course.prerequisites.map((prereq, i) => (
+                                  <div
+                                    key={i}
+                                    className="flex items-center gap-1"
+                                  >
+                                    <HiBookOpen className="text-xs text-[#92e3a9]" />
+                                    <span>{prereq}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            ) : (
+                              <span className="text-gray-400">None</span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="mt-4">
+                        {selectedCourses.includes(course.id) ? (
+                          <Link
+                            href="/course-selection"
+                            className="block w-full rounded-md border border-[#92e3a9] bg-[#92e3a9]/10 px-3 py-2 text-center text-[#92e3a9] transition-colors hover:bg-[#92e3a9]/20"
+                          >
+                            View in Cart
+                          </Link>
+                        ) : (
+                          <button
+                            className="w-full rounded-md bg-[#92e3a9] px-3 py-2 text-sm font-medium text-black transition-all hover:bg-[#7acc91] hover:shadow-lg disabled:opacity-50"
+                            onClick={() => handleSelectCourse(course.id)}
+                            disabled={
+                              addingCourse === course.id ||
+                              hasActiveRegistration ||
+                              !isDeadlineValid
+                            }
+                          >
+                            {addingCourse === course.id ? (
+                              <div className="flex items-center justify-center">
+                                <div className="mr-2 h-4 w-4 animate-spin rounded-full border-t-2 border-b-2 border-black"></div>
+                                Adding...
+                              </div>
+                            ) : hasActiveRegistration ? (
+                              "Unavailable"
+                            ) : !isDeadlineValid ? (
+                              "Registration Closed"
+                            ) : (
+                              "Select Course"
+                            )}
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+
+                  {filtered.length === 0 && (
+                    <div className="rounded-lg border border-gray-800 bg-gray-900 p-4 text-center text-gray-400">
+                      No courses found.
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -697,19 +811,19 @@ export default function CourseCatalogTable() {
       </div>
       {/* Pagination */}
       {!loading && !error && filtered.length > 0 && (
-        <div className="mt-6 flex items-center justify-center gap-4">
+        <div className="mt-4 flex items-center justify-center gap-2 sm:mt-6 sm:gap-4">
           <button
-            className="rounded-md bg-[#92e3a9] px-4 py-2 text-black transition-all hover:bg-[#7acc91] hover:shadow-lg disabled:opacity-50"
+            className="rounded-md bg-[#92e3a9] px-3 py-1.5 text-sm text-black transition-all hover:bg-[#7acc91] hover:shadow-lg disabled:opacity-50 sm:px-4 sm:py-2 sm:text-base"
             disabled={currentPage === 1}
             onClick={() => handlePageChange(currentPage - 1)}
           >
             Previous
           </button>
-          <span className="flex items-center text-gray-400">
+          <span className="flex items-center text-xs text-gray-400 sm:text-sm">
             Page {currentPage} of {totalPages || 1}
           </span>
           <button
-            className="rounded-md bg-[#92e3a9] px-4 py-2 text-black transition-all hover:bg-[#7acc91] hover:shadow-lg disabled:opacity-50"
+            className="rounded-md bg-[#92e3a9] px-3 py-1.5 text-sm text-black transition-all hover:bg-[#7acc91] hover:shadow-lg disabled:opacity-50 sm:px-4 sm:py-2 sm:text-base"
             disabled={currentPage === totalPages || totalPages === 0}
             onClick={() => handlePageChange(currentPage + 1)}
           >
