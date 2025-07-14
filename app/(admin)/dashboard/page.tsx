@@ -11,41 +11,23 @@ import {
 } from "react-icons/hi";
 import { useAuth } from "@/app/context/AuthContext";
 import { useDepartmentDeadlines } from "@/app/hooks/useDepartmentDeadlines";
+import { useDashboardData } from "@/app/hooks/useDashboardData";
 
 export default function AdminDashboard() {
   const { user } = useAuth();
-  const { deadlines, loading, error } = useDepartmentDeadlines();
-
-  // Sample data for urgent approvals
-  const urgentApprovals = [
-    {
-      id: 1,
-      student: "Lionel Messi",
-      regId: "2024CSE001",
-      submissionDate: "2024-04-20",
-      courses: ["Database Systems", "Software Engineering"],
-      deadline: "2024-04-25",
-    },
-    {
-      id: 2,
-      student: "Emi Martinez",
-      regId: "2024CSE045",
-      submissionDate: "2024-04-21",
-      courses: ["Computer Networks", "Operating Systems"],
-      deadline: "2024-04-26",
-    },
-    {
-      id: 3,
-      student: "Paolo Dybala",
-      regId: "2024CSE078",
-      submissionDate: "2024-04-21",
-      courses: ["Web Development", "Data Structures"],
-      deadline: "2024-04-26",
-    },
-  ];
+  const {
+    deadlines,
+    loading: deadlinesLoading,
+    error: deadlinesError,
+  } = useDepartmentDeadlines();
+  const {
+    stats,
+    urgentApprovals,
+    loading: statsLoading,
+    error: statsError,
+  } = useDashboardData();
 
   // Format date strings to a more readable format
-  // eslint-disable-next-line
   const formatDate = (dateString: string) => {
     if (!dateString) return "Not set";
     const date = new Date(dateString);
@@ -120,6 +102,10 @@ export default function AdminDashboard() {
         },
       ];
 
+  // Loading state for all data
+  const isLoading = deadlinesLoading || statsLoading;
+  const hasError = deadlinesError || statsError;
+
   return (
     <div className="mx-auto max-w-7xl p-8">
       {/* Welcome Section */}
@@ -127,11 +113,13 @@ export default function AdminDashboard() {
         <h1 className="text-4xl font-bold text-white">
           Welcome, {user ? user.name : "Admin"}
         </h1>
-        {loading && (
-          <p className="mt-2 text-gray-400">Loading department deadlines...</p>
+        {isLoading && (
+          <p className="mt-2 text-gray-400">Loading dashboard data...</p>
         )}
-        {error && (
-          <p className="mt-2 text-red-400">Error loading deadlines: {error}</p>
+        {hasError && (
+          <p className="mt-2 text-red-400">
+            Error loading data: {deadlinesError || statsError}
+          </p>
         )}
       </div>
 
@@ -150,7 +138,9 @@ export default function AdminDashboard() {
               <p className="text-sm font-medium text-gray-400">
                 Total Approved
               </p>
-              <p className="text-2xl font-bold text-white">145</p>
+              <p className="text-2xl font-bold text-white">
+                {statsLoading ? "..." : stats?.approvedCount || 0}
+              </p>
             </div>
           </div>
         </Card>
@@ -164,7 +154,9 @@ export default function AdminDashboard() {
               <p className="text-sm font-medium text-gray-400">
                 Total Rejected
               </p>
-              <p className="text-2xl font-bold text-white">12</p>
+              <p className="text-2xl font-bold text-white">
+                {statsLoading ? "..." : stats?.rejectedCount || 0}
+              </p>
             </div>
           </div>
         </Card>
@@ -178,7 +170,9 @@ export default function AdminDashboard() {
               <p className="text-sm font-medium text-gray-400">
                 Pending Approvals
               </p>
-              <p className="text-2xl font-bold text-white">98</p>
+              <p className="text-2xl font-bold text-white">
+                {statsLoading ? "..." : stats?.pendingCount || 0}
+              </p>
             </div>
           </div>
         </Card>
@@ -192,7 +186,9 @@ export default function AdminDashboard() {
               <p className="text-sm font-medium text-gray-400">
                 Hours Remaining
               </p>
-              <p className="text-2xl font-bold text-white">8</p>
+              <p className="text-2xl font-bold text-white">
+                {statsLoading ? "..." : stats?.hoursRemaining || 0}
+              </p>
             </div>
           </div>
         </Card>
@@ -223,25 +219,39 @@ export default function AdminDashboard() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-700 bg-gray-900">
-              {urgentApprovals.map((approval) => (
-                <tr key={approval.id} className="hover:bg-gray-800">
-                  <td className="px-6 py-4 text-sm whitespace-nowrap text-white">
-                    {approval.student}
-                  </td>
-                  <td className="px-6 py-4 text-sm whitespace-nowrap text-white">
-                    {approval.regId}
-                  </td>
-                  <td className="px-6 py-4 text-sm whitespace-nowrap text-white">
-                    {approval.submissionDate}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-white">
-                    {approval.courses.join(", ")}
-                  </td>
-                  <td className="px-6 py-4 text-sm whitespace-nowrap text-white">
-                    {approval.deadline}
+              {statsLoading ? (
+                <tr>
+                  <td colSpan={5} className="px-6 py-4 text-center text-white">
+                    Loading urgent approvals...
                   </td>
                 </tr>
-              ))}
+              ) : urgentApprovals.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="px-6 py-4 text-center text-white">
+                    No urgent approvals pending
+                  </td>
+                </tr>
+              ) : (
+                urgentApprovals.map((approval) => (
+                  <tr key={approval.id} className="hover:bg-gray-800">
+                    <td className="px-6 py-4 text-sm whitespace-nowrap text-white">
+                      {approval.student}
+                    </td>
+                    <td className="px-6 py-4 text-sm whitespace-nowrap text-white">
+                      {approval.regId}
+                    </td>
+                    <td className="px-6 py-4 text-sm whitespace-nowrap text-white">
+                      {formatDate(approval.submissionDate)}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-white">
+                      {approval.courses.join(", ")}
+                    </td>
+                    <td className="px-6 py-4 text-sm whitespace-nowrap text-white">
+                      {formatDate(approval.deadline)}
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
@@ -253,10 +263,12 @@ export default function AdminDashboard() {
           Important Deadlines
         </h2>
 
-        {loading ? (
+        {deadlinesLoading ? (
           <div className="text-white">Loading deadlines...</div>
-        ) : error ? (
-          <div className="text-red-400">Failed to load deadlines: {error}</div>
+        ) : deadlinesError ? (
+          <div className="text-red-400">
+            Failed to load deadlines: {deadlinesError}
+          </div>
         ) : importantDeadlines.length === 0 ? (
           <div className="text-gray-400">
             No deadlines have been set for your department.
