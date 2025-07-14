@@ -15,6 +15,9 @@ import { useEffect, useState } from "react";
 import Select, { SingleValue } from "react-select";
 import { HiBuildingOffice } from "react-icons/hi2";
 
+// CSS utility classes for extra small screens (below sm breakpoint)
+import "../manage-accounts/responsive-utils.css";
+
 interface HOD {
   ID: number;
   NAME: string;
@@ -217,18 +220,18 @@ export default function ManageHOD() {
 
   return (
     <div
-      className="mx-auto max-w-7xl p-8"
+      className="mx-auto max-w-7xl p-4 md:p-8"
       data-aos="zoom-in"
       data-aos-duration="1000"
     >
       {/* {" "} */}
-      <div className="mb-8 flex items-center justify-between">
+      <div className="mb-8 flex flex-col items-center justify-between gap-4 sm:flex-row">
         <div>
-          <h1 className="flex items-center gap-3 text-4xl font-bold text-white">
+          <h1 className="flex items-center gap-3 text-2xl font-bold text-white sm:text-3xl md:text-4xl">
             <span className="rounded-lg bg-[#92e3a9] p-2">
-              <HiBuildingOffice className="h-8 w-8 text-gray-900" />
+              <HiBuildingOffice className="h-6 w-6 text-gray-900 sm:h-7 sm:w-7 md:h-8 md:w-8" />
             </span>
-            Manage HODs
+            <span className="break-words">Manage HODs</span>
           </h1>
         </div>
 
@@ -236,14 +239,13 @@ export default function ManageHOD() {
           style={{
             backgroundColor: "#92e3a9",
             color: "#000000",
-            marginTop: "20px",
             width: "fit-content",
             cursor: "pointer",
           }}
           onClick={() => setShowAddModal(true)}
-          className="flex items-center gap-2 bg-[#92e3a9] text-gray-900 transition-all duration-200 hover:bg-[#7ac892]"
+          className="flex w-full items-center justify-center gap-2 bg-[#92e3a9] text-sm text-gray-900 transition-all duration-200 hover:bg-[#7ac892] sm:w-auto md:text-base"
         >
-          <HiPlus className="h-5 w-5" />
+          <HiPlus className="h-4 w-4 md:h-5 md:w-5" />
           Add New HOD
         </Button>
       </div>
@@ -347,32 +349,32 @@ export default function ManageHOD() {
           />
         </div>
       </div>
-      <div className="rounded-lg border border-gray-800 bg-gray-900 p-6">
-        <div className="overflow-x-auto">
+      <div className="rounded-lg border border-gray-800 bg-gray-900 p-3 sm:p-6">
+        <div className="-mx-3 overflow-x-auto sm:mx-0">
           <table className="min-w-full divide-y divide-gray-800">
             <thead className="bg-gray-800">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
-                  <HiUser className="mr-2 inline text-[#92e3a9] group-hover:scale-110" />{" "}
-                  Name
+                <th className="px-3 py-2 text-left text-xs font-medium text-gray-400 uppercase sm:px-6 sm:py-3">
+                  <HiUser className="mr-1 inline text-[#92e3a9] group-hover:scale-110 sm:mr-2" />{" "}
+                  <span className="xs:inline hidden">Name</span>
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
-                  <HiBuildingOffice className="mr-2 inline text-[#92e3a9] group-hover:scale-110" />{" "}
-                  Department
+                <th className="px-3 py-2 text-left text-xs font-medium text-gray-400 uppercase sm:px-6 sm:py-3">
+                  <HiBuildingOffice className="mr-1 inline text-[#92e3a9] group-hover:scale-110 sm:mr-2" />{" "}
+                  <span className="xs:inline hidden">Dept</span>
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
-                  <HiMail className="mr-2 inline text-[#92e3a9] group-hover:scale-110" />{" "}
-                  Email
+                <th className="px-3 py-2 text-left text-xs font-medium text-gray-400 uppercase sm:px-6 sm:py-3">
+                  <HiMail className="mr-1 inline text-[#92e3a9] group-hover:scale-110 sm:mr-2" />{" "}
+                  <span className="xs:inline hidden">Email</span>
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
-                  <HiPhone className="mr-2 inline text-[#92e3a9] group-hover:scale-110" />{" "}
-                  Phone
+                <th className="px-3 py-2 text-left text-xs font-medium text-gray-400 uppercase sm:px-6 sm:py-3">
+                  <HiPhone className="mr-1 inline text-[#92e3a9] group-hover:scale-110 sm:mr-2" />{" "}
+                  <span className="xs:inline hidden">Phone</span>
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
-                  <HiStatusOnline className="mr-2 inline text-[#92e3a9] group-hover:scale-110" />{" "}
-                  Status
+                <th className="px-3 py-2 text-left text-xs font-medium text-gray-400 uppercase sm:px-6 sm:py-3">
+                  <HiStatusOnline className="mr-1 inline text-[#92e3a9] group-hover:scale-110 sm:mr-2" />{" "}
+                  <span className="xs:inline hidden">Status</span>
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+                <th className="px-3 py-2 text-left text-xs font-medium text-gray-400 uppercase sm:px-6 sm:py-3">
                   Actions
                 </th>
               </tr>
@@ -383,47 +385,49 @@ export default function ManageHOD() {
                   key={hod.ID}
                   className="bg-gray-900 transition-colors hover:bg-gray-800"
                 >
-                  <td className="px-6 py-4 whitespace-nowrap text-white">
+                  <td className="px-3 py-2 text-xs whitespace-nowrap text-white sm:px-6 sm:py-4 sm:text-sm md:text-base">
                     {hod.NAME}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-white">
+                  <td className="px-3 py-2 text-xs whitespace-nowrap text-white sm:px-6 sm:py-4 sm:text-sm md:text-base">
                     {departmentName(hod.DEPARTMENT_ID)}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-white">
+                  <td className="px-3 py-2 text-xs whitespace-nowrap text-white sm:px-6 sm:py-4 sm:text-sm md:text-base">
                     {hod.EMAIL}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-white">
+                  <td className="px-3 py-2 text-xs whitespace-nowrap text-white sm:px-6 sm:py-4 sm:text-sm md:text-base">
                     {hod.PHONE}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-white">
+                  <td className="px-3 py-2 text-xs whitespace-nowrap text-white sm:px-6 sm:py-4 sm:text-sm md:text-base">
                     {hod.STATUS === 1 ? (
-                      <HiStatusOnline className="mr-2 inline text-green-500" />
+                      <HiStatusOnline className="mr-1 inline text-green-500 sm:mr-2" />
                     ) : (
-                      <HiStatusOffline className="mr-2 inline text-red-500" />
+                      <HiStatusOffline className="mr-1 inline text-red-500 sm:mr-2" />
                     )}
-                    {hod.STATUS == 1 ? "Active" : "Inactive"}
+                    <span className="xs:inline hidden">
+                      {hod.STATUS == 1 ? "Active" : "Inactive"}
+                    </span>
                   </td>
                   {/* {" "} */}
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-3 py-2 whitespace-nowrap sm:px-6 sm:py-4">
                     {hod.STATUS === 0 ? (
                       <Button
                         size="xs"
                         style={{ backgroundColor: "#10b981", color: "#fff" }}
                         onClick={() => openModal(hod, "active")}
-                        className="flex items-center gap-1 px-3 py-1 transition-transform hover:scale-105"
+                        className="flex items-center gap-1 px-2 py-1 text-xs transition-transform hover:scale-105 sm:px-3 sm:text-sm"
                       >
-                        <HiCheck className="h-4 w-4 text-white" />
-                        <span>Activate</span>
+                        <HiCheck className="h-3 w-3 text-white sm:h-4 sm:w-4" />
+                        <span className="xs:inline hidden">Activate</span>
                       </Button>
                     ) : (
                       <Button
                         size="xs"
                         style={{ backgroundColor: "#ef4444", color: "#fff" }}
                         onClick={() => openModal(hod, "inactive")}
-                        className="flex items-center gap-1 px-3 py-1 transition-transform hover:scale-105"
+                        className="flex items-center gap-1 px-2 py-1 text-xs transition-transform hover:scale-105 sm:px-3 sm:text-sm"
                       >
-                        <HiX className="h-4 w-4 text-white" />
-                        <span>Deactivate</span>
+                        <HiX className="h-3 w-3 text-white sm:h-4 sm:w-4" />
+                        <span className="xs:inline hidden">Deactivate</span>
                       </Button>
                     )}
                   </td>
@@ -436,17 +440,22 @@ export default function ManageHOD() {
       {/* {" "} */}
       {/* Add HOD Modal */}
       <Modal show={showAddModal} onClose={() => setShowAddModal(false)}>
-        <div className="relative bg-gray-800 p-4">
-          <div className="mb-6 text-center">
-            <div className="bg-opacity-20 mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-gray">
-              <HiBuildingOffice className="h-10 w-10 text-[#92e3a9]" />
+        <div className="relative bg-gray-800 p-3 sm:p-4">
+          <div className="mb-4 text-center sm:mb-6">
+            <div className="bg-opacity-20 bg-gray mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full sm:mb-3 sm:h-16 sm:w-16">
+              <HiBuildingOffice className="h-8 w-8 text-[#92e3a9] sm:h-10 sm:w-10" />
             </div>
-            <div className="text-xl font-semibold text-white">Add New HOD</div>
+            <div className="text-lg font-semibold text-white sm:text-xl">
+              Add New HOD
+            </div>
           </div>
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             <div className="relative">
-              <Label htmlFor="name" className="mb-1 flex items-center gap-2">
-                <HiUser className="text-[#92e3a9]" />
+              <Label
+                htmlFor="name"
+                className="mb-1 flex items-center gap-1 text-sm sm:gap-2 sm:text-base"
+              >
+                <HiUser className="h-4 w-4 text-[#92e3a9] sm:h-5 sm:w-5" />
                 Name
               </Label>
               <TextInput
@@ -454,14 +463,15 @@ export default function ManageHOD() {
                 value={newHOD.name}
                 onChange={(e) => setNewHOD({ ...newHOD, name: e.target.value })}
                 placeholder="Enter name"
+                className="text-sm sm:text-base"
               />
             </div>
             <div className="relative">
               <Label
                 htmlFor="department"
-                className="mb-1 flex items-center gap-2"
+                className="mb-1 flex items-center gap-1 text-sm sm:gap-2 sm:text-base"
               >
-                <HiBuildingOffice className="text-[#92e3a9]" />
+                <HiBuildingOffice className="h-4 w-4 text-[#92e3a9] sm:h-5 sm:w-5" />
                 Department
               </Label>
               <select
@@ -472,7 +482,7 @@ export default function ManageHOD() {
                   setNewHOD({ ...newHOD, department: e.target.value })
                 }
                 required
-                className="focus:ring-primary w-full rounded-lg border border-gray-700 bg-[#323840] p-3 text-white focus:border-[#92e3a9] focus:ring-2 focus:outline-none"
+                className="focus:ring-primary w-full rounded-lg border border-gray-700 bg-[#323840] p-2 text-sm text-white focus:border-[#92e3a9] focus:ring-2 focus:outline-none sm:p-3 sm:text-base"
               >
                 <option value="" disabled>
                   Select your department
@@ -486,8 +496,11 @@ export default function ManageHOD() {
               </select>
             </div>
             <div className="relative">
-              <Label htmlFor="email" className="mb-1 flex items-center gap-2">
-                <HiMail className="text-[#92e3a9]" />
+              <Label
+                htmlFor="email"
+                className="mb-1 flex items-center gap-1 text-sm sm:gap-2 sm:text-base"
+              >
+                <HiMail className="h-4 w-4 text-[#92e3a9] sm:h-5 sm:w-5" />
                 Email
               </Label>
               <TextInput
@@ -498,11 +511,15 @@ export default function ManageHOD() {
                   setNewHOD({ ...newHOD, email: e.target.value })
                 }
                 placeholder="Enter email"
+                className="text-sm sm:text-base"
               />
             </div>
             <div className="relative">
-              <Label htmlFor="phone" className="mb-1 flex items-center gap-2">
-                <HiPhone className="text-[#92e3a9]" />
+              <Label
+                htmlFor="phone"
+                className="mb-1 flex items-center gap-1 text-sm sm:gap-2 sm:text-base"
+              >
+                <HiPhone className="h-4 w-4 text-[#92e3a9] sm:h-5 sm:w-5" />
                 Phone
               </Label>
               <TextInput
@@ -512,25 +529,30 @@ export default function ManageHOD() {
                   setNewHOD({ ...newHOD, phone: e.target.value })
                 }
                 placeholder="Enter phone number"
+                className="text-sm sm:text-base"
               />
             </div>
           </div>
-          <div className="mt-6 flex justify-end gap-4">
+          <div className="xs:flex-row mt-4 flex flex-col justify-end gap-2 sm:mt-6 sm:gap-4">
             <Button
               style={{
                 backgroundColor: "#92e3a9",
                 color: "black",
-                width: "fit-content",
+                width: "100%",
                 cursor: "pointer",
               }}
               onClick={handleAddHOD}
-              className="flex items-center gap-2 transition-transform hover:scale-105"
+              className="flex items-center justify-center gap-1 text-xs transition-transform hover:scale-105 sm:gap-2 sm:text-sm"
             >
-              <HiPlus className="h-4 w-4" />
+              <HiPlus className="h-3 w-3 sm:h-4 sm:w-4" />
               <span>Add HOD</span>
             </Button>
-        
-            <Button color="gray" onClick={() => setShowAddModal(false)}>
+
+            <Button
+              color="gray"
+              onClick={() => setShowAddModal(false)}
+              className="xs:w-auto w-full text-xs sm:text-sm"
+            >
               Cancel
             </Button>
           </div>
@@ -538,35 +560,39 @@ export default function ManageHOD() {
       </Modal>{" "}
       {/* Confirmation Modal */}
       <Modal show={showModal} size="md" onClose={() => setShowModal(false)}>
-        <div className="p-6 text-center">
+        <div className="p-4 text-center sm:p-6">
           {status === "active" ? (
-            <HiStatusOnline className="mx-auto mb-4 h-14 w-14 text-green-500" />
+            <HiStatusOnline className="mx-auto mb-3 h-10 w-10 text-green-500 sm:mb-4 sm:h-14 sm:w-14" />
           ) : (
-            <HiX className="mx-auto mb-4 h-14 w-14 text-red-500" />
+            <HiX className="mx-auto mb-3 h-10 w-10 text-red-500 sm:mb-4 sm:h-14 sm:w-14" />
           )}
-          <h3 className="mb-5 text-lg font-normal text-gray-300">
+          <h3 className="mb-4 text-sm font-normal text-gray-300 sm:mb-5 sm:text-base md:text-lg">
             Are you sure you want to{" "}
             <span className="font-semibold text-white">{status}</span> the
             account of{" "}
-            <span className="font-semibold text-white">
+            <span className="font-semibold break-words text-white">
               {selectedHOD?.NAME}
             </span>
             ?
           </h3>
-          <div className="flex justify-center gap-4">
+          <div className="xs:flex-row flex flex-col justify-center gap-2 sm:gap-4">
             <Button
               color={status === "active" ? "success" : "failure"}
               onClick={handleToggleStatus}
-              className="flex items-center gap-2"
+              className="flex items-center justify-center gap-2 text-xs sm:text-sm"
             >
               {status === "active" ? (
-                <HiCheck className="text-white" />
+                <HiCheck className="h-3 w-3 text-white sm:h-4 sm:w-4" />
               ) : (
-                <HiX className="text-white" />
+                <HiX className="h-3 w-3 text-white sm:h-4 sm:w-4" />
               )}
               Yes, {status}
             </Button>
-            <Button color="gray" onClick={() => setShowModal(false)}>
+            <Button
+              color="gray"
+              onClick={() => setShowModal(false)}
+              className="text-xs sm:text-sm"
+            >
               Cancel
             </Button>
           </div>
