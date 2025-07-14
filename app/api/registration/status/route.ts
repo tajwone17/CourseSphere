@@ -5,15 +5,18 @@ export async function GET(request: NextRequest) {
   try {
     const userId = request.nextUrl.searchParams.get("userId");
     const bundleId = request.nextUrl.searchParams.get("bundleId");
-    
+
     if (!userId && !bundleId) {
-      return Response.json({ 
-        error: "Either userId or bundleId is required" 
-      }, { status: 400 });
+      return Response.json(
+        {
+          error: "Either userId or bundleId is required",
+        },
+        { status: 400 },
+      );
     }
 
     let query, params;
-    
+
     if (bundleId) {
       // Get by specific bundle ID
       query = `
@@ -21,6 +24,7 @@ export async function GET(request: NextRequest) {
           rb.*, 
           s.NAME as student_name,
           s.EMAIL as student_email,
+          s.REGISTRATION_NUMBER as student_registration_number,
           d.DEPARTMENT_NAME as department_name
         FROM registration_bundle rb
         JOIN student s ON rb.STUDENT_ID = s.ID
@@ -35,6 +39,7 @@ export async function GET(request: NextRequest) {
           rb.*, 
           s.NAME as student_name,
           s.EMAIL as student_email,
+          s.REGISTRATION_NUMBER as student_registration_number,
           d.DEPARTMENT_NAME as department_name
         FROM registration_bundle rb
         JOIN student s ON rb.STUDENT_ID = s.ID
@@ -45,18 +50,22 @@ export async function GET(request: NextRequest) {
       `;
       params = [userId];
     }
-
+    //eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [bundles]: any = await db.query(query, params);
-    
+
     if (!bundles || bundles.length === 0) {
-      return Response.json({ 
-        error: "No registration found" 
-      }, { status: 404 });
+      return Response.json(
+        {
+          error: "No registration found",
+        },
+        { status: 404 },
+      );
     }
 
     const bundle = bundles[0];
-    
+
     // Get the registered courses for this bundle
+    //eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [courses]: any = await db.query(
       `SELECT 
         cr.ID as registration_id,
@@ -73,33 +82,36 @@ export async function GET(request: NextRequest) {
       JOIN course c ON cr.COURSE_ID = c.ID
       LEFT JOIN advisor a ON cr.ADVISOR_ID = a.ID
       WHERE cr.BUNDLE_ID = ?`,
-      [bundle.ID]
+      [bundle.ID],
     );
-    
+
     // Check if courses have been added to registered_courses
-    if (bundle.STATUS === 'COMPLETED') {
+    if (bundle.STATUS === "COMPLETED") {
       for (let i = 0; i < courses.length; i++) {
+        //eslint-disable-next-line @typescript-eslint/no-explicit-any
         const [registeredCourse]: any = await db.query(
           `SELECT ID FROM registered_courses 
            WHERE STUDENT_ID = ? AND COURSE_ID = ?`,
-          [bundle.STUDENT_ID, courses[i].COURSE_ID]
+          [bundle.STUDENT_ID, courses[i].COURSE_ID],
         );
-        
-        courses[i].isRegistered = registeredCourse && registeredCourse.length > 0;
+
+        courses[i].isRegistered =
+          registeredCourse && registeredCourse.length > 0;
       }
     }
 
     // Get payment info if exists
+    //eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [payments]: any = await db.query(
       `SELECT * FROM payment WHERE BUNDLE_ID = ?`,
-      [bundle.ID]
+      [bundle.ID],
     );
 
     // Create human-readable status message
     let statusMessage = "";
     let nextStep = "";
-    
-    switch(bundle.STATUS) {
+
+    switch (bundle.STATUS) {
       case "PENDING":
         statusMessage = "Your registration is pending review.";
         nextStep = "Wait for advisor approval.";
@@ -108,8 +120,7 @@ export async function GET(request: NextRequest) {
         statusMessage = "Your registration is partially approved.";
         if (!bundle.ADVISOR_APPROVAL)
           nextStep = "Waiting for advisor approval.";
-        else if (!bundle.HOD_APPROVAL)
-          nextStep = "Waiting for HOD approval.";
+        else if (!bundle.HOD_APPROVAL) nextStep = "Waiting for HOD approval.";
         else if (!bundle.ACCOUNTS_ADMIN_APPROVAL)
           nextStep = "Waiting for accounts approval.";
         break;
@@ -117,12 +128,12 @@ export async function GET(request: NextRequest) {
         statusMessage = "Your registration is approved.";
         if (bundle.PAYMENT_STATUS === "PENDING")
           nextStep = "Proceed to payment.";
-        else
-          nextStep = "Your registration is complete.";
+        else nextStep = "Your registration is complete.";
         break;
       case "REJECTED":
         statusMessage = "Your registration was rejected.";
-        nextStep = "Please contact your advisor or department for more information.";
+        nextStep =
+          "Please contact your advisor or department for more information.";
         break;
       case "COMPLETED":
         statusMessage = "Your registration is complete.";
@@ -130,20 +141,23 @@ export async function GET(request: NextRequest) {
         break;
     }
 
-    return Response.json({ 
-      success: true, 
+    return Response.json({
+      success: true,
       registration: {
         ...bundle,
         courses,
         payments: payments || [],
         statusMessage,
-        nextStep
-      }
+        nextStep,
+      },
     });
   } catch (error) {
     console.error("Error fetching registration status:", error);
-    return Response.json({ 
-      error: "Failed to fetch registration status" 
-    }, { status: 500 });
+    return Response.json(
+      {
+        error: "Failed to fetch registration status",
+      },
+      { status: 500 },
+    );
   }
 }

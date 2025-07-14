@@ -31,6 +31,7 @@ interface RegistrationData {
   TOTAL_AMOUNT: number;
   student_name: string;
   student_email: string;
+  student_registration_number: string;
   department_name: string;
   courses: CourseRegistration[];
   payments: Payment[];
@@ -458,10 +459,10 @@ export default function RegistrationStatusPage() {
               </div>
               <div>
                 <dt className="text-sm font-medium text-gray-400">
-                  Student ID
+                  Registration Number
                 </dt>
                 <dd className="mt-1 text-base text-white">
-                  {registration.STUDENT_ID}
+                  {registration.student_registration_number}
                 </dd>
               </div>
               <div>
