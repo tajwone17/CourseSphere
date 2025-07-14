@@ -66,7 +66,7 @@ export default function RegistrationReviewPage() {
   const [approvalStatus, setApprovalStatus] = useState<boolean | null>(null);
   // const [advisorId, setAdvisorId] = useState<number | null>(null);
   const [coursesApproval, setCoursesApproval] = useState<{
-    [key: number]: { approved: boolean };
+    [key: number]: { approved: boolean; rejected: boolean };
   }>({});
   const [advisorComment, setAdvisorComment] = useState<string>("");
   const [totalAmount, setTotalAmount] = useState<string>("");
@@ -104,11 +104,12 @@ export default function RegistrationReviewPage() {
 
           // Initialize course approvals
           const initialCoursesApproval: {
-            [key: number]: { approved: boolean };
+            [key: number]: { approved: boolean; rejected: boolean };
           } = {};
           data.courses.forEach((course: CourseRegistration) => {
             initialCoursesApproval[course.COURSE_ID] = {
               approved: course.STATUS === "APPROVED",
+              rejected: course.STATUS === "REJECTED",
             };
           });
           setCoursesApproval(initialCoursesApproval);
@@ -137,6 +138,18 @@ export default function RegistrationReviewPage() {
       [courseId]: {
         ...prev[courseId],
         approved,
+        rejected: approved ? false : prev[courseId]?.rejected || false,
+      },
+    }));
+  };
+
+  const handleCourseRejectionChange = (courseId: number, rejected: boolean) => {
+    setCoursesApproval((prev) => ({
+      ...prev,
+      [courseId]: {
+        ...prev[courseId],
+        rejected,
+        approved: rejected ? false : prev[courseId]?.approved || false,
       },
     }));
   };
@@ -175,6 +188,7 @@ export default function RegistrationReviewPage() {
       const courseApprovals = Object.keys(coursesApproval).map((courseId) => ({
         courseId: parseInt(courseId),
         approved: coursesApproval[parseInt(courseId)].approved,
+        rejected: coursesApproval[parseInt(courseId)].rejected,
       }));
 
       // Different payloads based on user role
@@ -576,7 +590,7 @@ export default function RegistrationReviewPage() {
                 </th>
                 {userRole === "advisor" && canApprove && (
                   <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-400 uppercase">
-                    Approve
+                    Action
                   </th>
                 )}
               </tr>
@@ -611,25 +625,51 @@ export default function RegistrationReviewPage() {
                   </td>
                   {userRole === "advisor" && canApprove && (
                     <td className="px-6 py-4 text-sm whitespace-nowrap">
-                      <div className="flex items-center">
-                        <Checkbox
-                          checked={
-                            coursesApproval[course.COURSE_ID]?.approved || false
-                          }
-                          onChange={(e) =>
-                            handleCourseApprovalChange(
-                              course.COURSE_ID,
-                              e.target.checked,
-                            )
-                          }
-                          className="h-4 w-4 rounded border-gray-600 bg-gray-700 text-green-500 focus:ring-2 focus:ring-green-500"
-                        />
-                        <Label
-                          htmlFor={`approve-${course.COURSE_ID}`}
-                          className="ml-2 text-white"
-                        >
-                          Approve
-                        </Label>
+                      <div className="flex flex-col items-start space-y-2">
+                        <div className="flex items-center">
+                          <Checkbox
+                            id={`approve-${course.COURSE_ID}`}
+                            checked={
+                              coursesApproval[course.COURSE_ID]?.approved ||
+                              false
+                            }
+                            onChange={(e) =>
+                              handleCourseApprovalChange(
+                                course.COURSE_ID,
+                                e.target.checked,
+                              )
+                            }
+                            className="h-4 w-4 rounded border-gray-600 bg-gray-700 text-green-500 focus:ring-2 focus:ring-green-500"
+                          />
+                          <Label
+                            htmlFor={`approve-${course.COURSE_ID}`}
+                            className="ml-2 text-green-400"
+                          >
+                            Approve
+                          </Label>
+                        </div>
+                        <div className="flex items-center">
+                          <Checkbox
+                            id={`reject-${course.COURSE_ID}`}
+                            checked={
+                              coursesApproval[course.COURSE_ID]?.rejected ||
+                              false
+                            }
+                            onChange={(e) =>
+                              handleCourseRejectionChange(
+                                course.COURSE_ID,
+                                e.target.checked,
+                              )
+                            }
+                            className="h-4 w-4 rounded border-gray-600 bg-gray-700 text-red-500 focus:ring-2 focus:ring-red-500"
+                          />
+                          <Label
+                            htmlFor={`reject-${course.COURSE_ID}`}
+                            className="ml-2 text-red-400"
+                          >
+                            Reject
+                          </Label>
+                        </div>
                       </div>
                     </td>
                   )}
