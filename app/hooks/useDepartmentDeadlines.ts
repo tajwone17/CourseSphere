@@ -19,7 +19,7 @@ export function useDepartmentDeadlines() {
 
   useEffect(() => {
     const fetchDeadlines = async () => {
-      if (!user || user.role === "accounts_admin") {
+      if (!user) {
         setLoading(false);
         return;
       }
@@ -28,19 +28,22 @@ export function useDepartmentDeadlines() {
         let departmentId;
 
         // Get department ID based on user role
-        if (user.role === "admin") {
-          // Super admin might not have a specific department
-          setLoading(false);
-          return;
-        } else if (["hod", "advisor"].includes(user.role)) {
+        if (
+          user.role === "admin" ||
+          user.role === "accounts_admin" ||
+          user.role === "exam_controller"
+        ) {
+          // These roles may not have a specific department
+          // We'll fetch the first available department's deadlines for them
+          const deptResponse = await fetch("/api/departments");
+          if (deptResponse.ok) {
+            const deptData = await deptResponse.json();
+            if (deptData.departments && deptData.departments.length > 0) {
+              departmentId = deptData.departments[0].ID;
+            }
+          }
+        } else if (["hod", "advisor", "student"].includes(user.role)) {
           departmentId = user.departmentId;
-        } else if (user.role === "student") {
-          departmentId = user.departmentId;
-        } else if (user.role === "exam_controller") {
-          // Exam controller might see all departments or specific ones
-          // For now, we'll skip fetching if role is exam_controller
-          setLoading(false);
-          return;
         }
 
         if (!departmentId) {
@@ -61,8 +64,12 @@ export function useDepartmentDeadlines() {
         const data = await response.json();
         if (data.deadlines && data.deadlines.length > 0) {
           setDeadlines(data.deadlines[0]);
+        } else {
+          // Set to null if no deadlines found
+          setDeadlines(null);
         }
       } catch (err) {
+        console.error("Error fetching deadlines:", err);
         setError(err instanceof Error ? err.message : "An error occurred");
       } finally {
         setLoading(false);

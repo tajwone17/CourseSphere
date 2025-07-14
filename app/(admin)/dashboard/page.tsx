@@ -30,12 +30,21 @@ export default function AdminDashboard() {
   // Format date strings to a more readable format
   const formatDate = (dateString: string) => {
     if (!dateString) return "Not set";
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
+    try {
+      // Parse the date string from MySQL format (YYYY-MM-DD)
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) {
+        return "Invalid date";
+      }
+      return date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+    } catch (error) {
+      console.error("Error formatting date:", error);
+      return "Date error";
+    }
   };
 
   // Generate dynamic deadline items from fetched data
@@ -44,6 +53,7 @@ export default function AdminDashboard() {
 
     const items = [];
 
+    // Add course registration without fine deadline if it exists
     if (deadlines.course_registration_without_fine) {
       items.push({
         id: 1,
@@ -54,6 +64,7 @@ export default function AdminDashboard() {
       });
     }
 
+    // Add course registration with fine deadline if it exists
     if (deadlines.course_registration_with_fine) {
       items.push({
         id: 2,
@@ -64,6 +75,7 @@ export default function AdminDashboard() {
       });
     }
 
+    // Add admit card collection deadline if it exists
     if (deadlines.admit_card_collection) {
       items.push({
         id: 3,
@@ -76,31 +88,8 @@ export default function AdminDashboard() {
     return items;
   };
 
-  // Use dynamic deadlines if available, otherwise use sample data
-  const importantDeadlines = deadlines
-    ? generateDeadlineItems()
-    : [
-        {
-          id: 1,
-          title: "Course Registration Deadline",
-          date: "2024-04-30",
-          description:
-            "Last date for students to submit course registration forms",
-        },
-        {
-          id: 2,
-          title: "Admit Card Collection",
-          date: "2024-05-15",
-          description: "Deadline for Collecting Admit Card",
-        },
-        {
-          id: 3,
-          title: "Course Drop Period Ends",
-          date: "2024-05-01",
-          description:
-            "Final date for students to drop courses without penalty",
-        },
-      ];
+  // Use dynamic deadlines from the database
+  const importantDeadlines = generateDeadlineItems();
 
   // Loading state for all data
   const isLoading = deadlinesLoading || statsLoading;
@@ -270,7 +259,7 @@ export default function AdminDashboard() {
             Failed to load deadlines: {deadlinesError}
           </div>
         ) : importantDeadlines.length === 0 ? (
-          <div className="text-gray-400">
+          <div className="rounded-lg border border-gray-700 bg-gray-800 p-4 text-gray-400">
             No deadlines have been set for your department.
           </div>
         ) : (
