@@ -37,20 +37,56 @@ export async function GET() {
 
     // Get remaining hours before next deadline
     let hoursRemaining = 0;
-    // Get the closest deadline
+    let nextDeadline = null;
+    
+    // Get all deadlines
     const [deadlinesResult] = await db.query(
-      "SELECT * FROM deadlines ORDER BY course_registration_without_fine ASC LIMIT 1",
+      "SELECT * FROM deadlines WHERE course_registration_without_fine >= CURDATE() OR course_registration_with_fine >= CURDATE() OR admit_card_collection >= CURDATE()"
     );
 
     const deadlines = deadlinesResult as Deadline[];
+    const now = new Date();
 
     if (deadlines && deadlines.length > 0) {
-      const closestDeadline = new Date(
-        deadlines[0].course_registration_without_fine,
-      );
-      const now = new Date();
-      const diff = closestDeadline.getTime() - now.getTime();
-      hoursRemaining = Math.max(0, Math.floor(diff / (1000 * 60 * 60)));
+      // Find closest deadline date
+      let closestTimestamp = Number.MAX_VALUE;
+      let closestDeadlineType = "";
+      let closestDeadlineDate = "";
+      
+      // Check all deadlines from all departments
+      for (const deadline of deadlines) {
+        // Helper function to check each deadline type
+        const checkDate = (dateStr: string | null, type: string) => {
+          if (!dateStr) return;
+          
+          const deadlineDate = new Date(dateStr);
+          // Skip past dates
+          if (deadlineDate <= now) return;
+          
+          const timestamp = deadlineDate.getTime();
+          if (timestamp < closestTimestamp) {
+            closestTimestamp = timestamp;
+            closestDeadlineType = type;
+            closestDeadlineDate = dateStr;
+          }
+        };
+        
+        // Check all deadline types
+        checkDate(deadline.course_registration_without_fine, "Course Registration (Without Fine)");
+        checkDate(deadline.course_registration_with_fine, "Course Registration (With Fine)");
+        checkDate(deadline.admit_card_collection, "Admit Card Collection");
+      }
+
+      // Calculate hours remaining to the closest deadline
+      if (closestTimestamp !== Number.MAX_VALUE) {
+        const diff = closestTimestamp - now.getTime();
+        hoursRemaining = Math.max(0, Math.floor(diff / (1000 * 60 * 60)));
+        
+        nextDeadline = {
+          type: closestDeadlineType,
+          date: closestDeadlineDate
+        };
+      }
     }
 
     return NextResponse.json({
@@ -58,6 +94,7 @@ export async function GET() {
       rejectedCount,
       pendingCount,
       hoursRemaining,
+      nextDeadline,
     });
   } catch (error) {
     console.error("Error fetching dashboard stats:", error);

@@ -5,6 +5,10 @@ interface DashboardStats {
   rejectedCount: number;
   pendingCount: number;
   hoursRemaining: number;
+  nextDeadline?: {
+    type: string;
+    date: string;
+  };
 }
 
 interface UrgentApproval {

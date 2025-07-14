@@ -27,6 +27,17 @@ export default function AdminDashboard() {
     error: statsError,
   } = useDashboardData();
 
+  // Get color based on urgency level
+  const getUrgencyColor = (hours: number): string => {
+    if (hours <= 24) {
+      return "bg-red-500"; // urgent - less than 24 hours
+    } else if (hours <= 72) {
+      return "bg-yellow-500"; // warning - less than 3 days
+    } else {
+      return "bg-[#92e3a9]"; // ok - more than 3 days
+    }
+  };
+
   // Format date strings to a more readable format
   const formatDate = (dateString: string) => {
     if (!dateString) return "Not set";
@@ -44,6 +55,20 @@ export default function AdminDashboard() {
     } catch (error) {
       console.error("Error formatting date:", error);
       return "Date error";
+    }
+  };
+
+  // Format hours into days and hours for better readability
+  const formatHoursRemaining = (hours: number): string => {
+    if (hours <= 0) return "Deadline passed";
+
+    const days = Math.floor(hours / 24);
+    const remainingHours = hours % 24;
+
+    if (days > 0) {
+      return `${days}d ${remainingHours}h`;
+    } else {
+      return `${remainingHours}h`;
     }
   };
 
@@ -168,16 +193,21 @@ export default function AdminDashboard() {
 
         <Card className="border-gray-700 bg-gray-800">
           <div className="flex items-center">
-            <div className="mr-4 rounded-lg bg-[#92e3a9] p-3">
+            <div className={`mr-4 rounded-lg p-3 ${getUrgencyColor(stats?.hoursRemaining || 0)}`}>
               <HiClock className="h-6 w-6 text-gray-900" />
             </div>
             <div>
               <p className="text-sm font-medium text-gray-400">
-                Hours Remaining
+                Next Deadline In
               </p>
               <p className="text-2xl font-bold text-white">
-                {statsLoading ? "..." : stats?.hoursRemaining || 0}
+                {statsLoading ? "..." : formatHoursRemaining(stats?.hoursRemaining || 0)}
               </p>
+              {stats?.nextDeadline && (
+                <p className="text-xs text-gray-400 mt-1">
+                  {stats.nextDeadline.type}: {formatDate(stats.nextDeadline.date)}
+                </p>
+              )}
             </div>
           </div>
         </Card>
