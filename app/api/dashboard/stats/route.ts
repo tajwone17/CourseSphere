@@ -1,4 +1,4 @@
-import {  NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import db from "@/app/lib/db";
 
 export async function GET() {
@@ -38,10 +38,10 @@ export async function GET() {
     // Get remaining hours before next deadline
     let hoursRemaining = 0;
     let nextDeadline = null;
-    
+
     // Get all deadlines
     const [deadlinesResult] = await db.query(
-      "SELECT * FROM deadlines WHERE course_registration_without_fine >= CURDATE() OR course_registration_with_fine >= CURDATE() OR admit_card_collection >= CURDATE()"
+      "SELECT * FROM deadlines WHERE course_registration_without_fine >= CURDATE() OR course_registration_with_fine >= CURDATE() OR admit_card_collection >= CURDATE()",
     );
 
     const deadlines = deadlinesResult as Deadline[];
@@ -52,17 +52,17 @@ export async function GET() {
       let closestTimestamp = Number.MAX_VALUE;
       let closestDeadlineType = "";
       let closestDeadlineDate = "";
-      
+
       // Check all deadlines from all departments
       for (const deadline of deadlines) {
         // Helper function to check each deadline type
         const checkDate = (dateStr: string | null, type: string) => {
           if (!dateStr) return;
-          
+
           const deadlineDate = new Date(dateStr);
           // Skip past dates
           if (deadlineDate <= now) return;
-          
+
           const timestamp = deadlineDate.getTime();
           if (timestamp < closestTimestamp) {
             closestTimestamp = timestamp;
@@ -70,10 +70,16 @@ export async function GET() {
             closestDeadlineDate = dateStr;
           }
         };
-        
+
         // Check all deadline types
-        checkDate(deadline.course_registration_without_fine, "Course Registration (Without Fine)");
-        checkDate(deadline.course_registration_with_fine, "Course Registration (With Fine)");
+        checkDate(
+          deadline.course_registration_without_fine,
+          "Course Registration (Without Fine)",
+        );
+        checkDate(
+          deadline.course_registration_with_fine,
+          "Course Registration (With Fine)",
+        );
         checkDate(deadline.admit_card_collection, "Admit Card Collection");
       }
 
@@ -81,10 +87,10 @@ export async function GET() {
       if (closestTimestamp !== Number.MAX_VALUE) {
         const diff = closestTimestamp - now.getTime();
         hoursRemaining = Math.max(0, Math.floor(diff / (1000 * 60 * 60)));
-        
+
         nextDeadline = {
           type: closestDeadlineType,
-          date: closestDeadlineDate
+          date: closestDeadlineDate,
         };
       }
     }

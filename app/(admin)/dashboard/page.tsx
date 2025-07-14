@@ -193,7 +193,9 @@ export default function AdminDashboard() {
 
         <Card className="border-gray-700 bg-gray-800">
           <div className="flex items-center">
-            <div className={`mr-4 rounded-lg p-3 ${getUrgencyColor(stats?.hoursRemaining || 0)}`}>
+            <div
+              className={`mr-4 rounded-lg p-3 ${getUrgencyColor(stats?.hoursRemaining || 0)}`}
+            >
               <HiClock className="h-6 w-6 text-gray-900" />
             </div>
             <div>
@@ -201,11 +203,14 @@ export default function AdminDashboard() {
                 Next Deadline In
               </p>
               <p className="text-2xl font-bold text-white">
-                {statsLoading ? "..." : formatHoursRemaining(stats?.hoursRemaining || 0)}
+                {statsLoading
+                  ? "..."
+                  : formatHoursRemaining(stats?.hoursRemaining || 0)}
               </p>
               {stats?.nextDeadline && (
-                <p className="text-xs text-gray-400 mt-1">
-                  {stats.nextDeadline.type}: {formatDate(stats.nextDeadline.date)}
+                <p className="mt-1 text-xs text-gray-400">
+                  {stats.nextDeadline.type}:{" "}
+                  {formatDate(stats.nextDeadline.date)}
                 </p>
               )}
             </div>
