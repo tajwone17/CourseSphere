@@ -333,14 +333,14 @@ export default function ManageCourse() {
 
   return (
     <div
-      className="mx-auto max-w-5xl p-8"
+      className="mx-auto max-w-5xl p-4 sm:p-6 md:p-8"
       data-aos="zoom-in"
       data-aos-duration="1000"
     >
-      <div className="mb-8 flex items-center justify-between">
+      <div className="mb-6 flex flex-col justify-between sm:mb-8 sm:flex-row sm:items-center">
         <div>
-          <h1 className="flex items-center text-4xl font-bold text-white">
-            <HiDocumentText className="mr-3 h-10 w-10 text-[#92e3a9]" />
+          <h1 className="flex items-center text-2xl font-bold text-white sm:text-3xl md:text-4xl">
+            <HiDocumentText className="mr-2 h-6 w-6 text-[#92e3a9] sm:mr-3 sm:h-8 sm:w-8 md:h-10 md:w-10" />
             Manage Courses
           </h1>
         </div>
@@ -348,50 +348,52 @@ export default function ManageCourse() {
           style={{
             backgroundColor: "#92e3a9",
             color: "#000",
-            marginTop: 20,
+            marginTop: "10px",
             width: "fit-content",
             cursor: "pointer",
           }}
           onClick={() => setShowAddModal(true)}
+          className="flex items-center gap-1 text-sm sm:gap-2 sm:text-base"
         >
-          <HiPlus className="mr-2" /> Add New Course
+          <HiPlus className="h-4 w-4 sm:h-5 sm:w-5" />
+          <span>Add New Course</span>
         </Button>
       </div>
-      <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
+      <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 md:grid-cols-4">
         <div className="relative">
           <input
             type="text"
-            className="w-full rounded border border-gray-700 bg-gray-800 py-2 pr-4 pl-10 text-white placeholder-gray-400 focus:border-[#92e3a9] focus:outline-none"
+            className="w-full rounded border border-gray-700 bg-gray-800 py-2 pr-4 pl-8 text-sm text-white placeholder-gray-400 focus:border-[#92e3a9] focus:outline-none sm:pl-10 sm:text-base"
             placeholder="Search by code"
             value={codeSearch}
             onChange={handleCodeSearchChange}
           />
-          <div className="absolute top-0 left-0 flex h-full items-center pl-3">
-            <HiOutlineHashtag className="h-5 w-5 text-[#92e3a9]" />
+          <div className="absolute top-0 left-0 flex h-full items-center pl-2 sm:pl-3">
+            <HiOutlineHashtag className="h-4 w-4 text-[#92e3a9] sm:h-5 sm:w-5" />
           </div>
         </div>
         <div className="relative">
           <input
             type="text"
-            className="w-full rounded border border-gray-700 bg-gray-800 py-2 pr-4 pl-10 text-white placeholder-gray-400 focus:border-[#92e3a9] focus:outline-none"
+            className="w-full rounded border border-gray-700 bg-gray-800 py-2 pr-4 pl-8 text-sm text-white placeholder-gray-400 focus:border-[#92e3a9] focus:outline-none sm:pl-10 sm:text-base"
             placeholder="Search by title"
             value={titleSearch}
             onChange={handleTitleSearchChange}
           />
-          <div className="absolute top-0 left-0 flex h-full items-center pl-3">
-            <HiDocumentText className="h-5 w-5 text-[#92e3a9]" />
+          <div className="absolute top-0 left-0 flex h-full items-center pl-2 sm:pl-3">
+            <HiDocumentText className="h-4 w-4 text-[#92e3a9] sm:h-5 sm:w-5" />
           </div>
         </div>
         <div className="relative">
           <input
             type="text"
-            className="w-full rounded border border-gray-700 bg-gray-800 py-2 pr-4 pl-10 text-white placeholder-gray-400 focus:border-[#92e3a9] focus:outline-none"
+            className="w-full rounded border border-gray-700 bg-gray-800 py-2 pr-4 pl-8 text-sm text-white placeholder-gray-400 focus:border-[#92e3a9] focus:outline-none sm:pl-10 sm:text-base"
             placeholder="Search by instructor"
             value={instructorSearch}
             onChange={handleInstructorSearchChange}
           />
-          <div className="absolute top-0 left-0 flex h-full items-center pl-3">
-            <HiUser className="h-5 w-5 text-[#92e3a9]" />
+          <div className="absolute top-0 left-0 flex h-full items-center pl-2 sm:pl-3">
+            <HiUser className="h-4 w-4 text-[#92e3a9] sm:h-5 sm:w-5" />
           </div>
         </div>
         <div className="relative">
@@ -406,41 +408,46 @@ export default function ManageCourse() {
             styles={{
               control: (baseStyles) => ({
                 ...baseStyles,
-                backgroundColor: "#1f2937", // Dark background
+                backgroundColor: "#1f2937",
                 borderColor: "#374151",
                 color: "white",
+                fontSize: "0.875rem",
+                minHeight: "40px",
                 "&:hover": {
                   borderColor: "#4b5563",
                 },
               }),
               menu: (baseStyles) => ({
                 ...baseStyles,
-                backgroundColor: "#1f2937", // Dark background for dropdown menu
+                backgroundColor: "#1f2937",
               }),
               option: (baseStyles, { isFocused, isSelected }) => ({
                 ...baseStyles,
                 backgroundColor: isSelected
-                  ? "#92e3a9" // Primary green color for selected item
+                  ? "#92e3a9"
                   : isFocused
-                    ? "#374151" // Slightly lighter dark for hover
-                    : "#1f2937", // Dark background
+                    ? "#374151"
+                    : "#1f2937",
                 color: isSelected ? "black" : "white",
                 cursor: "pointer",
+                fontSize: "0.875rem",
                 ":active": {
                   backgroundColor: isSelected ? "#92e3a9" : "#374151",
                 },
               }),
               singleValue: (baseStyles) => ({
                 ...baseStyles,
-                color: "white", // Text color for selected value
+                color: "white",
+                fontSize: "0.875rem",
               }),
               placeholder: (baseStyles) => ({
                 ...baseStyles,
-                color: "#9ca3af", // Light gray for placeholder
+                color: "#9ca3af",
+                fontSize: "0.875rem",
               }),
               dropdownIndicator: (baseStyles) => ({
                 ...baseStyles,
-                color: "#9ca3af", // Light gray for dropdown arrow
+                color: "#9ca3af",
                 "&:hover": {
                   color: "white",
                 },
@@ -452,6 +459,7 @@ export default function ManageCourse() {
               input: (baseStyles) => ({
                 ...baseStyles,
                 color: "white",
+                fontSize: "0.875rem",
               }),
             }}
           />
@@ -461,40 +469,40 @@ export default function ManageCourse() {
         <table className="min-w-full divide-y divide-gray-800">
           <thead className="bg-gray-800">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
-                <div className="flex items-center gap-2">
-                  <HiOutlineHashtag className="h-4 w-4 text-[#92e3a9]" />
+              <th className="px-2 py-2 text-left text-xs font-medium text-gray-400 uppercase sm:px-4 sm:py-3 md:px-6">
+                <div className="flex items-center gap-1 sm:gap-2">
+                  <HiOutlineHashtag className="h-3 w-3 text-[#92e3a9] sm:h-4 sm:w-4" />
                   <span>Code</span>
                 </div>
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
-                <div className="flex items-center gap-2">
-                  <HiDocumentText className="h-4 w-4 text-[#92e3a9]" />
+              <th className="px-2 py-2 text-left text-xs font-medium text-gray-400 uppercase sm:px-4 sm:py-3 md:px-6">
+                <div className="flex items-center gap-1 sm:gap-2">
+                  <HiDocumentText className="h-3 w-3 text-[#92e3a9] sm:h-4 sm:w-4" />
                   <span>Title</span>
                 </div>
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
-                <div className="flex items-center gap-2">
-                  <HiCreditCard className="h-4 w-4 text-[#92e3a9]" />
+              <th className="xs:table-cell hidden px-2 py-2 text-left text-xs font-medium text-gray-400 uppercase sm:px-4 sm:py-3 md:px-6">
+                <div className="flex items-center gap-1 sm:gap-2">
+                  <HiCreditCard className="h-3 w-3 text-[#92e3a9] sm:h-4 sm:w-4" />
                   <span>Credit</span>
                 </div>
               </th>
 
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
-                <div className="flex items-center gap-2">
-                  <HiUser className="h-4 w-4 text-[#92e3a9]" />
+              <th className="hidden px-2 py-2 text-left text-xs font-medium text-gray-400 uppercase sm:table-cell sm:px-4 sm:py-3 md:px-6">
+                <div className="flex items-center gap-1 sm:gap-2">
+                  <HiUser className="h-3 w-3 text-[#92e3a9] sm:h-4 sm:w-4" />
                   <span>Instructor</span>
                 </div>
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
-                <div className="flex items-center gap-2">
-                  <HiStatusOnline className="h-4 w-4 text-[#92e3a9]" />
+              <th className="xs:table-cell hidden px-2 py-2 text-left text-xs font-medium text-gray-400 uppercase sm:px-4 sm:py-3 md:px-6">
+                <div className="flex items-center gap-1 sm:gap-2">
+                  <HiStatusOnline className="h-3 w-3 text-[#92e3a9] sm:h-4 sm:w-4" />
                   <span>Status</span>
                 </div>
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
-                <div className="flex items-center gap-2">
-                  <HiClock className="h-4 w-4 text-[#92e3a9]" />
+              <th className="px-2 py-2 text-left text-xs font-medium text-gray-400 uppercase sm:px-4 sm:py-3 md:px-6">
+                <div className="flex items-center gap-1 sm:gap-2">
+                  <HiClock className="h-3 w-3 text-[#92e3a9] sm:h-4 sm:w-4" />
                   <span>Action</span>
                 </div>
               </th>
@@ -503,55 +511,64 @@ export default function ManageCourse() {
           <tbody className="divide-y divide-gray-800 bg-gray-900">
             {filteredCourses.length === 0 && (
               <tr>
-                <td colSpan={7} className="px-6 py-4 text-center text-gray-400">
+                <td
+                  colSpan={7}
+                  className="px-2 py-2 text-center text-xs text-gray-400 sm:px-4 sm:py-4 sm:text-sm md:px-6"
+                >
                   No courses found.
                 </td>
               </tr>
             )}
             {filteredCourses.map((course) => (
               <tr key={course.ID} className="hover:bg-gray-800">
-                <td className="px-6 py-4 whitespace-nowrap text-white">
+                <td className="px-2 py-2 text-xs whitespace-nowrap text-white sm:px-4 sm:py-4 sm:text-sm md:px-6">
                   {course.CODE}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-white">
-                  {course.TITLE}
+                <td className="px-2 py-2 text-xs whitespace-nowrap text-white sm:px-4 sm:py-4 sm:text-sm md:px-6">
+                  <div className="max-w-[120px] truncate sm:max-w-[200px]">
+                    {course.TITLE}
+                  </div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-white">
+                <td className="xs:table-cell hidden px-2 py-2 text-xs whitespace-nowrap text-white sm:px-4 sm:py-4 sm:text-sm md:px-6">
                   {course.CREDIT}
                 </td>
 
-                <td className="px-6 py-4 whitespace-nowrap text-white">
-                  {course.INSTRUCTOR_NAME}
+                <td className="hidden px-2 py-2 text-xs whitespace-nowrap text-white sm:table-cell sm:px-4 sm:py-4 sm:text-sm md:px-6">
+                  <div className="max-w-[150px] truncate lg:max-w-full">
+                    {course.INSTRUCTOR_NAME}
+                  </div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-white">
+                <td className="xs:table-cell hidden px-2 py-2 text-xs whitespace-nowrap text-white sm:px-4 sm:py-4 sm:text-sm md:px-6">
                   {course.STATUS === 1 ? (
-                    <HiStatusOnline className="mr-2 inline text-green-500" />
+                    <HiStatusOnline className="mr-1 inline text-green-500 sm:mr-2" />
                   ) : (
-                    <HiStatusOffline className="mr-2 inline text-red-500" />
+                    <HiStatusOffline className="mr-1 inline text-red-500 sm:mr-2" />
                   )}
                   {course.STATUS === 1 ? "Active" : "Inactive"}
                 </td>
                 {/* {" "} */}
-                <td className="px-6 py-4 whitespace-nowrap">
+                <td className="px-2 py-2 whitespace-nowrap sm:px-4 sm:py-4 md:px-6">
                   {course.STATUS === 0 ? (
                     <Button
                       size="xs"
                       style={{ backgroundColor: "#22c55e", color: "#fff" }}
                       onClick={() => openModal(course, "active")}
-                      className="flex items-center gap-1 px-3 py-1 transition-transform hover:scale-105"
+                      className="flex items-center gap-1 px-2 py-0.5 text-xs transition-transform hover:scale-105 sm:px-3 sm:py-1"
                     >
-                      <HiCheck className="h-4 w-4 text-white" />
-                      <span>Activate</span>
+                      <HiCheck className="h-3 w-3 text-white sm:h-4 sm:w-4" />
+                      <span className="xs:inline hidden">Activate</span>
+                      <span className="xs:hidden">Act</span>
                     </Button>
                   ) : (
                     <Button
                       size="xs"
                       style={{ backgroundColor: "#ef4444", color: "#fff" }}
                       onClick={() => openModal(course, "inactive")}
-                      className="flex items-center gap-1 px-3 py-1 transition-transform hover:scale-105"
+                      className="flex items-center gap-1 px-2 py-0.5 text-xs transition-transform hover:scale-105 sm:px-3 sm:py-1"
                     >
-                      <HiX className="h-4 w-4 text-white" />
-                      <span>Deactivate</span>
+                      <HiX className="h-3 w-3 text-white sm:h-4 sm:w-4" />
+                      <span className="xs:inline hidden">Deactivate</span>
+                      <span className="xs:hidden">Deact</span>
                     </Button>
                   )}
                 </td>
@@ -561,8 +578,8 @@ export default function ManageCourse() {
         </table>
       </div>
       <Modal show={showAddModal} onClose={() => setShowAddModal(false)}>
-        <div className="relative rounded-lg bg-gray-800 p-6">
-          <div className="mb-4 text-xl font-semibold text-white">
+        <div className="relative rounded-lg bg-gray-800 p-3 sm:p-4 md:p-6">
+          <div className="mb-3 text-lg font-semibold text-white sm:mb-4 sm:text-xl">
             Add New Course
           </div>
           <form
@@ -570,10 +587,13 @@ export default function ManageCourse() {
               e.preventDefault();
               handleAddCourse();
             }}
-            className="space-y-4"
+            className="space-y-3 sm:space-y-4"
           >
             <div>
-              <Label htmlFor="code" className="text-gray-300">
+              <Label
+                htmlFor="code"
+                className="text-sm text-gray-300 sm:text-base"
+              >
                 Course Code
               </Label>
               <TextInput
@@ -582,12 +602,15 @@ export default function ManageCourse() {
                 onChange={(e) =>
                   setNewCourse({ ...newCourse, code: e.target.value })
                 }
-                className="border-gray-700 bg-gray-900 text-white"
+                className="border-gray-700 bg-gray-900 text-sm text-white sm:text-base"
                 required
               />
             </div>
             <div>
-              <Label htmlFor="title" className="text-gray-300">
+              <Label
+                htmlFor="title"
+                className="text-sm text-gray-300 sm:text-base"
+              >
                 Title
               </Label>
               <TextInput
@@ -596,12 +619,15 @@ export default function ManageCourse() {
                 onChange={(e) =>
                   setNewCourse({ ...newCourse, title: e.target.value })
                 }
-                className="border-gray-700 bg-gray-900 text-white"
+                className="border-gray-700 bg-gray-900 text-sm text-white sm:text-base"
                 required
               />
             </div>
             <div>
-              <Label htmlFor="credit" className="text-gray-300">
+              <Label
+                htmlFor="credit"
+                className="text-sm text-gray-300 sm:text-base"
+              >
                 Credit
               </Label>
               <TextInput
@@ -611,7 +637,7 @@ export default function ManageCourse() {
                 onChange={(e) =>
                   setNewCourse({ ...newCourse, credit: e.target.value })
                 }
-                className="border-gray-700 bg-gray-900 text-white"
+                className="border-gray-700 bg-gray-900 text-sm text-white sm:text-base"
                 required
                 min={1}
                 max={6}
@@ -619,7 +645,10 @@ export default function ManageCourse() {
             </div>
 
             <div>
-              <Label htmlFor="instructor" className="text-gray-300">
+              <Label
+                htmlFor="instructor"
+                className="text-sm text-gray-300 sm:text-base"
+              >
                 Instructor
               </Label>
               <TextInput
@@ -631,7 +660,7 @@ export default function ManageCourse() {
                     instructor_name: e.target.value,
                   })
                 }
-                className="border-gray-700 bg-gray-900 text-white"
+                className="border-gray-700 bg-gray-900 text-sm text-white sm:text-base"
                 required
               />
             </div>
@@ -639,7 +668,7 @@ export default function ManageCourse() {
             <div>
               <Label
                 htmlFor="prerequisites"
-                className="mb-2 flex items-center gap-2 text-gray-300"
+                className="mb-1 flex items-center gap-1 text-sm text-gray-300 sm:mb-2 sm:gap-2 sm:text-base"
               >
                 <HiLink className="text-[#92e3a9]" />
                 Prerequisites
@@ -657,26 +686,29 @@ export default function ManageCourse() {
                 styles={{
                   control: (baseStyles) => ({
                     ...baseStyles,
-                    backgroundColor: "#1f2937", // Dark background
+                    backgroundColor: "#1f2937",
                     borderColor: "#374151",
                     color: "white",
+                    fontSize: "0.875rem",
+                    minHeight: "38px",
                     "&:hover": {
                       borderColor: "#4b5563",
                     },
                   }),
                   menu: (baseStyles) => ({
                     ...baseStyles,
-                    backgroundColor: "#1f2937", // Dark background for dropdown menu
+                    backgroundColor: "#1f2937",
                   }),
                   option: (baseStyles, { isFocused, isSelected }) => ({
                     ...baseStyles,
                     backgroundColor: isSelected
-                      ? "#92e3a9" // Primary green color for selected item
+                      ? "#92e3a9"
                       : isFocused
-                        ? "#374151" // Slightly lighter dark for hover
-                        : "#1f2937", // Dark background
+                        ? "#374151"
+                        : "#1f2937",
                     color: isSelected ? "black" : "white",
                     cursor: "pointer",
+                    fontSize: "0.875rem",
                     ":active": {
                       backgroundColor: isSelected ? "#92e3a9" : "#374151",
                     },
@@ -688,6 +720,7 @@ export default function ManageCourse() {
                   multiValueLabel: (baseStyles) => ({
                     ...baseStyles,
                     color: "white",
+                    fontSize: "0.875rem",
                   }),
                   multiValueRemove: (baseStyles) => ({
                     ...baseStyles,
@@ -699,27 +732,31 @@ export default function ManageCourse() {
                   }),
                   placeholder: (baseStyles) => ({
                     ...baseStyles,
-                    color: "#9ca3af", // Light gray for placeholder
+                    color: "#9ca3af",
+                    fontSize: "0.875rem",
                   }),
                   input: (baseStyles) => ({
                     ...baseStyles,
                     color: "white",
+                    fontSize: "0.875rem",
                   }),
                 }}
               />
             </div>
 
-            <div className="mt-6 flex justify-end gap-2">
+            <div className="mt-4 flex justify-end gap-2 sm:mt-6">
               <Button
                 color="gray"
                 onClick={() => setShowAddModal(false)}
                 type="button"
+                className="text-xs sm:text-sm"
               >
                 Cancel
               </Button>
               <Button
                 type="submit"
                 style={{ backgroundColor: "#92e3a9", color: "#000" }}
+                className="text-xs sm:text-sm"
               >
                 Add Course
               </Button>
@@ -729,13 +766,13 @@ export default function ManageCourse() {
       </Modal>
       {/* Confirmation Modal */}{" "}
       <Modal show={showModal} size="md" onClose={() => setShowModal(false)}>
-        <div className="p-6 text-center">
+        <div className="p-4 text-center sm:p-6">
           {status === "active" ? (
-            <HiStatusOnline className="mx-auto mb-4 h-14 w-14 text-green-500" />
+            <HiStatusOnline className="mx-auto mb-3 h-10 w-10 text-green-500 sm:mb-4 sm:h-14 sm:w-14" />
           ) : (
-            <HiX className="mx-auto mb-4 h-14 w-14 text-red-500" />
+            <HiX className="mx-auto mb-3 h-10 w-10 text-red-500 sm:mb-4 sm:h-14 sm:w-14" />
           )}
-          <h3 className="mb-5 text-lg font-normal text-gray-300">
+          <h3 className="mb-4 text-sm font-normal text-gray-300 sm:mb-5 sm:text-base md:text-lg">
             Are you sure you want to{" "}
             <span className="font-semibold text-white">{status}</span> the
             account of{" "}
@@ -744,20 +781,24 @@ export default function ManageCourse() {
             </span>
             ?
           </h3>
-          <div className="flex justify-center gap-4">
+          <div className="flex justify-center gap-3 sm:gap-4">
             <Button
               color={status === "active" ? "success" : "failure"}
               onClick={confirmAction}
-              className="flex items-center gap-2"
+              className="flex items-center gap-1 text-xs sm:gap-2 sm:text-sm"
             >
               {status === "active" ? (
-                <HiCheck className="text-white" />
+                <HiCheck className="h-3 w-3 text-white sm:h-4 sm:w-4" />
               ) : (
-                <HiX className="text-white" />
+                <HiX className="h-3 w-3 text-white sm:h-4 sm:w-4" />
               )}
               Yes, {status}
             </Button>
-            <Button color="gray" onClick={() => setShowModal(false)}>
+            <Button
+              color="gray"
+              onClick={() => setShowModal(false)}
+              className="text-xs sm:text-sm"
+            >
               Cancel
             </Button>
           </div>

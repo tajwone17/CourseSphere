@@ -285,20 +285,19 @@ export default function ManageNotices() {
 
   return (
     <div
-      className="mx-auto max-w-7xl p-8"
+      className="mx-auto max-w-7xl p-4 sm:p-6 md:p-8"
       data-aos="zoom-in"
       data-aos-duration="1000"
     >
-      
-      <div className="mb-8 flex items-center justify-between">
+      <div className="mb-6 flex flex-col justify-between sm:mb-8 sm:flex-row sm:items-center">
         <div>
-          <h1 className="flex items-center gap-3 text-4xl font-bold text-white">
-            <span className="rounded-lg bg-[#92e3a9] p-2">
-              <HiSpeakerphone className="h-8 w-8 text-gray-900" />
+          <h1 className="flex items-center gap-2 text-2xl font-bold text-white sm:gap-3 sm:text-3xl md:text-4xl">
+            <span className="rounded-lg bg-[#92e3a9] p-1 sm:p-2">
+              <HiSpeakerphone className="h-6 w-6 text-gray-900 sm:h-7 sm:w-7 md:h-8 md:w-8" />
             </span>
             Manage Notices
           </h1>{" "}
-          <p className="mt-4 flex items-center gap-2 text-lg text-gray-400">
+          <p className="mt-2 flex items-center gap-1 text-sm text-gray-400 sm:mt-4 sm:gap-2 sm:text-base md:text-lg">
             <HiInformationCircle className="text-[#92e3a9]" />
             Create and manage notices for students
           </p>
@@ -308,36 +307,36 @@ export default function ManageNotices() {
           style={{
             backgroundColor: "#92e3a9",
             color: "#000000",
-            marginTop: "20px",
+            marginTop: "10px",
             width: "fit-content",
             cursor: "pointer",
           }}
           onClick={() => setShowAddModal(true)}
-          className="flex items-center gap-2 bg-[#92e3a9] text-gray-900 transition-all duration-200 hover:bg-[#7ac892]"
+          className="flex items-center gap-1 bg-[#92e3a9] text-sm text-gray-900 transition-all duration-200 hover:bg-[#7ac892] sm:gap-2 sm:text-base"
         >
-          <HiPlus className="h-5 w-5" />
-          Add New Notice
+          <HiPlus className="h-4 w-4 sm:h-5 sm:w-5" />
+          <span>Add Notice</span>
         </Button>
       </div>
-      <div className="rounded-lg border border-gray-800 bg-gray-900 p-6">
+      <div className="rounded-lg border border-gray-800 bg-gray-900 p-3 sm:p-4 md:p-6">
         {/* Notices Table */}
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-800">
             <thead className="bg-gray-800">
               {" "}
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
-                  <HiDocument className="mr-2 inline text-[#92e3a9] group-hover:scale-110" />{" "}
-                  Title
+                <th className="px-2 py-2 text-left text-xs font-medium text-gray-400 uppercase sm:px-4 sm:py-3 md:px-6">
+                  <HiDocument className="mr-1 inline text-[#92e3a9] group-hover:scale-110 sm:mr-2" />{" "}
+                  <span>Title</span>
                 </th>
 
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
-                  <HiCalendar className="mr-2 inline text-[#92e3a9] group-hover:scale-110" />{" "}
-                  Created At
+                <th className="hidden px-2 py-2 text-left text-xs font-medium text-gray-400 uppercase sm:table-cell sm:px-4 sm:py-3 md:px-6">
+                  <HiCalendar className="mr-1 inline text-[#92e3a9] group-hover:scale-110 sm:mr-2" />{" "}
+                  <span>Created At</span>
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
-                  <HiClock className="mr-2 inline text-[#92e3a9] group-hover:scale-110" />{" "}
-                  Actions
+                <th className="px-2 py-2 text-left text-xs font-medium text-gray-400 uppercase sm:px-4 sm:py-3 md:px-6">
+                  <HiClock className="mr-1 inline text-[#92e3a9] group-hover:scale-110 sm:mr-2" />{" "}
+                  <span>Actions</span>
                 </th>
               </tr>
             </thead>
@@ -348,18 +347,20 @@ export default function ManageNotices() {
                   className="bg-gray-900 transition-colors hover:bg-gray-800"
                 >
                   {" "}
-                  <td className="px-6 py-4 whitespace-nowrap text-white">
+                  <td className="px-2 py-2 text-white sm:px-4 sm:py-4 md:px-6">
                     <div className="flex items-center gap-2">
-                      {notice.TITLE}
+                      <div className="max-w-[150px] truncate sm:max-w-full">
+                        {notice.TITLE}
+                      </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-gray-400">
+                  <td className="hidden px-2 py-2 text-gray-400 sm:table-cell sm:px-4 sm:py-4 md:px-6">
                     <div className="flex items-center gap-2">
                       {new Date(notice.CREATED_AT).toLocaleString()}
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex gap-2">
+                  <td className="px-2 py-2 whitespace-nowrap sm:px-4 sm:py-4 md:px-6">
+                    <div className="flex gap-1 sm:gap-2">
                       {" "}
                       <Button
                         style={{ backgroundColor: "#f59e0b", color: "#ffffff" }}
@@ -368,10 +369,10 @@ export default function ManageNotices() {
                           setSelectedNotice(notice);
                           setShowEditModal(true);
                         }}
-                        className="flex items-center gap-1 px-3 py-1 transition-transform hover:scale-105"
+                        className="flex items-center gap-1 px-2 py-1 transition-transform hover:scale-105 sm:px-3"
                         title="Edit Notice"
                       >
-                        <HiPencil className="h-4 w-4" />
+                        <HiPencil className="h-3 w-3 sm:h-4 sm:w-4" />
                       </Button>
                       <Button
                         style={{ backgroundColor: "#ef4444", color: "#ffffff" }}
@@ -380,10 +381,10 @@ export default function ManageNotices() {
                           setSelectedNotice(notice);
                           setShowDeleteModal(true);
                         }}
-                        className="flex items-center gap-1 px-3 py-1 transition-transform hover:scale-105"
+                        className="flex items-center gap-1 px-2 py-1 transition-transform hover:scale-105 sm:px-3"
                         title="Delete Notice"
                       >
-                        <HiTrash className="h-4 w-4" />
+                        <HiTrash className="h-3 w-3 sm:h-4 sm:w-4" />
                       </Button>
                     </div>
                   </td>
@@ -395,19 +396,22 @@ export default function ManageNotices() {
       </div>
       {/* Add Notice Modal */}{" "}
       <Modal show={showAddModal} onClose={() => setShowAddModal(false)}>
-        <div className="relative bg-gray-800 p-4">
-          <div className="mb-6 text-center">
-            <div className="bg-opacity-20 bg-gray mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full">
-              <HiBell className="h-10 w-10 text-[#92e3a9]" />
+        <div className="relative bg-gray-800 p-3 sm:p-4">
+          <div className="mb-4 text-center sm:mb-6">
+            <div className="bg-opacity-20 bg-gray mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full sm:mb-3 sm:h-16 sm:w-16">
+              <HiBell className="h-8 w-8 text-[#92e3a9] sm:h-10 sm:w-10" />
             </div>
-            <div className="text-xl font-semibold text-white">
+            <div className="text-lg font-semibold text-white sm:text-xl">
               Add New Notice
             </div>
           </div>
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {" "}
             <div>
-              <Label htmlFor="title" className="mb-1 flex items-center gap-2">
+              <Label
+                htmlFor="title"
+                className="mb-1 flex items-center gap-2 text-sm sm:text-base"
+              >
                 <HiDocument className="text-[#92e3a9]" />
                 Title
               </Label>
@@ -418,12 +422,13 @@ export default function ManageNotices() {
                   setNewNotice({ ...newNotice, title: e.target.value })
                 }
                 placeholder="Enter notice title"
+                className="text-sm sm:text-base"
               />
             </div>{" "}
             <div>
               <Label
                 htmlFor="description"
-                className="mb-1 flex items-center gap-2"
+                className="mb-1 flex items-center gap-2 text-sm sm:text-base"
               >
                 <HiInformationCircle className="text-[#92e3a9]" />
                 Description
@@ -436,10 +441,11 @@ export default function ManageNotices() {
                 }
                 placeholder="Enter notice description"
                 rows={4}
+                className="text-sm sm:text-base"
               />
             </div>
           </div>
-          <div className="mt-6 flex justify-end gap-4">
+          <div className="mt-4 flex justify-end gap-2 sm:mt-6 sm:gap-4">
             <Button
               style={{
                 backgroundColor: "#92e3a9",
@@ -448,15 +454,15 @@ export default function ManageNotices() {
                 cursor: "pointer",
               }}
               onClick={handleAddNotice}
-              className="flex items-center gap-2 transition-transform hover:scale-105"
+              className="flex items-center gap-1 text-xs transition-transform hover:scale-105 sm:gap-2 sm:text-sm"
             >
-              <HiPlus className="h-4 w-4" />
+              <HiPlus className="h-3 w-3 sm:h-4 sm:w-4" />
               Add Notice
             </Button>{" "}
             <Button
               color="gray"
               onClick={() => setShowAddModal(false)}
-              className="transition-transform hover:scale-105"
+              className="text-xs transition-transform hover:scale-105 sm:text-sm"
             >
               Cancel
             </Button>
@@ -465,19 +471,21 @@ export default function ManageNotices() {
       </Modal>
       {/* Edit Notice Modal */}{" "}
       <Modal show={showEditModal} onClose={() => setShowEditModal(false)}>
-        <div className="relative bg-gray-800 p-4">
-          <div className="mb-6 text-center">
-            <div className="bg-opacity-20 bg-gray mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full">
-              <HiPencil className="h-10 w-10 text-[#92e3a9]" />
+        <div className="relative bg-gray-800 p-3 sm:p-4">
+          <div className="mb-4 text-center sm:mb-6">
+            <div className="bg-opacity-20 bg-gray mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full sm:mb-3 sm:h-16 sm:w-16">
+              <HiPencil className="h-8 w-8 text-[#92e3a9] sm:h-10 sm:w-10" />
             </div>
-            <div className="text-xl font-semibold text-white">Edit Notice</div>
+            <div className="text-lg font-semibold text-white sm:text-xl">
+              Edit Notice
+            </div>
           </div>
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {" "}
             <div>
               <Label
                 htmlFor="edit-title"
-                className="mb-1 flex items-center gap-2"
+                className="mb-1 flex items-center gap-2 text-sm sm:text-base"
               >
                 <HiDocument className="text-[#92e3a9]" />
                 Title
@@ -492,12 +500,13 @@ export default function ManageNotices() {
                       : null,
                   )
                 }
+                className="text-sm sm:text-base"
               />
             </div>{" "}
             <div>
               <Label
                 htmlFor="edit-description"
-                className="mb-1 flex items-center gap-2"
+                className="mb-1 flex items-center gap-2 text-sm sm:text-base"
               >
                 <HiInformationCircle className="text-[#92e3a9]" />
                 Description
@@ -513,10 +522,11 @@ export default function ManageNotices() {
                   )
                 }
                 rows={4}
+                className="text-sm sm:text-base"
               />
             </div>
           </div>{" "}
-          <div className="mt-6 flex justify-end gap-4">
+          <div className="mt-4 flex justify-end gap-2 sm:mt-6 sm:gap-4">
             <Button
               style={{
                 backgroundColor: "#92e3a9",
@@ -527,15 +537,15 @@ export default function ManageNotices() {
               onClick={() =>
                 selectedNotice && handleEditNotice(selectedNotice.ID)
               }
-              className="flex items-center gap-2 transition-transform hover:scale-105"
+              className="flex items-center gap-1 text-xs transition-transform hover:scale-105 sm:gap-2 sm:text-sm"
             >
-              <HiCheck className="h-4 w-4" />
+              <HiCheck className="h-3 w-3 sm:h-4 sm:w-4" />
               Save Changes
             </Button>{" "}
             <Button
               color="gray"
               onClick={() => setShowEditModal(false)}
-              className="transition-transform hover:scale-105"
+              className="text-xs transition-transform hover:scale-105 sm:text-sm"
             >
               Cancel
             </Button>
@@ -544,32 +554,32 @@ export default function ManageNotices() {
       </Modal>
       {/* Delete Confirmation Modal */}{" "}
       <Modal show={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
-        <div className="relative bg-gray-800 p-4">
-          <div className="mb-6 text-center">
-            <div className="bg-opacity-20 bg-gray mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full">
-              <HiTrash className="h-10 w-10 text-red-500" />
+        <div className="relative bg-gray-800 p-3 sm:p-4">
+          <div className="mb-4 text-center sm:mb-6">
+            <div className="bg-opacity-20 bg-gray mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full sm:mb-3 sm:h-16 sm:w-16">
+              <HiTrash className="h-8 w-8 text-red-500 sm:h-10 sm:w-10" />
             </div>
-            <div className="text-xl font-semibold text-white">
+            <div className="text-lg font-semibold text-white sm:text-xl">
               Delete Notice
             </div>
           </div>
-          <p className="mb-6 text-gray-300">
+          <p className="mb-4 text-sm text-gray-300 sm:mb-6 sm:text-base">
             Are you sure you want to delete this notice? This action cannot be
             undone.
           </p>{" "}
-          <div className="flex justify-end gap-4">
+          <div className="flex justify-end gap-2 sm:gap-4">
             <Button
               color="failure"
               onClick={handleDeleteNotice}
-              className="flex items-center gap-2 transition-transform hover:scale-105"
+              className="flex items-center gap-1 text-xs transition-transform hover:scale-105 sm:gap-2 sm:text-sm"
             >
-              <HiTrash className="h-4 w-4" />
+              <HiTrash className="h-3 w-3 sm:h-4 sm:w-4" />
               Delete
             </Button>
             <Button
               color="gray"
               onClick={() => setShowDeleteModal(false)}
-              className="transition-transform hover:scale-105"
+              className="text-xs transition-transform hover:scale-105 sm:text-sm"
             >
               Cancel
             </Button>
@@ -578,16 +588,16 @@ export default function ManageNotices() {
       </Modal>
       {/* Deadlines Section - Only visible to HOD users */}
       {user && user.role === "hod" && (
-        <div className="mt-12">
-          <div className="mb-8 flex items-center justify-between">
+        <div className="mt-8 sm:mt-12">
+          <div className="mb-6 flex flex-col justify-between sm:mb-8 sm:flex-row sm:items-center">
             <div>
-              <h1 className="flex items-center gap-3 text-4xl font-bold text-white">
-                <span className="rounded-lg bg-[#f59e0b] p-2">
-                  <HiCalendar className="h-8 w-8 text-gray-900" />
+              <h1 className="flex items-center gap-2 text-2xl font-bold text-white sm:gap-3 sm:text-3xl md:text-4xl">
+                <span className="rounded-lg bg-[#f59e0b] p-1 sm:p-2">
+                  <HiCalendar className="h-6 w-6 text-gray-900 sm:h-7 sm:w-7 md:h-8 md:w-8" />
                 </span>
                 Important Deadlines
               </h1>
-              <p className="mt-4 flex items-center gap-2 text-lg text-gray-400">
+              <p className="mt-2 flex items-center gap-1 text-sm text-gray-400 sm:mt-4 sm:gap-2 sm:text-base md:text-lg">
                 <HiInformationCircle className="text-[#f59e0b]" />
                 Manage important deadlines for students
               </p>
@@ -597,39 +607,41 @@ export default function ManageNotices() {
               style={{
                 backgroundColor: "#f59e0b",
                 color: "#000000",
-                marginTop: "20px",
+                marginTop: "10px",
                 width: "fit-content",
                 cursor: "pointer",
               }}
               onClick={() => setShowDeadlinesModal(true)}
-              className="flex items-center gap-2 text-gray-900 transition-all duration-200 hover:bg-[#e39008]"
+              className="flex items-center gap-1 text-sm text-gray-900 transition-all duration-200 hover:bg-[#e39008] sm:gap-2 sm:text-base"
             >
-              <HiPencil className="h-5 w-5" />
-              Update Deadlines
+              <HiPencil className="h-4 w-4 sm:h-5 sm:w-5" />
+              <span>Update Deadlines</span>
             </Button>
           </div>
 
-          <div className="rounded-lg border border-gray-800 bg-gray-900 p-6">
+          <div className="rounded-lg border border-gray-800 bg-gray-900 p-3 sm:p-4 md:p-6">
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-800">
                 <thead className="bg-gray-800">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
-                      <HiDocument className="mr-2 inline text-[#f59e0b]" />{" "}
+                    <th className="px-2 py-2 text-left text-xs font-medium text-gray-400 uppercase sm:px-4 sm:py-3 md:px-6">
+                      <HiDocument className="mr-1 inline text-[#f59e0b] sm:mr-2" />{" "}
                       Event
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
-                      <HiCalendar className="mr-2 inline text-[#f59e0b]" />{" "}
+                    <th className="px-2 py-2 text-left text-xs font-medium text-gray-400 uppercase sm:px-4 sm:py-3 md:px-6">
+                      <HiCalendar className="mr-1 inline text-[#f59e0b] sm:mr-2" />{" "}
                       Deadline
                     </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-800">
                   <tr className="bg-gray-900 transition-colors hover:bg-gray-800">
-                    <td className="px-6 py-4 whitespace-nowrap text-white">
-                      Course Registration Without Fine
+                    <td className="px-2 py-2 text-white sm:px-4 sm:py-4 md:px-6">
+                      <span className="text-xs sm:text-sm md:text-base">
+                        Course Registration Without Fine
+                      </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-400">
+                    <td className="px-2 py-2 text-xs text-gray-400 sm:px-4 sm:py-4 sm:text-sm md:px-6 md:text-base">
                       {deadlines?.course_registration_without_fine
                         ? new Date(
                             deadlines.course_registration_without_fine,
@@ -638,10 +650,12 @@ export default function ManageNotices() {
                     </td>
                   </tr>
                   <tr className="bg-gray-900 transition-colors hover:bg-gray-800">
-                    <td className="px-6 py-4 whitespace-nowrap text-white">
-                      Course Registration With Fine
+                    <td className="px-2 py-2 text-white sm:px-4 sm:py-4 md:px-6">
+                      <span className="text-xs sm:text-sm md:text-base">
+                        Course Registration With Fine
+                      </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-400">
+                    <td className="px-2 py-2 text-xs text-gray-400 sm:px-4 sm:py-4 sm:text-sm md:px-6 md:text-base">
                       {deadlines?.course_registration_with_fine
                         ? new Date(
                             deadlines.course_registration_with_fine,
@@ -650,10 +664,12 @@ export default function ManageNotices() {
                     </td>
                   </tr>
                   <tr className="bg-gray-900 transition-colors hover:bg-gray-800">
-                    <td className="px-6 py-4 whitespace-nowrap text-white">
-                      Admit Card Collection
+                    <td className="px-2 py-2 text-white sm:px-4 sm:py-4 md:px-6">
+                      <span className="text-xs sm:text-sm md:text-base">
+                        Admit Card Collection
+                      </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-400">
+                    <td className="px-2 py-2 text-xs text-gray-400 sm:px-4 sm:py-4 sm:text-sm md:px-6 md:text-base">
                       {deadlines?.admit_card_collection
                         ? new Date(
                             deadlines.admit_card_collection,
@@ -672,20 +688,20 @@ export default function ManageNotices() {
         show={showDeadlinesModal}
         onClose={() => setShowDeadlinesModal(false)}
       >
-        <div className="relative bg-gray-800 p-4">
-          <div className="mb-6 text-center">
-            <div className="bg-opacity-20 bg-gray mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full">
-              <HiCalendar className="h-10 w-10 text-[#f59e0b]" />
+        <div className="relative bg-gray-800 p-3 sm:p-4">
+          <div className="mb-4 text-center sm:mb-6">
+            <div className="bg-opacity-20 bg-gray mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full sm:mb-3 sm:h-16 sm:w-16">
+              <HiCalendar className="h-8 w-8 text-[#f59e0b] sm:h-10 sm:w-10" />
             </div>
-            <div className="text-xl font-semibold text-white">
+            <div className="text-lg font-semibold text-white sm:text-xl">
               Update Important Deadlines
             </div>
           </div>
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             <div>
               <Label
                 htmlFor="course-reg-no-fine"
-                className="mb-1 flex items-center gap-2"
+                className="mb-1 flex items-center gap-1 text-xs sm:gap-2 sm:text-sm"
               >
                 <HiCalendar className="text-[#f59e0b]" />
                 Course Registration Without Fine
@@ -700,12 +716,13 @@ export default function ManageNotices() {
                     course_registration_without_fine: e.target.value,
                   })
                 }
+                className="text-sm"
               />
             </div>
             <div>
               <Label
                 htmlFor="course-reg-with-fine"
-                className="mb-1 flex items-center gap-2"
+                className="mb-1 flex items-center gap-1 text-xs sm:gap-2 sm:text-sm"
               >
                 <HiCalendar className="text-[#f59e0b]" />
                 Course Registration With Fine
@@ -720,12 +737,13 @@ export default function ManageNotices() {
                     course_registration_with_fine: e.target.value,
                   })
                 }
+                className="text-sm"
               />
             </div>
             <div>
               <Label
                 htmlFor="admit-card"
-                className="mb-1 flex items-center gap-2"
+                className="mb-1 flex items-center gap-1 text-xs sm:gap-2 sm:text-sm"
               >
                 <HiCalendar className="text-[#f59e0b]" />
                 Admit Card Collection
@@ -740,10 +758,11 @@ export default function ManageNotices() {
                     admit_card_collection: e.target.value,
                   })
                 }
+                className="text-sm"
               />
             </div>
           </div>
-          <div className="mt-6 flex justify-end gap-4">
+          <div className="mt-4 flex justify-end gap-2 sm:mt-6 sm:gap-4">
             <Button
               style={{
                 backgroundColor: "#f59e0b",
@@ -752,15 +771,15 @@ export default function ManageNotices() {
                 cursor: "pointer",
               }}
               onClick={handleUpdateDeadlines}
-              className="flex items-center gap-2 transition-transform hover:scale-105"
+              className="flex items-center gap-1 text-xs transition-transform hover:scale-105 sm:gap-2 sm:text-sm"
             >
-              <HiCheck className="h-4 w-4" />
+              <HiCheck className="h-3 w-3 sm:h-4 sm:w-4" />
               Save Changes
             </Button>{" "}
             <Button
               color="gray"
               onClick={() => setShowDeadlinesModal(false)}
-              className="transition-transform hover:scale-105"
+              className="text-xs transition-transform hover:scale-105 sm:text-sm"
             >
               Cancel
             </Button>
