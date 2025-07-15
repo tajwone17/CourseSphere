@@ -399,7 +399,7 @@ CREATE TABLE `student` (
   `EMAIL` varchar(100) NOT NULL,
   `PASSWORD` varchar(255) NOT NULL,
   `DEPARTMENT_ID` int(11) NOT NULL,
-  `SESSION` varchar(10) DEFAULT NULL,
+  `SESSION` varchar(15) DEFAULT NULL,
   `MOBILE` varchar(20) DEFAULT NULL,
   `STATUS` tinyint(1) DEFAULT 0,
   `CREATED_AT` timestamp NOT NULL DEFAULT current_timestamp()
@@ -569,8 +569,7 @@ ALTER TABLE `registered_courses`
 -- Indexes for table `registration_bundle`
 --
 ALTER TABLE `registration_bundle`
-  ADD PRIMARY KEY (`ID`),
-  ADD UNIQUE KEY `STUDENT_ID` (`STUDENT_ID`,`SEMESTER`);
+  ADD PRIMARY KEY (`ID`);
 
 --
 -- Indexes for table `registration_deadline`
