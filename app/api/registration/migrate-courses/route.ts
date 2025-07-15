@@ -1,7 +1,7 @@
-import { NextRequest } from "next/server";
+
 import db from "@/app/lib/db";
 
-export async function POST(request: NextRequest) {
+export async function POST() {
   try {
     // This route is for migrating existing completed registrations
     // It will add all approved courses to the registered_courses table
@@ -11,6 +11,7 @@ export async function POST(request: NextRequest) {
     
     try {
       // Get all completed registration bundles
+      //eslint-disable-next-line @typescript-eslint/no-explicit-any
       const [completedBundles]: any = await db.query(
         `SELECT ID, STUDENT_ID, SEMESTER 
          FROM registration_bundle 
@@ -22,6 +23,7 @@ export async function POST(request: NextRequest) {
       if (completedBundles && completedBundles.length > 0) {
         for (const bundle of completedBundles) {
           // Get approved courses from the bundle
+          //eslint-disable-next-line @typescript-eslint/no-explicit-any
           const [courses]: any = await db.query(
             `SELECT COURSE_ID FROM course_registration 
              WHERE BUNDLE_ID = ? AND STATUS = 'COMPLETED'`,
@@ -32,6 +34,7 @@ export async function POST(request: NextRequest) {
           if (courses && courses.length > 0) {
             for (const course of courses) {
               // Check if the course is already in registered_courses
+              //eslint-disable-next-line @typescript-eslint/no-explicit-any
               const [existingRecord]: any = await db.query(
                 `SELECT ID FROM registered_courses 
                  WHERE STUDENT_ID = ? AND COURSE_ID = ?`,

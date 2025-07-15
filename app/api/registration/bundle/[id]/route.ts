@@ -12,6 +12,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     }
 
     // Get the registration bundle with all details
+    //eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [bundles]: any = await db.query(
       `SELECT 
         rb.*, 
@@ -38,6 +39,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     const bundle = bundles[0];
     
     // Get all courses in this registration
+    //eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [courses]: any = await db.query(
       `SELECT 
         cr.*,
@@ -55,6 +57,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     );
 
     // Get all available advisors for the department
+    //eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [advisors]: any = await db.query(
       `SELECT ID, NAME, EMAIL 
        FROM advisor

@@ -18,7 +18,6 @@ CourseSphere is a comprehensive university course registration system that strea
   - Dashboard with important dates and registration updates
   - Notice board for important announcements
 
-
 ## Administrative Roles
 
 - **Super Admin**:
@@ -39,9 +38,8 @@ CourseSphere is a comprehensive university course registration system that strea
 
 - **Exam Controller**:
   - Result entry and management
-  - Grade processing 
+  - Grade processing
   - Academic record maintenance
-
 
 - **Advisor System**:
   - Course approval workflow
@@ -109,6 +107,13 @@ CourseSphere is a comprehensive university course registration system that strea
 ## Deployment
 
 The application can be deployed on platforms like Vercel or any other hosting service that supports Next.js applications.
+
+## Project Documentation
+
+For detailed information about the project design, implementation, and usage:
+
+- [Project Documentation (PDF)](https://drive.google.com/file/d/1ZqgAR5cJnVFl3vImLK9OXw4VMLBC3fPZ/view?usp=drive_link)
+- [Presentation Slides](https://docs.google.com/presentation/d/1b1cLRVDV8ChjcqbLyvh-j7U-7FdD2lY1/edit?usp=drive_link&ouid=112036969322105322633&rtpof=true&sd=true)
 
 ## Learn More
 
