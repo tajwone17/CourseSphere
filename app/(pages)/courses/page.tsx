@@ -276,21 +276,21 @@ export default function CourseCatalogTable() {
       if (data.success || data.exists) {
         // Check if the course is already selected
         const isAlreadySelected = selectedCourses.includes(courseId);
-        
+
         // Only add to selected courses if not already there
-        setSelectedCourses((prev) => 
-          prev.includes(courseId) ? prev : [...prev, courseId]
+        setSelectedCourses((prev) =>
+          prev.includes(courseId) ? prev : [...prev, courseId],
         );
-        
+
         // Only increment count if it's a new addition, not if it was already in cart
         if (!isAlreadySelected) {
           setCartCount((prev) => prev + 1);
         }
-        
+
         // Show success message
         setError(null);
         setSuccessMessage(data.message || "Course added to cart successfully");
-        
+
         // Clear success message after 3 seconds
         setTimeout(() => {
           setSuccessMessage(null);
