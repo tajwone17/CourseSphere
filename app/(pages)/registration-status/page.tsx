@@ -74,6 +74,7 @@ export default function RegistrationStatusPage() {
     null,
   );
   const [hasActiveRegistration, setHasActiveRegistration] = useState(false);
+  const [cancellingRegistration, setCancellingRegistration] = useState(false);
 
   // Payment state
   const [showPaymentForm, setShowPaymentForm] = useState(false);
@@ -88,7 +89,7 @@ export default function RegistrationStatusPage() {
     const fetchRegistrationStatus = async () => {
       if (!isAuthenticated && !bundleId) {
         setLoading(false);
-        setError("You must be logged in to view registration status");
+        alert("You must be logged in to view registration status");
         return;
       }
 
@@ -128,7 +129,8 @@ export default function RegistrationStatusPage() {
         // Set the active registration flag if registration status is not COMPLETED or REJECTED
         const isActive =
           parsedRegistration.STATUS !== "COMPLETED" &&
-          parsedRegistration.STATUS !== "REJECTED";
+          parsedRegistration.STATUS !== "REJECTED" &&
+          parsedRegistration.STATUS !== "CANCELLED";
         setHasActiveRegistration(isActive);
 
         // Store active registration status in localStorage for other pages to check
@@ -197,6 +199,53 @@ export default function RegistrationStatusPage() {
       );
     } finally {
       setProcessingPayment(false);
+    }
+  };
+
+  const handleCancelRegistration = async () => {
+    if (!registration) return;
+
+    // Confirmation dialog
+    if (
+      !confirm(
+        "Are you sure you want to cancel this registration? This action cannot be undone.",
+      )
+    ) {
+      return;
+    }
+
+    setCancellingRegistration(true);
+
+    try {
+      const response = await fetch("/api/registration/cancel", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          registrationId: registration.ID,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to cancel registration");
+      }
+
+      if (data.success) {
+        alert("Registration has been cancelled successfully.");
+        window.location.reload(); // Reload page to show updated status
+      }
+    } catch (err) {
+      console.error("Error cancelling registration:", err);
+      alert(
+        err instanceof Error
+          ? err.message
+          : "Failed to cancel registration. Please try again.",
+      );
+    } finally {
+      setCancellingRegistration(false);
     }
   };
 
@@ -289,6 +338,8 @@ export default function RegistrationStatusPage() {
         return "text-yellow-400";
       case "REJECTED":
         return "text-red-400";
+      case "CANCELLED":
+        return "text-red-400";
       case "COMPLETED":
         return "text-green-500";
       default:
@@ -304,6 +355,7 @@ export default function RegistrationStatusPage() {
       case "PENDING":
         return <HiPending className="text-yellow-500" />;
       case "REJECTED":
+      case "CANCELLED":
         return <HiExclamation className="text-red-500" />;
       default:
         return <HiPending className="text-gray-500" />;
@@ -510,6 +562,26 @@ export default function RegistrationStatusPage() {
               <p className="mt-3 text-base font-medium text-[#92e3a9]">
                 {registration.nextStep}
               </p>
+
+              {/* Cancel Registration Button */}
+              {registration.STATUS !== "COMPLETED" &&
+                registration.STATUS !== "REJECTED" &&
+                registration.STATUS !== "CANCELLED" && (
+                  <button
+                    onClick={handleCancelRegistration}
+                    disabled={cancellingRegistration}
+                    className="mt-5 flex w-full items-center justify-center rounded-md bg-red-500 px-4 py-2.5 text-center font-medium text-white shadow-md transition-all hover:bg-red-600 hover:shadow-lg disabled:cursor-not-allowed disabled:bg-red-400"
+                  >
+                    {cancellingRegistration ? (
+                      <>
+                        <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                        Cancelling...
+                      </>
+                    ) : (
+                      "Cancel Registration"
+                    )}
+                  </button>
+                )}
             </div>
 
             <div className="mt-6">

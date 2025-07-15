@@ -49,7 +49,8 @@ export default function useActiveRegistration() {
           // Set the active registration flag if registration status is not COMPLETED or REJECTED
           const isActive =
             data.registration.STATUS !== "COMPLETED" &&
-            data.registration.STATUS !== "REJECTED";
+            data.registration.STATUS !== "REJECTED" &&
+            data.registration.STATUS !== "CANCELLED";
 
           setHasActiveRegistration(isActive);
 

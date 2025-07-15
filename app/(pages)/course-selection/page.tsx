@@ -444,7 +444,7 @@ export default function CourseSelectionPage() {
             Course Selection Unavailable
           </h2>
           <p className="text-gray-400">
-           Course Registration for this semester has not been started yet.
+            Course Registration for this semester has not been started yet.
           </p>
           <p className="mt-2 text-gray-400">
             Please contact your department office for more information.
@@ -649,6 +649,19 @@ export default function CourseSelectionPage() {
                         >
                           <HiArrowLeft />
                           Select More Courses
+                        </Button>
+                      </Link>
+                      <Link href="/">
+                        <Button
+                          size="sm"
+                          className="flex items-center gap-2"
+                          style={{
+                            backgroundColor: "transparent",
+                            borderColor: "#FF6B6B",
+                            color: "#FF6B6B",
+                          }}
+                        >
+                          Cancel Registration
                         </Button>
                       </Link>
                       <Button

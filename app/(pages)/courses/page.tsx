@@ -41,6 +41,12 @@ export default function CourseCatalogTable() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [addingCourse, setAddingCourse] = useState<number | null>(null);
+  const [passedCourses, setPassedCourses] = useState<number[]>([]);
+  const [failedCourses, setFailedCourses] = useState<Record<number, boolean>>(
+    {},
+  );
+  //eslint-disable-next-line
+  const [loadingCourseHistory, setLoadingCourseHistory] = useState(false);
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
@@ -157,6 +163,65 @@ export default function CourseCatalogTable() {
     fetchCartItems();
   }, [isAuthenticated, user?.id]);
 
+  // Fetch course history for the logged in student
+  useEffect(() => {
+    const fetchCourseHistory = async () => {
+      if (!isAuthenticated || !user?.registration_number) {
+        return;
+      }
+
+      setLoadingCourseHistory(true);
+      try {
+        const response = await fetch(
+          `/api/results/available-courses?studentId=${user.registration_number}`,
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch course results");
+        }
+
+        const data = await response.json();
+
+        if (data.success) {
+          // Create a set of passed course IDs
+          const passedIds = new Set<number>();
+          const failedCoursesMap: Record<number, boolean> = {};
+
+          // Process failed courses (retake courses)
+          if (data.retakeCourses && Array.isArray(data.retakeCourses)) {
+            //eslint-disable-next-line
+            data.retakeCourses.forEach((course: any) => {
+              failedCoursesMap[course.COURSE_ID] = true;
+            });
+          }
+
+          // Find passed courses (courses not in available courses)
+          const availableIds = new Set(
+            //eslint-disable-next-line
+            data.availableCourses.map((c: any) => c.ID),
+          );
+
+          // All courses that are not in available courses and not failed are passed
+          courses.forEach((course) => {
+            if (!availableIds.has(course.id) && !failedCoursesMap[course.id]) {
+              passedIds.add(course.id);
+            }
+          });
+
+          setPassedCourses(Array.from(passedIds));
+          setFailedCourses(failedCoursesMap);
+        }
+      } catch (error) {
+        console.error("Error fetching course history:", error);
+      } finally {
+        setLoadingCourseHistory(false);
+      }
+    };
+
+    if (courses.length > 0) {
+      fetchCourseHistory();
+    }
+  }, [isAuthenticated, user?.registration_number, courses]);
+
   // Handle course selection
   const handleSelectCourse = async (courseId: number) => {
     if (!isAuthenticated) {
@@ -217,8 +282,13 @@ export default function CourseCatalogTable() {
     }
   };
 
-  // Filter courses based on search criteria
+  // Filter courses based on search criteria and hide passed courses
   const filtered = courses.filter((course) => {
+    // Don't show passed courses
+    if (passedCourses.includes(course.id)) {
+      return false;
+    }
+
     const matchesCode = !searchCode || course.code === searchCode;
     const matchesTitle = !searchTitle || course.name === searchTitle;
     const matchesInstructor =
@@ -415,8 +485,8 @@ export default function CourseCatalogTable() {
           </div>
 
           <div className="relative z-50">
-               <HiSearch className="absolute top-3.5 left-3 text-gray-500" />
-            
+            <HiSearch className="absolute top-3.5 left-3 text-gray-500" />
+
             <ReactSelect
               options={courseTitleOptions}
               placeholder="Search by title"
@@ -646,7 +716,11 @@ export default function CourseCatalogTable() {
                               </Link>
                             ) : (
                               <button
-                                className="inline-flex w-full min-w-[100px] justify-center rounded-md bg-[#92e3a9] px-3 py-2 text-sm font-medium text-black transition-all hover:scale-105 hover:bg-[#7acc91] hover:shadow-lg disabled:opacity-50 disabled:hover:scale-100"
+                                className={`inline-flex w-full min-w-[100px] justify-center rounded-md px-3 py-2 text-sm font-medium transition-all hover:scale-105 hover:shadow-lg disabled:opacity-50 disabled:hover:scale-100 ${
+                                  failedCourses[course.id]
+                                    ? "bg-amber-500 text-white hover:bg-amber-600"
+                                    : "bg-[#92e3a9] text-black hover:bg-[#7acc91]"
+                                }`}
                                 onClick={() => handleSelectCourse(course.id)}
                                 disabled={
                                   addingCourse === course.id ||
@@ -671,6 +745,8 @@ export default function CourseCatalogTable() {
                                   "Unavailable"
                                 ) : !isDeadlineValid ? (
                                   "Closed"
+                                ) : failedCourses[course.id] ? (
+                                  "Retake"
                                 ) : (
                                   "Select Course"
                                 )}
@@ -772,7 +848,11 @@ export default function CourseCatalogTable() {
                           </Link>
                         ) : (
                           <button
-                            className="w-full rounded-md bg-[#92e3a9] px-3 py-2 text-sm font-medium text-black transition-all hover:bg-[#7acc91] hover:shadow-lg disabled:opacity-50"
+                            className={`w-full rounded-md px-3 py-2 text-sm font-medium transition-all hover:shadow-lg disabled:opacity-50 ${
+                              failedCourses[course.id]
+                                ? "bg-amber-500 text-white hover:bg-amber-600"
+                                : "bg-[#92e3a9] text-black hover:bg-[#7acc91]"
+                            }`}
                             onClick={() => handleSelectCourse(course.id)}
                             disabled={
                               addingCourse === course.id ||
@@ -789,6 +869,8 @@ export default function CourseCatalogTable() {
                               "Unavailable"
                             ) : !isDeadlineValid ? (
                               "Registration Closed"
+                            ) : failedCourses[course.id] ? (
+                              "Retake"
                             ) : (
                               "Select Course"
                             )}
