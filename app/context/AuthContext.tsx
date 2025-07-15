@@ -67,13 +67,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         try {
           // Try to parse the error as JSON first
           const errorData = await res.json();
-          console.log("Error response:", errorData);
+         
           return { success: false, error: errorData.error || "Login failed" };
         } catch {
           // If it's not valid JSON, get the text
           const errorText = await res.text();
           const errorMsg = errorText.split("\n")[0];
-          console.log("Error response:", errorText);
+      
           return { success: false, error: errorMsg || "Login failed" };
         }
       }
@@ -87,7 +87,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
 
       // Fetch department details if departmentId exists
-      console.log(user);
+     
       let departmentInfo = null;
       if (user.department) {
         departmentInfo = await fetchDepartmentDetails(user.department);
@@ -108,7 +108,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       setUser(userData);
       setDepartmentDetails(departmentInfo);
-      console.log("User data:", userData);
+      
       localStorage.setItem("user", JSON.stringify(userData));
 
       // router.push("/dashboard");
