@@ -424,8 +424,7 @@ export default function ManageAdvisors() {
                         className="flex items-center gap-1 px-2 py-0.5 text-xs transition-transform hover:scale-105 sm:px-3 sm:py-1"
                       >
                         <HiCheck className="h-3 w-3 text-white sm:h-4 sm:w-4" />
-                        <span className="xs:inline hidden">Activate</span>
-                        <span className="xs:hidden">Act</span>
+                        <span className="inline">Activate</span>
                       </Button>
                     ) : (
                       <Button
@@ -435,8 +434,7 @@ export default function ManageAdvisors() {
                         className="flex items-center gap-1 px-2 py-0.5 text-xs transition-transform hover:scale-105 sm:px-3 sm:py-1"
                       >
                         <HiX className="h-3 w-3 text-white sm:h-4 sm:w-4" />
-                        <span className="xs:inline hidden">Deactivate</span>
-                        <span className="xs:hidden">Deact</span>
+                        <span className="inline">Deactivate</span>
                       </Button>
                     )}
                   </td>

@@ -16,7 +16,7 @@ export async function GET(request: Request) {
     }
 
     const [results] = await db.execute(
-        "SELECT * FROM advisor WHERE DEPARTMENT_ID = ? AND STATUS = 1", 
+        "SELECT * FROM advisor WHERE DEPARTMENT_ID = ?", 
         [departmentId]
     );
     
