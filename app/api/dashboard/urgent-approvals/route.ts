@@ -1,4 +1,4 @@
-import {  NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import db from "@/app/lib/db";
 
 export async function GET() {
@@ -6,10 +6,12 @@ export async function GET() {
     // Get urgent approvals with their details (approaching deadlines)
     // Check if there are pending approvals in the database
     const [courseRegistrations] = await db.query(`
-      SELECT COUNT(*) as count 
-      FROM course_registration 
-      WHERE STATUS = 'PENDING'
-    `);
+  SELECT COUNT(*) as count 
+  FROM course_registration cr
+  JOIN registration_bundle rb ON cr.BUNDLE_ID = rb.ID
+  WHERE cr.STATUS = 'APPROVED' 
+  AND (rb.HOD_APPROVAL = 0 OR rb.ADVISOR_APPROVAL = 0 OR rb.ACCOUNTS_ADMIN_APPROVAL = 0)
+`);
 
     // Type the result to avoid any
     interface CountResult {
@@ -44,7 +46,8 @@ export async function GET() {
       LEFT JOIN 
         deadlines d ON s.DEPARTMENT_ID = d.department_id
       WHERE 
-        cr.STATUS = 'PENDING'
+        cr.STATUS = 'APPROVED'
+        AND (rb.HOD_APPROVAL = 0 OR rb.ADVISOR_APPROVAL = 0 OR rb.ACCOUNTS_ADMIN_APPROVAL = 0)
       ORDER BY 
         d.course_registration_with_fine ASC
       LIMIT 10
