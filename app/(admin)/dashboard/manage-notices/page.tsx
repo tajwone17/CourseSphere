@@ -53,16 +53,19 @@ export default function ManageNotices() {
   });
 
   const { user } = useAuth();
+
   useEffect(() => {
     const fetchData = async () => {
-      if (user && user.id) {
-        const response = await fetch("/api/notices", {
-          headers: { creatorId: user.id },
-          credentials: "include",
-        });
+      if (user && user.departmentId) {
+        const response = await fetch(
+          `/api/notices?departmentId=${user.departmentId}`,
+          {
+            credentials: "include",
+          },
+        );
         const data = await response.json();
-
-        setNotices(data.notices);
+        console.log(data);
+        setNotices(data.notices || []);
       }
     };
 
@@ -181,10 +184,12 @@ export default function ManageNotices() {
         throw new Error(errorMsg);
       } else {
         // Fetch updated list after successful addition
-        const response = await fetch("/api/notices", {
-          headers: { creatorId: user.id },
-          credentials: "include",
-        });
+        const response = await fetch(
+          `/api/notices?departmentId=${user.departmentId}`,
+          {
+            credentials: "include",
+          },
+        );
         if (response.ok) {
           const data = await response.json();
           setNotices(data.notices);
@@ -226,10 +231,12 @@ export default function ManageNotices() {
         throw new Error(errorMsg);
       } else {
         // Fetch updated list after successful edit
-        const response = await fetch("/api/notices", {
-          headers: { creatorId: user.id },
-          credentials: "include",
-        });
+        const response = await fetch(
+          `/api/notices?departmentId=${user.departmentId}`,
+          {
+            credentials: "include",
+          },
+        );
 
         if (response.ok) {
           const data = await response.json();
@@ -265,13 +272,15 @@ export default function ManageNotices() {
         throw new Error(errorMsg);
       } else {
         // Fetch updated list after successful deletion
-        const response = await fetch("/api/notices", {
-          headers: { creatorId: user.id },
-          credentials: "include",
-        });
+        const response = await fetch(
+          `/api/notices?departmentId=${user.departmentId}`,
+          {
+            credentials: "include",
+          },
+        );
         if (response.ok) {
           const data = await response.json();
-          setNotices(data);
+          setNotices(data.notices || []);
         }
         alert("Notice deleted successfully");
         console.log("Notice deleted successfully");
@@ -296,7 +305,7 @@ export default function ManageNotices() {
               <HiSpeakerphone className="h-6 w-6 text-gray-900 sm:h-7 sm:w-7 md:h-8 md:w-8" />
             </span>
             Manage Notices
-          </h1>{" "}
+          </h1>
           <p className="mt-2 flex items-center gap-1 text-sm text-gray-400 sm:mt-4 sm:gap-2 sm:text-base md:text-lg">
             <HiInformationCircle className="text-[#92e3a9]" />
             Create and manage notices for students
@@ -323,19 +332,18 @@ export default function ManageNotices() {
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-800">
             <thead className="bg-gray-800">
-              {" "}
               <tr>
                 <th className="px-2 py-2 text-left text-xs font-medium text-gray-400 uppercase sm:px-4 sm:py-3 md:px-6">
-                  <HiDocument className="mr-1 inline text-[#92e3a9] group-hover:scale-110 sm:mr-2" />{" "}
+                  <HiDocument className="mr-1 inline text-[#92e3a9] group-hover:scale-110 sm:mr-2" />
                   <span>Title</span>
                 </th>
 
                 <th className="hidden px-2 py-2 text-left text-xs font-medium text-gray-400 uppercase sm:table-cell sm:px-4 sm:py-3 md:px-6">
-                  <HiCalendar className="mr-1 inline text-[#92e3a9] group-hover:scale-110 sm:mr-2" />{" "}
+                  <HiCalendar className="mr-1 inline text-[#92e3a9] group-hover:scale-110 sm:mr-2" />
                   <span>Created At</span>
                 </th>
                 <th className="px-2 py-2 text-left text-xs font-medium text-gray-400 uppercase sm:px-4 sm:py-3 md:px-6">
-                  <HiClock className="mr-1 inline text-[#92e3a9] group-hover:scale-110 sm:mr-2" />{" "}
+                  <HiClock className="mr-1 inline text-[#92e3a9] group-hover:scale-110 sm:mr-2" />
                   <span>Actions</span>
                 </th>
               </tr>
@@ -346,7 +354,6 @@ export default function ManageNotices() {
                   key={notice.ID}
                   className="bg-gray-900 transition-colors hover:bg-gray-800"
                 >
-                  {" "}
                   <td className="px-2 py-2 text-white sm:px-4 sm:py-4 md:px-6">
                     <div className="flex items-center gap-2">
                       <div className="max-w-[150px] truncate sm:max-w-full">
@@ -361,7 +368,6 @@ export default function ManageNotices() {
                   </td>
                   <td className="px-2 py-2 whitespace-nowrap sm:px-4 sm:py-4 md:px-6">
                     <div className="flex gap-1 sm:gap-2">
-                      {" "}
                       <Button
                         style={{ backgroundColor: "#f59e0b", color: "#ffffff" }}
                         size="xs"
@@ -394,7 +400,7 @@ export default function ManageNotices() {
           </table>
         </div>
       </div>
-      {/* Add Notice Modal */}{" "}
+      {/* Add Notice Modal */}
       <Modal show={showAddModal} onClose={() => setShowAddModal(false)}>
         <div className="relative bg-gray-800 p-3 sm:p-4">
           <div className="mb-4 text-center sm:mb-6">
@@ -406,7 +412,6 @@ export default function ManageNotices() {
             </div>
           </div>
           <div className="space-y-3 sm:space-y-4">
-            {" "}
             <div>
               <Label
                 htmlFor="title"
@@ -424,7 +429,7 @@ export default function ManageNotices() {
                 placeholder="Enter notice title"
                 className="text-sm sm:text-base"
               />
-            </div>{" "}
+            </div>
             <div>
               <Label
                 htmlFor="description"
@@ -458,7 +463,7 @@ export default function ManageNotices() {
             >
               <HiPlus className="h-3 w-3 sm:h-4 sm:w-4" />
               Add Notice
-            </Button>{" "}
+            </Button>
             <Button
               color="gray"
               onClick={() => setShowAddModal(false)}
@@ -469,7 +474,7 @@ export default function ManageNotices() {
           </div>
         </div>
       </Modal>
-      {/* Edit Notice Modal */}{" "}
+      {/* Edit Notice Modal */}
       <Modal show={showEditModal} onClose={() => setShowEditModal(false)}>
         <div className="relative bg-gray-800 p-3 sm:p-4">
           <div className="mb-4 text-center sm:mb-6">
@@ -481,7 +486,6 @@ export default function ManageNotices() {
             </div>
           </div>
           <div className="space-y-3 sm:space-y-4">
-            {" "}
             <div>
               <Label
                 htmlFor="edit-title"
@@ -502,7 +506,7 @@ export default function ManageNotices() {
                 }
                 className="text-sm sm:text-base"
               />
-            </div>{" "}
+            </div>
             <div>
               <Label
                 htmlFor="edit-description"
@@ -525,7 +529,7 @@ export default function ManageNotices() {
                 className="text-sm sm:text-base"
               />
             </div>
-          </div>{" "}
+          </div>
           <div className="mt-4 flex justify-end gap-2 sm:mt-6 sm:gap-4">
             <Button
               style={{
@@ -541,7 +545,7 @@ export default function ManageNotices() {
             >
               <HiCheck className="h-3 w-3 sm:h-4 sm:w-4" />
               Save Changes
-            </Button>{" "}
+            </Button>
             <Button
               color="gray"
               onClick={() => setShowEditModal(false)}
@@ -552,7 +556,7 @@ export default function ManageNotices() {
           </div>
         </div>
       </Modal>
-      {/* Delete Confirmation Modal */}{" "}
+      {/* Delete Confirmation Modal */}
       <Modal show={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
         <div className="relative bg-gray-800 p-3 sm:p-4">
           <div className="mb-4 text-center sm:mb-6">
@@ -566,7 +570,7 @@ export default function ManageNotices() {
           <p className="mb-4 text-sm text-gray-300 sm:mb-6 sm:text-base">
             Are you sure you want to delete this notice? This action cannot be
             undone.
-          </p>{" "}
+          </p>
           <div className="flex justify-end gap-2 sm:gap-4">
             <Button
               color="failure"
@@ -625,11 +629,11 @@ export default function ManageNotices() {
                 <thead className="bg-gray-800">
                   <tr>
                     <th className="px-2 py-2 text-left text-xs font-medium text-gray-400 uppercase sm:px-4 sm:py-3 md:px-6">
-                      <HiDocument className="mr-1 inline text-[#f59e0b] sm:mr-2" />{" "}
+                      <HiDocument className="mr-1 inline text-[#f59e0b] sm:mr-2" />
                       Event
                     </th>
                     <th className="px-2 py-2 text-left text-xs font-medium text-gray-400 uppercase sm:px-4 sm:py-3 md:px-6">
-                      <HiCalendar className="mr-1 inline text-[#f59e0b] sm:mr-2" />{" "}
+                      <HiCalendar className="mr-1 inline text-[#f59e0b] sm:mr-2" />
                       Deadline
                     </th>
                   </tr>
@@ -775,7 +779,7 @@ export default function ManageNotices() {
             >
               <HiCheck className="h-3 w-3 sm:h-4 sm:w-4" />
               Save Changes
-            </Button>{" "}
+            </Button>
             <Button
               color="gray"
               onClick={() => setShowDeadlinesModal(false)}

@@ -36,6 +36,11 @@ export default function AdminDashboard() {
 
   // Get color based on urgency level
   const getUrgencyColor = (hours: number): string => {
+    // If no deadline (or invalid hours value)
+    if (!stats?.nextDeadline || hours === undefined || hours === null) {
+      return "bg-gray-500"; // neutral color for no deadline
+    }
+
     if (hours <= 24) {
       return "bg-red-500"; // urgent - less than 24 hours
     } else if (hours <= 72) {
@@ -266,7 +271,7 @@ export default function AdminDashboard() {
         <Card className="border-gray-700 bg-gray-800">
           <div className="flex items-center">
             <div
-              className={`mr-3 rounded-lg p-2 sm:mr-4 sm:p-3 ${getUrgencyColor(stats?.hoursRemaining || 0)}`}
+              className={`mr-3 rounded-lg p-2 sm:mr-4 sm:p-3 ${stats?.nextDeadline ? getUrgencyColor(stats?.hoursRemaining || 0) : "bg-gray-500"}`}
             >
               <HiClock className="h-4 w-4 text-gray-900 sm:h-5 sm:w-5 md:h-6 md:w-6" />
             </div>
@@ -277,7 +282,9 @@ export default function AdminDashboard() {
               <p className="text-lg font-bold text-white sm:text-xl md:text-2xl">
                 {statsLoading
                   ? "..."
-                  : formatHoursRemaining(stats?.hoursRemaining || 0)}
+                  : stats?.nextDeadline
+                    ? formatHoursRemaining(stats?.hoursRemaining || 0)
+                    : "No upcoming deadlines"}
               </p>
               {stats?.nextDeadline && (
                 <p className="mt-1 max-w-[150px] truncate text-xs text-gray-400 sm:max-w-none">
