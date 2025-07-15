@@ -9,6 +9,7 @@ import {
   HiSearch,
   HiShoppingCart,
   HiExclamation,
+  HiCheck,
 } from "react-icons/hi";
 import ReactSelect from "react-select";
 import { useAuth } from "@/app/context/AuthContext";
@@ -40,6 +41,7 @@ export default function CourseCatalogTable() {
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [addingCourse, setAddingCourse] = useState<number | null>(null);
   const [passedCourses, setPassedCourses] = useState<number[]>([]);
   const [failedCourses, setFailedCourses] = useState<Record<number, boolean>>(
@@ -264,15 +266,35 @@ export default function CourseCatalogTable() {
         }),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to add course to cart");
-      }
-
       const data = await response.json();
 
+      if (!response.ok) {
+        // Get detailed error message from the server response if available
+        throw new Error(data.error || "Failed to add course to cart");
+      }
+
       if (data.success || data.exists) {
-        setSelectedCourses((prev) => [...prev, courseId]);
-        setCartCount((prev) => prev + 1);
+        // Check if the course is already selected
+        const isAlreadySelected = selectedCourses.includes(courseId);
+        
+        // Only add to selected courses if not already there
+        setSelectedCourses((prev) => 
+          prev.includes(courseId) ? prev : [...prev, courseId]
+        );
+        
+        // Only increment count if it's a new addition, not if it was already in cart
+        if (!isAlreadySelected) {
+          setCartCount((prev) => prev + 1);
+        }
+        
+        // Show success message
+        setError(null);
+        setSuccessMessage(data.message || "Course added to cart successfully");
+        
+        // Clear success message after 3 seconds
+        setTimeout(() => {
+          setSuccessMessage(null);
+        }, 3000);
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
@@ -606,11 +628,23 @@ export default function CourseCatalogTable() {
           </div>
         )}
 
+        {successMessage && (
+          <div className="mb-4 rounded-md border border-green-500 bg-green-900/20 p-4 text-green-300">
+            <div className="flex items-center">
+              <HiCheck className="mr-2 h-5 w-5 text-green-400" />
+              <p>{successMessage}</p>
+            </div>
+          </div>
+        )}
+
         {error && (
           <div className="rounded-md border border-red-500 bg-red-900/20 p-4 text-red-300">
             <p>{error}</p>
             <button
-              onClick={() => window.location.reload()}
+              onClick={() => {
+                setError(null);
+                window.location.reload();
+              }}
               className="mt-2 rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700"
             >
               Try Again

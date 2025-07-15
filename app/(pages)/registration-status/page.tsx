@@ -160,6 +160,32 @@ export default function RegistrationStatusPage() {
     setPaymentError(null);
 
     try {
+      // Check if payment is being made on the same day as submission
+      if (!isSameSubmissionDay()) {
+        // Automatically cancel the registration if payment is attempted on a different day
+        setCancellingRegistration(true);
+
+        const cancelResponse = await fetch("/api/registration/cancel", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            registrationId: registration.ID,
+          }),
+        });
+
+        const cancelData = await cancelResponse.json();
+
+        if (!cancelResponse.ok) {
+          throw new Error(cancelData.error || "Failed to cancel registration");
+        }
+
+        throw new Error(
+          "Payment must be made on the same day of course registration submission. Your registration has been automatically cancelled.",
+        );
+      }
+
       const amount = parseFloat(paymentAmount);
 
       if (isNaN(amount) || amount <= 0) {
@@ -199,6 +225,7 @@ export default function RegistrationStatusPage() {
       );
     } finally {
       setProcessingPayment(false);
+      setCancellingRegistration(false);
     }
   };
 
@@ -328,6 +355,20 @@ export default function RegistrationStatusPage() {
       hour: "2-digit",
       minute: "2-digit",
     });
+  };
+
+  // Check if the submission date is the same as today
+  const isSameSubmissionDay = () => {
+    if (!registration) return false;
+
+    const submissionDate = new Date(registration.SUBMITTED_AT);
+    const today = new Date();
+
+    return (
+      submissionDate.getDate() === today.getDate() &&
+      submissionDate.getMonth() === today.getMonth() &&
+      submissionDate.getFullYear() === today.getFullYear()
+    );
   };
 
   const getStatusColor = (status: string) => {
@@ -623,13 +664,30 @@ export default function RegistrationStatusPage() {
               {registration.STATUS === "APPROVED" && remainingAmount > 0 && (
                 <div className="mt-4">
                   {!showPaymentForm ? (
-                    <button
-                      onClick={() => setShowPaymentForm(true)}
-                      className="mt-3 flex w-full items-center justify-center rounded-md bg-[#92e3a9] px-4 py-3 text-center font-medium text-black shadow-md transition-colors hover:bg-[#78c18f] hover:shadow-lg"
-                    >
-                      <MdPayment className="mr-2 text-lg" />
-                      Make Payment
-                    </button>
+                    <div className="space-y-2">
+                      <button
+                        onClick={() => setShowPaymentForm(true)}
+                        disabled={!isSameSubmissionDay()}
+                        className={`mt-3 flex w-full items-center justify-center rounded-md px-4 py-3 text-center font-medium shadow-md transition-colors ${
+                          isSameSubmissionDay()
+                            ? "bg-[#92e3a9] text-black hover:bg-[#78c18f] hover:shadow-lg"
+                            : "cursor-not-allowed bg-gray-600 text-gray-300"
+                        }`}
+                      >
+                        <MdPayment className="mr-2 text-lg" />
+                        Make Payment
+                      </button>
+                      {!isSameSubmissionDay() && (
+                        <p className="text-sm text-red-400">
+                          <HiExclamation className="mr-1 inline" />
+                          Payment can only be made on the submission date (
+                          {new Date(
+                            registration.SUBMITTED_AT,
+                          ).toLocaleDateString()}
+                          ).
+                        </p>
+                      )}
+                    </div>
                   ) : (
                     <form
                       onSubmit={handlePayment}
@@ -638,6 +696,34 @@ export default function RegistrationStatusPage() {
                       <h4 className="mb-2 text-base font-medium text-white">
                         Payment Details
                       </h4>
+
+                      {/* Same-day payment warning */}
+                      <div className="mb-4 rounded-md border-l-4 border-yellow-500 bg-yellow-900/20 p-4 text-sm text-yellow-300 shadow-md">
+                        <div className="flex">
+                          <HiExclamation className="mt-0.5 h-5 w-5 text-yellow-400" />
+                          <div className="ml-3">
+                            <p className="font-medium">
+                              Important Payment Policy
+                            </p>
+                            <p className="mt-1">
+                              Payment must be completed on the same day as
+                              course registration submission. If payment is
+                              attempted on a different day, your registration
+                              will be automatically cancelled.
+                            </p>
+                            <p className="mt-1 font-medium">
+                              Today&apos;s date:{" "}
+                              {new Date().toLocaleDateString()}
+                              <br />
+                              Submission date:{" "}
+                              {new Date(
+                                registration.SUBMITTED_AT,
+                              ).toLocaleDateString()}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
                       <div>
                         <label className="mb-1 block text-sm font-medium text-gray-300">
                           Payment Amount ($)
