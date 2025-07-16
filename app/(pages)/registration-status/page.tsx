@@ -87,11 +87,11 @@ export default function RegistrationStatusPage() {
 
   useEffect(() => {
     const fetchRegistrationStatus = async () => {
-      if (!isAuthenticated && !bundleId) {
-        setLoading(false);
-        alert("You must be logged in to view registration status");
-        return;
-      }
+      // if (!isAuthenticated) {
+      //   setLoading(false);
+      //   alert("You must be logged in to view registration status");
+      //   return;
+      // }
 
       try {
         const url = bundleId
