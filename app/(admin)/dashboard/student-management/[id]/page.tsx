@@ -555,7 +555,7 @@ export default function RegistrationReviewPage() {
                   Total Amount
                 </dt>
                 <dd className="mt-1 text-sm text-white">
-                  $
+                  BDT
                   {bundle.TOTAL_AMOUNT
                     ? Number(bundle.TOTAL_AMOUNT).toFixed(2)
                     : "0.00"}
@@ -834,7 +834,7 @@ export default function RegistrationReviewPage() {
                   </Label>
                   <div className="relative">
                     <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                      $
+                      BDT 
                     </span>
                     <input
                       type="text"
@@ -878,7 +878,7 @@ export default function RegistrationReviewPage() {
                     (0-100%)
                   </p>
                   <p className="mt-1 text-xs text-green-400">
-                    Waiver amount: $
+                    Waiver amount: BDT
                     {(
                       ((parseFloat(waiverPercent) || 0) * baseAmount) /
                       100
@@ -896,7 +896,7 @@ export default function RegistrationReviewPage() {
                   </Label>
                   <div className="relative">
                     <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                      $
+                      BDT
                     </span>
                     <input
                       type="number"
@@ -924,7 +924,7 @@ export default function RegistrationReviewPage() {
                   </Label>
                   <div className="relative">
                     <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                      $
+                      BDT
                     </span>
                     <input
                       type="number"
@@ -952,7 +952,7 @@ export default function RegistrationReviewPage() {
                   </Label>
                   <div className="relative">
                     <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                      $
+                      BDT
                     </span>
                     <input
                       type="text"
@@ -989,7 +989,7 @@ export default function RegistrationReviewPage() {
                     <div className="flex justify-between">
                       <span className="text-gray-400">Base Amount:</span>
                       <span className="text-white">
-                        ${Math.round(baseAmount)}
+                        BDT {Math.round(baseAmount)}
                       </span>
                     </div>
                     <div className="flex justify-between">
@@ -997,7 +997,7 @@ export default function RegistrationReviewPage() {
                         Waiver ({waiverPercent}%):
                       </span>
                       <span className="text-red-400">
-                        -$
+                        -BDT
                         {Math.round(
                           ((parseFloat(waiverPercent) || 0) * baseAmount) / 100,
                         )}
@@ -1006,18 +1006,18 @@ export default function RegistrationReviewPage() {
                     <div className="flex justify-between">
                       <span className="text-gray-400">Delay Fine:</span>
                       <span className="text-green-400">
-                        +${Math.round(parseFloat(delayFine) || 0)}
+                        +BDT{Math.round(parseFloat(delayFine) || 0)}
                       </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-400">Library Fee:</span>
                       <span className="text-green-400">
-                        +${Math.round(parseFloat(libraryFee) || 0)}
+                        +BDT{Math.round(parseFloat(libraryFee) || 0)}
                       </span>
                     </div>
                     <div className="flex justify-between border-t border-gray-700 pt-1 font-medium">
                       <span className="text-gray-300">Final Amount:</span>
-                      <span className="text-white">${totalAmount}</span>
+                      <span className="text-white">BDT{totalAmount}</span>
                     </div>
                   </div>
                 </div>

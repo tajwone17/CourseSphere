@@ -647,7 +647,7 @@ export default function RegistrationStatusPage() {
                       : "Payment Pending"}
                 </span>
                 <span className="text-base font-medium text-white">
-                  ${totalPaid.toFixed(2)} / $
+                  BDT {totalPaid.toFixed(2)} / BDT 
                   {Number(registration.TOTAL_AMOUNT).toFixed(2)}
                 </span>
               </div>
@@ -726,7 +726,7 @@ export default function RegistrationStatusPage() {
 
                       <div>
                         <label className="mb-1 block text-sm font-medium text-gray-300">
-                          Payment Amount ($)
+                          Payment Amount (BDT )
                         </label>
                         <input
                           type="number"
@@ -1041,7 +1041,7 @@ export default function RegistrationStatusPage() {
                       {formatDate(payment.PAYMENT_DATE)}
                     </td>
                     <td className="px-6 py-4 text-sm whitespace-nowrap text-white">
-                      ${Number(payment.AMOUNT).toFixed(2)}
+                      BDT {Number(payment.AMOUNT).toFixed(2)}
                     </td>
                     <td className="px-6 py-4 text-sm whitespace-nowrap text-white">
                       {payment.PAYMENT_METHOD || "Online"}

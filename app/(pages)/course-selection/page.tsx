@@ -542,7 +542,7 @@ export default function CourseSelectionPage() {
                             {course.instructor}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-white">
-                            ${totalCost}
+                            {totalCost} BDT
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <button
@@ -599,7 +599,7 @@ export default function CourseSelectionPage() {
                   <div className="flex items-center justify-between border-b border-gray-800 pb-2">
                     <span className="text-gray-400">Total Cost:</span>
                     <span className="font-medium text-white">
-                      $
+                      BDT 
                       {selectedCourses.reduce((total, course) => {
                         const costPerCredit = getCostPerCredit(
                           course.department_id,
