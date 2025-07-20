@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 10, 2025 at 08:22 AM
+-- Generation Time: Jul 20, 2025 at 09:22 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -90,16 +90,15 @@ CREATE TABLE `advisor` (
 --
 
 INSERT INTO `advisor` (`ID`, `NAME`, `EMAIL`, `PASSWORD`, `DEPARTMENT_ID`, `CREATED_AT`, `STATUS`, `PHONE`) VALUES
-(1, 'Khadem Asifuzzaman', 'asif@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 3, '2025-05-20 18:45:30', 1, '01720671208'),
+(1, 'Khadem Asifuzzaman', 'asif@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 1, '2025-05-20 18:45:30', 1, '01720671208'),
 (4, 'Parvej Ahmed', 'parvez@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 3, '2025-06-09 19:15:58', 1, '01765921728'),
-(5, 'Razorshi Prozzwal Taluker', 'rajorshee@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 3, '2025-06-09 19:25:17', 1, '01720671208'),
+(5, 'Razorshi Prozzwal Taluker', 'rajorshee@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 1, '2025-06-09 19:25:17', 1, '01720671208'),
 (7, 'Rathindra Gope', 'Rathindra@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 3, '2025-06-09 19:57:32', 1, '01765921728'),
 (8, 'Md. Abdul Karim', 'karim@neub.edu.bd', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 2, '2025-07-10 09:00:00', 1, '01711112222'),
 (9, 'Mohammad Hasan', 'hasan@neub.edu.bd', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 3, '2025-07-10 09:05:00', 1, '01722223333'),
 (10, 'Md. Shafiqul Islam', 'shafiqul@neub.edu.bd', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 4, '2025-07-10 09:10:00', 1, '01733334444'),
 (11, 'Abdul Matin', 'matin@neub.edu.bd', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 2, '2025-07-10 09:15:00', 1, '01744445555'),
 (12, 'Md. Nurul Islam', 'nurul@neub.edu.bd', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 4, '2025-07-10 09:20:00', 1, '01755556666');
-
 
 -- --------------------------------------------------------
 
@@ -124,30 +123,23 @@ CREATE TABLE `course` (
 
 INSERT INTO `course` (`ID`, `TITLE`, `CODE`, `CREDIT`, `DEPARTMENT_ID`, `STATUS`, `INSTRUCTOR_NAME`, `CREATED_AT`) VALUES
 (1, 'Software Engineering', 'CSE-0123456', 3.0, 3, 1, 'Mr. Sabuj Chandra Paul', '2025-06-11 18:47:31'),
--- CSE Courses (department_id = 1)
 (2, 'Data Structures', 'CSE-1001', 3.0, 1, 1, 'Prof. Nusrat Jahan', '2025-07-10 09:00:00'),
 (3, 'Algorithms', 'CSE-1002', 3.0, 1, 1, 'Prof. Mahmudul Hasan', '2025-07-10 09:05:00'),
 (4, 'Operating Systems', 'CSE-1003', 3.0, 1, 1, 'Prof. Shamsul Alam', '2025-07-10 09:10:00'),
 (5, 'Computer Lab', 'CSE-1101L', 1.5, 1, 1, 'Prof. Farhana Islam', '2025-07-10 09:15:00'),
-
--- Law Courses (department_id = 2)
 (6, 'Constitutional Law', 'LAW-5001', 3.0, 2, 1, 'Prof. Kamrul Hasan', '2025-07-10 09:20:00'),
 (7, 'Criminal Law', 'LAW-5002', 3.0, 2, 1, 'Prof. Rasheda Begum', '2025-07-10 09:25:00'),
 (8, 'Civil Procedure', 'LAW-5003', 3.0, 2, 1, 'Prof. Tanvir Ahmed', '2025-07-10 09:30:00'),
 (9, 'Law Lab', 'LAW-5101L', 1.5, 2, 1, 'Prof. Shafiqul Islam', '2025-07-10 09:35:00'),
-
--- BBA Courses (department_id = 3)
 (10, 'Principles of Management', 'BBA-3001', 3.0, 3, 1, 'Parvej Ahmed', '2025-07-10 09:40:00'),
 (11, 'Marketing Fundamentals', 'BBA-3002', 3.0, 3, 1, 'Razorshee Prozzwal Talukder', '2025-07-10 09:45:00'),
 (12, 'Financial Accounting', 'BBA-3003', 3.0, 3, 1, 'Khadem Asifuzzaman', '2025-07-10 09:50:00'),
 (13, 'Business Lab', 'BBA-3101L', 1.5, 3, 1, 'Md. Abdul Karim', '2025-07-10 09:55:00'),
-
--- English Courses (department_id = 4)
 (14, 'English Literature', 'ENG-4001', 3.0, 4, 1, 'Md. Shafiqul Islam', '2025-07-10 10:00:00'),
 (15, 'Linguistics', 'ENG-4002', 3.0, 4, 1, 'Md. Nurul Islam', '2025-07-10 10:05:00'),
 (16, 'Creative Writing', 'ENG-4003', 3.0, 4, 1, 'Abdul Matin', '2025-07-10 10:10:00'),
-(17, 'Language Lab', 'ENG-4101L', 1.5, 4, 1, 'Md. Shafiqul Islam', '2025-07-10 10:15:00');
-
+(17, 'Language Lab', 'ENG-4101L', 1.5, 4, 1, 'Md. Shafiqul Islam', '2025-07-10 10:15:00'),
+(18, 'Structured Programming Language', 'CSE-1256', 3.0, 1, 1, 'Ayon Dey', '2025-07-15 13:56:04');
 
 -- --------------------------------------------------------
 
@@ -174,10 +166,30 @@ CREATE TABLE `course_registration` (
   `BUNDLE_ID` int(11) NOT NULL,
   `COURSE_ID` int(11) NOT NULL,
   `ADVISOR_ID` int(11) DEFAULT NULL,
-  `STATUS` enum('PENDING','APPROVED','REJECTED','COMPLETED','CANCELLED') DEFAULT 'PENDING',
+  `STATUS` enum('PENDING','APPROVED','REJECTED','COMPLETED','CANCELLED') DEFAULT NULL,
   `ADVISOR_COMMENT` text DEFAULT NULL,
   `CREATED_AT` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `course_registration`
+--
+
+INSERT INTO `course_registration` (`ID`, `BUNDLE_ID`, `COURSE_ID`, `ADVISOR_ID`, `STATUS`, `ADVISOR_COMMENT`, `CREATED_AT`) VALUES
+(1, 1, 3, 1, 'COMPLETED', 'You are not eligible to take the computer Lab course.', '2025-07-15 07:37:22'),
+(2, 1, 2, 1, 'COMPLETED', 'You are not eligible to take the computer Lab course.', '2025-07-15 07:37:22'),
+(3, 1, 5, 1, 'REJECTED', 'You are not eligible to take the computer Lab course.', '2025-07-15 07:37:22'),
+(4, 1, 4, 1, 'COMPLETED', 'You are not eligible to take the computer Lab course.', '2025-07-15 07:37:22'),
+(5, 2, 5, 1, 'COMPLETED', NULL, '2025-07-15 08:04:43'),
+(6, 3, 18, 1, 'COMPLETED', NULL, '2025-07-15 13:57:54'),
+(7, 4, 2, 1, 'COMPLETED', 'You are not eligible for this course.', '2025-07-15 17:44:10'),
+(8, 4, 3, 1, 'COMPLETED', 'You are not eligible for this course.', '2025-07-15 17:44:10'),
+(9, 4, 4, 1, 'COMPLETED', 'You are not eligible for this course.', '2025-07-15 17:44:10'),
+(10, 4, 5, 1, 'REJECTED', 'You are not eligible for this course.', '2025-07-15 17:44:10'),
+(11, 5, 2, 1, 'REJECTED', NULL, '2025-07-15 18:34:23'),
+(12, 6, 18, 1, 'CANCELLED', NULL, '2025-07-15 18:40:00'),
+(13, 6, 4, 1, 'CANCELLED', NULL, '2025-07-15 18:40:00'),
+(14, 7, 4, 1, 'CANCELLED', NULL, '2025-07-15 19:25:47');
 
 -- --------------------------------------------------------
 
@@ -197,7 +209,8 @@ CREATE TABLE `deadlines` (
 -- Dumping data for table `deadlines`
 --
 
-
+INSERT INTO `deadlines` (`id`, `department_id`, `course_registration_without_fine`, `course_registration_with_fine`, `admit_card_collection`) VALUES
+(2, 1, '2025-07-22', '2025-07-26', '2025-08-02');
 
 -- --------------------------------------------------------
 
@@ -289,8 +302,12 @@ CREATE TABLE `notice` (
   `CREATED_AT` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `notice`
+--
 
-
+INSERT INTO `notice` (`ID`, `TITLE`, `DESCRIPTION`, `CREATOR_ID`, `CREATED_AT`) VALUES
+(11, 'Notice for Course Registration', 'This is for the information of all concerned students of North East University Bangladesh (NEUB) that the Course Registration and Classes of the SummerSemester - 2025 has been started from July 15, 2025 (Tuesday).\nAll are advised to complete their Course Registration (without any delay fine) .', 1, '2025-07-15 07:02:37');
 
 -- --------------------------------------------------------
 
@@ -309,6 +326,16 @@ CREATE TABLE `payment` (
   `CREATED_AT` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `payment`
+--
+
+INSERT INTO `payment` (`ID`, `BUNDLE_ID`, `AMOUNT`, `STATUS`, `PAYMENT_METHOD`, `TRANSACTION_ID`, `PAYMENT_DATE`, `CREATED_AT`) VALUES
+(1, 1, 13700.00, 'COMPLETED', 'Bank Transfer', NULL, '2025-07-15 07:46:56', '2025-07-15 07:46:56'),
+(2, 2, 2250.00, 'COMPLETED', 'Credit Card', NULL, '2025-07-15 08:06:55', '2025-07-15 08:06:55'),
+(3, 3, 4700.00, 'COMPLETED', 'Credit Card', NULL, '2025-07-15 14:04:02', '2025-07-15 14:04:02'),
+(4, 4, 13700.00, 'COMPLETED', 'Credit Card', NULL, '2025-07-15 17:47:45', '2025-07-15 17:47:45');
+
 -- --------------------------------------------------------
 
 --
@@ -322,7 +349,22 @@ CREATE TABLE `prerequisite` (
   `CREATED_AT` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `prerequisite`
+--
 
+INSERT INTO `prerequisite` (`ID`, `COURSE_ID`, `PREREQ_COURSE_ID`, `CREATED_AT`) VALUES
+(1, 3, 2, '2025-07-15 09:00:00'),
+(2, 4, 3, '2025-07-15 09:01:00'),
+(3, 11, 10, '2025-07-15 09:02:00'),
+(4, 12, 10, '2025-07-15 09:03:00'),
+(5, 13, 12, '2025-07-15 09:04:00'),
+(6, 15, 14, '2025-07-15 09:05:00'),
+(7, 16, 15, '2025-07-15 09:06:00'),
+(8, 17, 14, '2025-07-15 09:07:00'),
+(9, 7, 6, '2025-07-15 09:08:00'),
+(10, 8, 6, '2025-07-15 09:09:00'),
+(11, 9, 8, '2025-07-15 09:10:00');
 
 -- --------------------------------------------------------
 
@@ -338,6 +380,21 @@ CREATE TABLE `registered_courses` (
   `REGISTRATION_DATE` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `registered_courses`
+--
+
+INSERT INTO `registered_courses` (`ID`, `COURSE_ID`, `STUDENT_ID`, `SEMESTER`, `REGISTRATION_DATE`) VALUES
+(1, 3, 1, 'Summer-2025', '2025-07-15 07:46:56'),
+(2, 2, 1, 'Summer-2025', '2025-07-15 07:46:56'),
+(3, 4, 1, 'Summer-2025', '2025-07-15 07:46:56'),
+(4, 5, 1, 'Summer-2025', '2025-07-15 08:06:55'),
+(5, 18, 1, 'Summer-2025', '2025-07-15 14:04:02'),
+(6, 2, 5, 'Summer-2025', '2025-07-15 17:47:45'),
+(7, 3, 5, 'Summer-2025', '2025-07-15 17:47:45'),
+(8, 4, 5, 'Summer-2025', '2025-07-15 17:47:45'),
+(9, 5, 5, 'Spring-2025', '2025-07-15 18:08:23');
+
 -- --------------------------------------------------------
 
 --
@@ -348,7 +405,7 @@ CREATE TABLE `registration_bundle` (
   `ID` int(11) NOT NULL,
   `STUDENT_ID` int(11) NOT NULL,
   `SEMESTER` varchar(50) NOT NULL,
-  `STATUS` enum('PENDING','PARTIALLY_APPROVED','APPROVED','REJECTED','COMPLETED','CANCELLED') DEFAULT 'PENDING',
+  `STATUS` enum('PENDING','PARTIALLY_APPROVED','APPROVED','REJECTED','COMPLETED','CANCELLED') DEFAULT NULL,
   `HOD_APPROVAL` tinyint(1) DEFAULT 0,
   `ADVISOR_APPROVAL` tinyint(1) DEFAULT 0,
   `ACCOUNTS_ADMIN_APPROVAL` tinyint(1) DEFAULT 0,
@@ -358,18 +415,18 @@ CREATE TABLE `registration_bundle` (
   `CREATED_AT` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- --------------------------------------------------------
-
 --
--- Table structure for table `registration_deadline`
+-- Dumping data for table `registration_bundle`
 --
 
-CREATE TABLE `registration_deadline` (
-  `ID` int(11) NOT NULL,
-  `SEMESTER` varchar(50) NOT NULL,
-  `DEADLINE_DATE` date NOT NULL,
-  `CREATED_AT` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+INSERT INTO `registration_bundle` (`ID`, `STUDENT_ID`, `SEMESTER`, `STATUS`, `HOD_APPROVAL`, `ADVISOR_APPROVAL`, `ACCOUNTS_ADMIN_APPROVAL`, `SUBMITTED_AT`, `PAYMENT_STATUS`, `TOTAL_AMOUNT`, `CREATED_AT`) VALUES
+(1, 1, 'Summer-2025', 'COMPLETED', 1, 1, 1, '2025-07-15 07:37:22', 'PAID', 13700.00, '2025-07-15 07:37:22'),
+(2, 1, 'Summer-2025', 'COMPLETED', 1, 1, 1, '2025-07-15 08:04:43', 'PAID', 2250.00, '2025-07-15 08:04:43'),
+(3, 1, 'Summer-2025', 'COMPLETED', 1, 1, 1, '2025-07-15 13:57:54', 'PAID', 4700.00, '2025-07-15 13:57:54'),
+(4, 5, 'Summer-2025', 'COMPLETED', 1, 1, 1, '2025-07-15 17:44:10', 'PAID', 13700.00, '2025-07-15 17:44:10'),
+(5, 5, 'Summer-2025', 'REJECTED', 0, 0, 0, '2025-07-15 18:34:23', 'PENDING', 0.00, '2025-07-15 18:34:23'),
+(6, 5, 'Summer-2025', 'CANCELLED', 0, 0, 0, '2025-07-15 18:40:00', 'PENDING', 9000.00, '2025-07-15 18:40:00'),
+(7, 5, 'Summer-2025', 'CANCELLED', 0, 1, 0, '2025-07-15 19:25:47', 'PENDING', 9000.00, '2025-07-15 19:25:47');
 
 -- --------------------------------------------------------
 
@@ -385,6 +442,14 @@ CREATE TABLE `results` (
   `SEMESTER` varchar(50) NOT NULL,
   `CREATED_AT` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `results`
+--
+
+INSERT INTO `results` (`ID`, `STUDENT_ID`, `COURSE_ID`, `GRADE`, `SEMESTER`, `CREATED_AT`) VALUES
+(1, 5, 5, 'A+', 'Spring-2025', '2025-07-15 18:08:23'),
+(2, 5, 18, 'F', 'Spring-2023', '2025-07-15 18:36:51');
 
 -- --------------------------------------------------------
 
@@ -410,11 +475,11 @@ CREATE TABLE `student` (
 --
 
 INSERT INTO `student` (`ID`, `REGISTRATION_NUMBER`, `NAME`, `EMAIL`, `PASSWORD`, `DEPARTMENT_ID`, `SESSION`, `MOBILE`, `STATUS`, `CREATED_AT`) VALUES
-(1, '0562310005101031', 'Jakaria Chowdhury Tajwone', 'tajwone248tc@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 1, 'spring-2024', '01703758327', 1, '2025-05-13 19:48:50'),
+(1, '0562310005101031', 'Jakaria Chowdhury Tajwone', 'tajwone248tc@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 1, 'spring-2025', '01703758327', 1, '2025-05-13 19:48:50'),
 (2, '0562310005101003', 'MD Masum Prodhania', 'masum@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 3, 'Spring-2024', '01703758327', 1, '2025-05-13 20:14:04'),
-(3, '0562310005101001', 'Amir Hamza', 'amir@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 2, 'Spring-2025', '01873950392', 0, '2025-05-13 20:53:54'),
-(4, '0562310005101018', 'mohammed oli', 'oli@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 1, 'Spring-2025', '01703758327', 1, '2025-05-16 21:08:31');
-
+(3, '0562310005101001', 'Amir Hamza', 'amir@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 2, 'Spring-2023', '01873950392', 1, '2025-05-13 20:53:54'),
+(4, '0562310005101018', 'mohammed oli', 'oli@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 1, 'Spring-2024', '01703758327', 1, '2025-05-16 21:08:31'),
+(5, '0562310005101048', 'Chironto Rudro Paul', 'chiru@gmail.com', '$2b$10$alY3bw9vbMoucKv4vuPmvOevHHSUOtYgZ3hEahPwxQjHNsOPcfTUW', 1, 'spring-2024', '01703758347', 1, '2025-05-13 13:48:50');
 
 -- --------------------------------------------------------
 
@@ -433,33 +498,8 @@ CREATE TABLE `verification` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `verification`
+-- Indexes for dumped tables
 --
-
-
---
--- Dumping data for table `prerequisite`
---
-
-INSERT INTO `prerequisite` (`ID`, `COURSE_ID`, `PREREQ_COURSE_ID`, `CREATED_AT`) VALUES
--- CSE prerequisites
-(1, 3, 2, '2025-07-15 09:00:00'),  -- Algorithms requires Data Structures
-(2, 4, 3, '2025-07-15 09:01:00'),  -- Operating Systems requires Algorithms
-
--- BBA prerequisites
-(3, 11, 10, '2025-07-15 09:02:00'),  -- Marketing Fundamentals requires Principles of Management
-(4, 12, 10, '2025-07-15 09:03:00'),  -- Financial Accounting requires Principles of Management
-(5, 13, 12, '2025-07-15 09:04:00'),  -- Business Lab requires Financial Accounting
-
--- English prerequisites
-(6, 15, 14, '2025-07-15 09:05:00'),  -- Linguistics requires English Literature
-(7, 16, 15, '2025-07-15 09:06:00'),  -- Creative Writing requires Linguistics
-(8, 17, 14, '2025-07-15 09:07:00'),  -- Language Lab requires English Literature
-
--- Law prerequisites
-(9, 7, 6, '2025-07-15 09:08:00'),   -- Criminal Law requires Constitutional Law
-(10, 8, 6, '2025-07-15 09:09:00'),   -- Civil Procedure requires Constitutional Law
-(11, 9, 8, '2025-07-15 09:10:00');   -- Law Lab requires Civil Procedure
 
 --
 -- Indexes for table `accounts_admin`
@@ -569,13 +609,8 @@ ALTER TABLE `registered_courses`
 -- Indexes for table `registration_bundle`
 --
 ALTER TABLE `registration_bundle`
-  ADD PRIMARY KEY (`ID`);
-
---
--- Indexes for table `registration_deadline`
---
-ALTER TABLE `registration_deadline`
-  ADD PRIMARY KEY (`ID`);
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `fk_registration_bundle_student_id` (`STUDENT_ID`);
 
 --
 -- Indexes for table `results`
@@ -621,31 +656,31 @@ ALTER TABLE `admin`
 -- AUTO_INCREMENT for table `advisor`
 --
 ALTER TABLE `advisor`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `course`
 --
 ALTER TABLE `course`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `course_cart`
 --
 ALTER TABLE `course_cart`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `course_registration`
 --
 ALTER TABLE `course_registration`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `deadlines`
 --
 ALTER TABLE `deadlines`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `department`
@@ -669,13 +704,13 @@ ALTER TABLE `hod`
 -- AUTO_INCREMENT for table `notice`
 --
 ALTER TABLE `notice`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `payment`
 --
 ALTER TABLE `payment`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `prerequisite`
@@ -687,25 +722,19 @@ ALTER TABLE `prerequisite`
 -- AUTO_INCREMENT for table `registered_courses`
 --
 ALTER TABLE `registered_courses`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `registration_bundle`
 --
 ALTER TABLE `registration_bundle`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `registration_deadline`
---
-ALTER TABLE `registration_deadline`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `results`
 --
 ALTER TABLE `results`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `student`
@@ -792,7 +821,7 @@ ALTER TABLE `registered_courses`
 -- Constraints for table `registration_bundle`
 --
 ALTER TABLE `registration_bundle`
-  ADD CONSTRAINT `registration_bundle_ibfk_1` FOREIGN KEY (`STUDENT_ID`) REFERENCES `student` (`ID`);
+  ADD CONSTRAINT `fk_registration_bundle_student_id` FOREIGN KEY (`STUDENT_ID`) REFERENCES `student` (`ID`);
 
 --
 -- Constraints for table `results`
