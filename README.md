@@ -23,6 +23,7 @@ CourseSphere is a comprehensive university course registration system that strea
 - **Super Admin**:
   - Management of all administrative accounts (HODs, Exam Controllers, Accounts Admins)
   - User role assignment and permission control
+  - Account credentials are sent to users via email upon creation
 - **Head of Department (HOD)**:
   - Department-specific course management (add/edit/activate/deactivate)
   - Advisor account management within department
@@ -30,6 +31,7 @@ CourseSphere is a comprehensive university course registration system that strea
   - Course registration review and approval
   - Deadline setting for department registration periods
   - Department notice creation and publication
+  - Advisor account credentials are sent via email upon creation
 
 - **Accounts Admin**:
   - Financial calculation for student registrations
@@ -52,6 +54,14 @@ CourseSphere is a comprehensive university course registration system that strea
 - **Backend**: Next.js API Routes
 - **Database**: MySQL
 - **Authentication**: Custom JWT-based authentication
+
+## Account Management
+
+All administrative users (HODs, Advisors, Accounts Admins, and Exam Controllers) receive their account credentials via email when their accounts are created by their respective administrators:
+
+- Super Admin creates accounts for HODs, Accounts Admins, and Exam Controllers
+- HODs create accounts for Advisors within their department
+- All created accounts receive login details via the email address provided during account creation
 
 ## Setup and Installation
 
@@ -117,57 +127,71 @@ For detailed information about the project design, implementation, and usage:
 
 ## Screenshots
 
+### Landing Page
+
+<img src="Screenshots/landing-page.png" width="800">
+
 ### Student Interface
 
-|                     Student Dashboard                     |                   Course Catalog                    |                  Course Cart                  |
-| :-------------------------------------------------------: | :-------------------------------------------------: | :-------------------------------------------: |
-| ![Student Dashboard](Screenshots/student%20dashboard.png) | ![Course Catalog](Screenshots/Course%20Catalog.png) | ![Course Cart](Screenshots/Course%20Cart.png) |
+### Authentication Pages
 
-|                 Registration Status                  |                       Status After Payment                        |                       Profile Change Password                       |
-| :--------------------------------------------------: | :---------------------------------------------------------------: | :-----------------------------------------------------------------: |
-| ![Registration Status](Screenshots/reg%20status.png) | ![Status After Payment](Screenshots/status%20after%20payment.png) | ![Profile Change Password](Screenshots/profile-change-password.png) |
+|                    Student Sign In                     |                    Student Sign Up                     |
+| :----------------------------------------------------: | :----------------------------------------------------: |
+| <img src="Screenshots/student-signin.png" width="500"> | <img src="Screenshots/student-signup.png" width="500"> |
+
+|                      Student Dashboard                      |                      Course Catalog                      |                      Course Cart                      |
+| :---------------------------------------------------------: | :------------------------------------------------------: | :---------------------------------------------------: |
+| <img src="Screenshots/student%20dashboard.png" width="500"> | <img src="Screenshots/Course%20Catalog.png" width="500"> | <img src="Screenshots/Course%20Cart.png" width="500"> |
+
+|                 Registration Status                  |                       Status After Payment                       |                     Profile Change Password                     |
+| :--------------------------------------------------: | :--------------------------------------------------------------: | :-------------------------------------------------------------: |
+| <img src="Screenshots/reg%20status.png" width="500"> | <img src="Screenshots/status%20after%20payment.png" width="500"> | <img src="Screenshots/profile-change-password.png" width="500"> |
 
 ### Admin Login & Dashboard
 
-![Admin Login](Screenshots/admin-login.png)
+<img src="Screenshots/admin-login.png" width="700">
 
 ### Super Admin Interface
 
-|                       Managing HODs                       |                            Managing Accounts Admin                             |                              Managing Exam Controllers                              |
-| :-------------------------------------------------------: | :----------------------------------------------------------------------------: | :---------------------------------------------------------------------------------: |
-| ![Managing HODs](Screenshots/superadmin-managing-hod.png) | ![Managing Accounts Admin](Screenshots/superadmin-managing-accounts-admin.png) | ![Managing Exam Controllers](Screenshots/super-admin-managing-exam-controllers.png) |
+|                          Managing HODs                          |                          Managing Accounts Admin                           |                           Managing Exam Controllers                           |
+| :-------------------------------------------------------------: | :------------------------------------------------------------------------: | :---------------------------------------------------------------------------: |
+| <img src="Screenshots/superadmin-managing-hod.png" width="500"> | <img src="Screenshots/superadmin-managing-accounts-admin.png" width="500"> | <img src="Screenshots/super-admin-managing-exam-controllers.png" width="500"> |
 
 ### Head of Department (HOD) Interface
 
-|                  HOD Dashboard                  |                     Managing Courses                      |                     Managing Advisors                      |
-| :---------------------------------------------: | :-------------------------------------------------------: | :--------------------------------------------------------: |
-| ![HOD Dashboard](Screenshots/HOD-dashboard.png) | ![Managing Courses](Screenshots/hod-managing-courses.png) | ![Managing Advisors](Screenshots/hod-managing-advisor.png) |
+|                     HOD Dashboard                     |                       Managing Courses                       |                      Managing Advisors                       |
+| :---------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+| <img src="Screenshots/HOD-dashboard.png" width="500"> | <img src="Screenshots/hod-managing-courses.png" width="500"> | <img src="Screenshots/hod-managing-advisor.png" width="500"> |
 
-|                          Student Account Activation                           |                        Managing Notices & Deadlines                        |               Reviewing Registration Requests                |
-| :---------------------------------------------------------------------------: | :------------------------------------------------------------------------: | :----------------------------------------------------------: |
-| ![Student Account Activation](Screenshots/hod-student-account-activation.png) | ![Managing Notices](Screenshots/hod-managing-notices%20and%20deadlnes.png) | ![Reviewing Requests](Screenshots/hod-reviewing-request.png) |
+|                       Student Account Activation                       |                         Managing Notices & Deadlines                          |                Reviewing Registration Requests                |
+| :--------------------------------------------------------------------: | :---------------------------------------------------------------------------: | :-----------------------------------------------------------: |
+| <img src="Screenshots/hod-student-account-activation.png" width="500"> | <img src="Screenshots/hod-managing-notices%20and%20deadlnes.png" width="500"> | <img src="Screenshots/hod-reviewing-request.png" width="500"> |
+
+|                      HOD Review                      |                           Student Registration Management                           |
+| :--------------------------------------------------: | :---------------------------------------------------------------------------------: |
+| <img src="Screenshots/HOD%20Review.png" width="500"> | <img src="Screenshots/hod-managing-student-regsitration%20request.png" width="500"> |
 
 ### Advisor Interface
 
-|                    Reviewing Registration Requests                    |                           Registration Review                           |
-| :-------------------------------------------------------------------: | :---------------------------------------------------------------------: |
-| ![Reviewing Requests](Screenshots/advisor%20reviewing%20requests.png) | ![Registration Review](Screenshots/Registration%20review%20advisor.png) |
+|                    Reviewing Registration Requests                     |                           Registration Review                           |
+| :--------------------------------------------------------------------: | :---------------------------------------------------------------------: |
+| <img src="Screenshots/advisor%20reviewing%20requests.png" width="500"> | <img src="Screenshots/Registration%20review%20advisor.png" width="500"> |
 
 ### Accounts Admin Interface
 
-![Accounts Admin Review](Screenshots/accounts%20admin%20review.png)
+<img src="Screenshots/accounts%20admin%20review.png" width="700">
 
 ### Exam Controller Interface
 
-|                             Managing Results                              |                              Updating Results                              |
-| :-----------------------------------------------------------------------: | :------------------------------------------------------------------------: |
-| ![Managing Results](Screenshots/exam%20ontroller%20managing%20result.png) | ![Updating Results](Screenshots/exam-controller%20-updating%20results.png) |
+|                               Managing Results                               |                               Updating Results                                |
+| :--------------------------------------------------------------------------: | :---------------------------------------------------------------------------: |
+| <img src="Screenshots/exam%20ontroller%20managing%20result.png" width="500"> | <img src="Screenshots/exam-controller%20-updating%20results.png" width="500"> |
 
 ### General Pages
 
-|                 About Page                  |                  Contact Page                   |               Notices               |
-| :-----------------------------------------: | :---------------------------------------------: | :---------------------------------: |
-| ![About Page](Screenshots/About%20Page.png) | ![Contact Page](Screenshots/Contact%20page.png) | ![Notices](Screenshots/Notices.png) |
+|                      About Page                      |                      Contact Page                      |                     Notices                     |
+| :--------------------------------------------------: | :----------------------------------------------------: | :---------------------------------------------: |
+| <img src="Screenshots/About%20Page.png" width="500"> | <img src="Screenshots/Contact%20page.png" width="500"> | <img src="Screenshots/Notices.png" width="500"> |
 
 ## Learn More
 
