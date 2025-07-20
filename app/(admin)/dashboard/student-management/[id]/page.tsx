@@ -172,7 +172,7 @@ export default function RegistrationReviewPage() {
 
       // Validation checks
       if (approvalStatus === null) {
-        throw new Error("Please select either Approve or Reject");
+        alert("Please select either Approve or Reject");
       }
 
       if (userRole === "accounts_admin" && approvalStatus === true) {
@@ -206,7 +206,7 @@ export default function RegistrationReviewPage() {
         // If all courses are individually rejected, auto-reject the entire registration
         // If the user selected "Approve" but didn't approve any courses, show error
         if (approvalStatus === true && !anyCoursesApproved) {
-          throw new Error(
+          alert(
             "You must approve at least one course to approve this registration",
           );
         }
@@ -834,7 +834,7 @@ export default function RegistrationReviewPage() {
                   </Label>
                   <div className="relative">
                     <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                      BDT 
+                      BDT
                     </span>
                     <input
                       type="text"

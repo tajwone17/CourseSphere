@@ -63,7 +63,7 @@ export async function GET(request: NextRequest) {
         JOIN student s ON rb.STUDENT_ID = s.ID
         JOIN department d ON s.DEPARTMENT_ID = d.ID
         JOIN course_registration cr ON rb.ID = cr.BUNDLE_ID
-        WHERE rb.STATUS = 'PENDING' AND rb.ADVISOR_APPROVAL = 0
+        WHERE rb.STATUS = 'PENDING' AND rb.ADVISOR_APPROVAL = 0 AND rb.STATUS <> 'CANCELLED'
           ${departmentId ? "AND d.ID = ?" : ""}
         GROUP BY rb.ID
         ORDER BY rb.SUBMITTED_AT DESC
@@ -91,7 +91,7 @@ export async function GET(request: NextRequest) {
         JOIN student s ON rb.STUDENT_ID = s.ID
         JOIN department d ON s.DEPARTMENT_ID = d.ID
         JOIN course_registration cr ON rb.ID = cr.BUNDLE_ID
-        WHERE rb.ADVISOR_APPROVAL = 1 AND rb.HOD_APPROVAL = 0 AND rb.STATUS <> 'REJECTED'
+        WHERE rb.ADVISOR_APPROVAL = 1 AND rb.HOD_APPROVAL = 0 AND rb.STATUS <> 'REJECTED' AND rb.STATUS <> 'CANCELLED'
           ${departmentId ? "AND d.ID = ?" : ""}
         GROUP BY rb.ID
         ORDER BY rb.SUBMITTED_AT DESC
@@ -119,7 +119,7 @@ export async function GET(request: NextRequest) {
         JOIN student s ON rb.STUDENT_ID = s.ID
         JOIN department d ON s.DEPARTMENT_ID = d.ID
         JOIN course_registration cr ON rb.ID = cr.BUNDLE_ID
-        WHERE rb.HOD_APPROVAL = 1 AND rb.ACCOUNTS_ADMIN_APPROVAL = 0 AND rb.STATUS <> 'REJECTED'
+        WHERE rb.HOD_APPROVAL = 1 AND rb.ACCOUNTS_ADMIN_APPROVAL = 0 AND rb.STATUS <> 'REJECTED' AND rb.STATUS <> 'CANCELLED'
           ${departmentId ? "AND d.ID = ?" : ""}
         GROUP BY rb.ID
         ORDER BY rb.SUBMITTED_AT DESC
@@ -144,8 +144,8 @@ export async function GET(request: NextRequest) {
     if (userRole === "advisor") {
       countQuery = `
         SELECT
-          SUM(CASE WHEN rb.STATUS = 'PENDING' AND rb.ADVISOR_APPROVAL = 0 THEN 1 ELSE 0 END) as pending_count,
-          SUM(CASE WHEN rb.ADVISOR_APPROVAL = 1 THEN 1 ELSE 0 END) as approved_count,
+          SUM(CASE WHEN rb.STATUS = 'PENDING' AND rb.ADVISOR_APPROVAL = 0 AND rb.STATUS <> 'CANCELLED' THEN 1 ELSE 0 END) as pending_count,
+          SUM(CASE WHEN rb.ADVISOR_APPROVAL = 1 AND rb.STATUS <> 'CANCELLED' THEN 1 ELSE 0 END) as approved_count,
           SUM(CASE WHEN rb.STATUS = 'REJECTED' AND (rb.HOD_APPROVAL = 0 AND rb.ADVISOR_APPROVAL = 0) THEN 1 ELSE 0 END) as rejected_count
         FROM registration_bundle rb
         JOIN student s ON rb.STUDENT_ID = s.ID
@@ -156,8 +156,8 @@ export async function GET(request: NextRequest) {
     } else if (userRole === "hod") {
       countQuery = `
         SELECT
-          SUM(CASE WHEN rb.ADVISOR_APPROVAL = 1 AND rb.HOD_APPROVAL = 0 AND rb.STATUS <> 'REJECTED' THEN 1 ELSE 0 END) as pending_count,
-          SUM(CASE WHEN rb.HOD_APPROVAL = 1 THEN 1 ELSE 0 END) as approved_count,
+          SUM(CASE WHEN rb.ADVISOR_APPROVAL = 1 AND rb.HOD_APPROVAL = 0 AND rb.STATUS <> 'REJECTED' AND rb.STATUS <> 'CANCELLED' THEN 1 ELSE 0 END) as pending_count,
+          SUM(CASE WHEN rb.HOD_APPROVAL = 1 AND rb.STATUS <> 'CANCELLED' THEN 1 ELSE 0 END) as approved_count,
           SUM(CASE WHEN rb.STATUS = 'REJECTED' AND rb.ADVISOR_APPROVAL = 1 AND rb.HOD_APPROVAL = 0 THEN 1 ELSE 0 END) as rejected_count
         FROM registration_bundle rb
         JOIN student s ON rb.STUDENT_ID = s.ID
@@ -168,8 +168,8 @@ export async function GET(request: NextRequest) {
     } else if (userRole === "accounts_admin") {
       countQuery = `
         SELECT
-          SUM(CASE WHEN rb.HOD_APPROVAL = 1 AND rb.ACCOUNTS_ADMIN_APPROVAL = 0 AND rb.STATUS <> 'REJECTED' THEN 1 ELSE 0 END) as pending_count,
-          SUM(CASE WHEN rb.ACCOUNTS_ADMIN_APPROVAL = 1 THEN 1 ELSE 0 END) as approved_count,
+          SUM(CASE WHEN rb.HOD_APPROVAL = 1 AND rb.ACCOUNTS_ADMIN_APPROVAL = 0 AND rb.STATUS <> 'REJECTED' AND rb.STATUS <> 'CANCELLED' THEN 1 ELSE 0 END) as pending_count,
+          SUM(CASE WHEN rb.ACCOUNTS_ADMIN_APPROVAL = 1 AND rb.STATUS <> 'CANCELLED' THEN 1 ELSE 0 END) as approved_count,
           SUM(CASE WHEN rb.STATUS = 'REJECTED' AND rb.HOD_APPROVAL = 1 AND rb.ACCOUNTS_ADMIN_APPROVAL = 0 THEN 1 ELSE 0 END) as rejected_count
         FROM registration_bundle rb
         JOIN student s ON rb.STUDENT_ID = s.ID
