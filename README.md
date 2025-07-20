@@ -143,7 +143,7 @@ For detailed information about the project design, implementation, and usage:
 | :---------------------------------------------------------: | :------------------------------------------------------: | :---------------------------------------------------: |
 | <img src="Screenshots/student%20dashboard.png" width="500"> | <img src="Screenshots/Course%20Catalog.png" width="500"> | <img src="Screenshots/Course%20Cart.png" width="500"> |
 
-|                 Registration Status                  |                       Status After Payment                       |                     Profile Change Password                     |
+|                 Registration Status                  |                       Status After Payment                       |                     Profile/Change Password                     |
 | :--------------------------------------------------: | :--------------------------------------------------------------: | :-------------------------------------------------------------: |
 | <img src="Screenshots/reg%20status.png" width="500"> | <img src="Screenshots/status%20after%20payment.png" width="500"> | <img src="Screenshots/profile-change-password.png" width="500"> |
 
